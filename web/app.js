@@ -541,13 +541,13 @@ function renderResult() {
   const tick = '<svg aria-hidden="true" viewBox="0 0 24 24" class="ico"><circle cx="12" cy="12" r="10" fill="currentColor"/><path d="m7.5 12.5 3 3 6-6.5" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>';
   const cross = '<svg aria-hidden="true" viewBox="0 0 24 24" class="ico"><circle cx="12" cy="12" r="10" fill="currentColor"/><path d="m8.5 8.5 7 7m0-7-7 7" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round"/></svg>';
   const checkList = checks.length ? `<details class="checklist"><summary>${esc(t('checks_show', { n: checks.length }))}</summary><ul>${checks.map(c => `<li class="${c.ok ? 'ok' : 'bad'}">${c.ok ? tick : cross}<span>${esc(c.name)}${Number.isFinite(c.value) ? ` <span class="muted">${fmtNum(c.value, 2)}${c.unit ? ' ' + esc(c.unit) : ''}${c.limit != null ? ` (${esc(String(c.limit))})` : ''}</span>` : ''}</span><span class="sr-only">${esc(c.ok ? t('check_ok') : t('check_failed'))}</span></li>`).join('')}</ul></details>` : '';
-  const vOk = !v.verdict || v.verdict === 'approved';
+  const vOk = v.verdict === 'approved';
   $('#verif').innerHTML = `<h2>${esc(t('checks_title'))}</h2>
-    ${!r.locks ? `<p class="muted">${esc(t('checks_notrun'))}</p>` : fails.length ? `<p class="badline">${esc(t('checks_fail'))} ${esc(fails.join('; '))}</p>` : (checks.length || r.status === 'cuff_ready') ? `<p class="okline">${tick}${esc(t('checks_pass'))}</p>` : `<p class="muted">${esc(t('checks_notrun'))}</p>`}
+    ${!r.locks ? `<p class="muted">${esc(t('checks_notrun'))}</p>` : fails.length ? `<p class="badline">${esc(t('checks_fail'))} ${esc(fails.join('; '))}</p>` : (checks.length && checks.every(c => c.ok === true)) ? `<p class="okline">${tick}${esc(t('checks_pass'))}</p>` : `<p class="muted">${esc(t('checks_notrun'))}</p>`}
     ${checkList}
     ${msgs ? `<ul class="notes">${msgs}</ul>` : ''}
     ${r.verification ? `<h2 class="mt">${esc(t('verif_title'))}</h2>
-    <p class="${vOk ? 'okline' : 'badline'}">${vOk ? tick : ''}${esc(vOk ? t('verif_ok') : t('verif_bad'))}</p>
+    <p class="${vOk ? 'okline' : v.verdict ? 'badline' : 'muted'}">${vOk ? tick : ''}${esc(vOk ? t('verif_ok') : v.verdict ? t('verif_bad') : t('verif_notrun'))}</p>
     <dl class="kv">${row('verif_gap', sp.closest_section_gap ?? v.closest_section_gap)}${row('verif_overlap', sp.max_overlap ?? v.max_overlap)}${row('verif_palm', S.ana?.custom?.palm_compression_mm ?? v.palm_compression)}</dl>` : ''}`;
 }
 function reportHtml(pictures = true) {

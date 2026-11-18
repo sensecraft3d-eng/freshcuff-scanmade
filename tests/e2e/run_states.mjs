@@ -86,6 +86,18 @@ for (const mode of ['buildneeds', 'buildrefused']) await scenario(`B2 build() ${
   await p.click('#s4-tape'); await p.waitForSelector('#step-3:not([hidden])'); await p.waitForTimeout(200);
   ok(await p.evaluate(() => document.activeElement?.id === 'tape'), 'back to tape did not focus the field');
 });
+await scenario('m-R04-01 cuff_ready without check results is not shown as passed', 'readyempty', async p => {
+  await toFit(p, 'sample'); await p.click('#s3-build'); await p.waitForSelector('#build-done:not([hidden])');
+  const verif = await p.textContent('#verif');
+  ok(!verif.includes('All checks passed'), 'empty checks shown as passed'); ok(!verif.includes('matches the prediction'), 'missing verdict shown as approved');
+  const rep = await p.evaluate(() => window.__fc.reportHtml(false));
+  ok(!rep.includes('All checks passed'), 'report shows empty checks as passed');
+});
+for (const mode of ['buildneeds', 'buildrefused']) await scenario(`m-R04-02 report has no print steps when ${mode}`, mode, async p => {
+  await toFit(p, 'sample'); await p.click('#s3-build'); await p.waitForSelector('#build-done:not([hidden])');
+  const rep = await p.evaluate(() => window.__fc.reportHtml(false));
+  ok(rep.includes('No cuff was released for printing'), 'missing not-released line'); ok(!rep.includes('<ol>'), 'print steps present in a refused report');
+});
 await scenario('B1 no verified standard fit', 'nofit', async p => {
   await toFit(p, 'file');
   const rec = await p.textContent('#rec');

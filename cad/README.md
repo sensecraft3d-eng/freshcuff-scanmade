@@ -13,7 +13,7 @@ Python 3.12 or newer, 64-bit.
 ```bash
 python -m venv .venv
 # Windows: .venv\Scripts\activate      macOS/Linux: source .venv/bin/activate
-python -m pip install cadquery-ocp trimesh shapely scipy numpy matplotlib manifold3d
+python -m pip install -r requirements-ci.txt -r requirements-cad.txt   # pinned reference versions (OCP 7.9.3)
 ```
 
 - `cadquery-ocp`, `trimesh`, `shapely`, `scipy`, `numpy`: needed for every build.

@@ -56,24 +56,22 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Is there an end-to-end test?
-        id: e2e
+      - name: Required end-to-end files must exist
         shell: bash
         run: |
-          if [ -f tests/e2e/run_sample.mjs ]; then echo "present=true" >> "$GITHUB_OUTPUT"; else echo "present=false" >> "$GITHUB_OUTPUT"; echo "No tests/e2e/run_sample.mjs: skipping."; fi
+          for f in tests/e2e/run_sample.mjs tests/e2e/run_fixes.mjs tests/e2e/run_tape_real.mjs tests/e2e/run_states.mjs tests/e2e/mock/mock_worker.js tools/build_manifest.py tools/serve.py; do
+            test -f "$f" || { echo "Missing required file: $f"; exit 1; }
+          done
 
       - uses: actions/setup-python@v5
-        if: steps.e2e.outputs.present == 'true'
         with:
           python-version: "3.12"
 
       - uses: actions/setup-node@v4
-        if: steps.e2e.outputs.present == 'true'
         with:
           node-version: "20"
 
       - name: Install Playwright
-        if: steps.e2e.outputs.present == 'true'
         shell: bash
         run: |
           if [ -f tests/e2e/package.json ]; then
@@ -84,45 +82,35 @@ jobs:
           npx playwright install --with-deps chromium
 
       - name: Check the integrity manifest is up to date
-        if: steps.e2e.outputs.present == 'true'
         run: python tools/build_manifest.py --check
 
       - name: Start local server
-        if: steps.e2e.outputs.present == 'true'
         shell: bash
         run: |
-          if [ -f tools/serve.py ]; then
-            nohup python tools/serve.py --port 8765 > server.log 2>&1 &
-          else
-            nohup python -m http.server 8765 --bind 127.0.0.1 --directory web > server.log 2>&1 &
-          fi
+          nohup python tools/serve.py --port 8765 > server.log 2>&1 &
           for i in $(seq 1 30); do curl -sf http://127.0.0.1:8765/ > /dev/null && break; sleep 1; done
           curl -sf http://127.0.0.1:8765/ > /dev/null
 
       - name: Run the sample hand in Chromium
-        if: steps.e2e.outputs.present == 'true'
         env:
           FRESHCUFF_URL: http://127.0.0.1:8765/
         run: node tests/e2e/run_sample.mjs
 
       - name: Run the orientation-fix and knuckle-click test in Chromium
-        if: steps.e2e.outputs.present == 'true' && hashFiles('tests/e2e/run_fixes.mjs') != ''
         env:
           FRESHCUFF_URL: http://127.0.0.1:8765/
         run: node tests/e2e/run_fixes.mjs
 
       - name: Run the tape-gate test (scan loaded as a user file) in Chromium
-        if: steps.e2e.outputs.present == 'true' && hashFiles('tests/e2e/run_tape_real.mjs') != ''
         env:
           FRESHCUFF_URL: http://127.0.0.1:8765/
         run: node tests/e2e/run_tape_real.mjs
 
       - name: Run the page-state and keyboard tests in Chromium (mock data)
-        if: steps.e2e.outputs.present == 'true'
         run: node tests/e2e/run_states.mjs
 
       - name: Upload screenshots and logs
-        if: always() && steps.e2e.outputs.present == 'true'
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: e2e-output
@@ -142,6 +130,6 @@ jobs:
         with:
           python-version: "3.12"
       - name: Install CAD dependencies
-        run: python -m pip install -r requirements-ci.txt cadquery-ocp manifold3d
+        run: python -m pip install -r requirements-ci.txt -r requirements-cad.txt
       - name: Rebuild and compare
         run: python -m pytest tests/cad -ra

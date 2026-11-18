@@ -36,7 +36,7 @@ export function buildReport({ prep, ana, build, overrides, changes, snaps, scanN
       ${Number.isFinite(v.closest_section_gap) ? `<tr><td>${esc(t('verif_gap'))}</td><td class="n">${mm(v.closest_section_gap)}</td></tr>` : ''}
       ${Number.isFinite(v.max_overlap) ? `<tr><td>${esc(t('verif_overlap'))}</td><td class="n">${mm(v.max_overlap)}</td></tr>` : ''}
       ${Number.isFinite(v.palm_compression) ? `<tr><td>${esc(t('verif_palm'))}</td><td class="n">${mm(v.palm_compression)}</td></tr>` : ''}
-      <tr><td>${esc(t('checks_title'))}</td><td class="n">${!build.locks ? esc(t('checks_notrun')) : fails.length ? esc(t('checks_fail')) + ' ' + fails.length : (build.status === 'cuff_ready' || (build.locks.checks || []).length) ? esc(t('checks_pass')) : esc(t('checks_notrun'))}</td></tr></table>`;
+      <tr><td>${esc(t('checks_title'))}</td><td class="n">${!build.locks ? esc(t('checks_notrun')) : fails.length ? esc(t('checks_fail')) + ' ' + fails.length : ((build.locks.checks || []).length && build.locks.checks.every(c => c.ok === true)) ? esc(t('checks_pass')) : esc(t('checks_notrun'))}</td></tr></table>`;
   }
   const img = (u, cap) => u ? `<figure><img src="${u}" alt="${esc(cap)}"><figcaption>${esc(cap)}</figcaption></figure>` : '';
   const fileList = Object.values(files || {}).map(f => `<li>${esc(f.name)}${f.sha256 ? ` <code>sha256 ${esc(f.sha256.slice(0, 16))}…</code>` : ''}</li>`).join('');
@@ -71,7 +71,7 @@ ${recHtml}
 ${buildHtml}
 ${snaps?.result ? `<div class="grid">${img(snaps.result, t('label_cuff'))}${img(snaps.resultSide, t('view_side'))}</div>` : ''}
 ${fileList ? `<h2>${esc(t('rep_files'))}</h2><ul>${fileList}</ul>` : ''}
-${build ? `<h2>${esc(t('print_title'))}</h2><ol>${['print_1', 'print_2', 'print_3', 'print_4', 'print_5'].map(k => `<li>${esc(t(k))}</li>`).join('')}</ol>` : ''}
+${build && build.status === 'cuff_ready' ? `<h2>${esc(t('print_title'))}</h2><ol>${['print_1', 'print_2', 'print_3', 'print_4', 'print_5'].map(k => `<li>${esc(t(k))}</li>`).join('')}</ol>` : build ? `<h2>${esc(t('print_title'))}</h2><p>${esc(t('print_not_released'))}</p>` : ''}
 <footer>SenseCraft · FreshCuff ScanMade · ${esc(t('footer_license'))} · ${esc(t('footer_sample'))}${timings ? ' · ' + esc(Object.entries(timings).filter(([, v]) => Number.isFinite(v)).map(([k, v]) => `${k} ${(v / 1000).toFixed(1)} s`).join(', ')) : ''}</footer>
 </body></html>`;
 }
