@@ -1,0 +1,50 @@
+name: Deploy web app to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "web/**"
+      - ".github/workflows/pages.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check the manifest matches the files
+        shell: bash
+        run: |
+          if [ -f tools/build_manifest.py ]; then python3 tools/build_manifest.py --check; else echo "tools/build_manifest.py not found: skipping"; fi
+
+      - name: Prepare site folder
+        shell: bash
+        run: |
+          mkdir -p _site
+          cp -R web/. _site/
+          # The site is static: no Jekyll processing (keeps files that start with "_").
+          touch _site/.nojekyll
+
+      - uses: actions/configure-pages@v5
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+      - id: deployment
+        uses: actions/deploy-pages@v4

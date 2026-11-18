@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; worker-src 'self'; connect-src 'self'; img-src 'self' blob: data:; style-src 'self' 'unsafe-inline'; font-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
+<meta name="referrer" content="no-referrer">
+<title>FreshCuff Fit · a custom cuff from a hand scan · SenseCraft</title>
+<meta name="description" content="Turn a 3D hand scan into a custom 3D-printable assistive cuff. Runs entirely in your browser: your scan never leaves your computer.">
+<meta name="theme-color" content="#25292c">
+<link rel="preload" href="InterVariable.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="ui/style.css">
+<link rel="modulepreload" href="vendor/three/three.module.min.js">
+</head>
+<body>
+<a class="skip" href="#main" data-i18n="skip">Skip to main content</a>
+
+<header class="top">
+  <div class="wrap top-in">
+    <div class="brand">
+      <span class="brand-sc">SenseCraft</span>
+      <span class="brand-sep" aria-hidden="true"></span>
+      <span class="brand-prod" data-i18n="brand_product">FreshCuff Fit</span>
+      <span class="tag" data-i18n="tag_experimental">Experimental</span>
+    </div>
+    <button id="lang" type="button" class="btn btn-quiet btn-sm" data-i18n="lang_toggle" data-i18n-aria="lang_toggle_aria">Português</button>
+  </div>
+</header>
+
+<div id="phone-note" class="phone-note" hidden>
+  <div class="wrap phone-in">
+    <p data-i18n="phone_note"></p>
+    <button type="button" class="btn btn-quiet btn-sm" id="phone-ok" data-i18n="phone_dismiss">OK</button>
+  </div>
+</div>
+
+<nav class="stepper" data-i18n-aria="stepper_aria" aria-label="Progress">
+  <ol class="wrap">
+    <li data-step="1"><span class="num" aria-hidden="true">1</span><span data-i18n="step_scan">Scan</span></li>
+    <li data-step="2"><span class="num" aria-hidden="true">2</span><span data-i18n="step_check">Check</span></li>
+    <li data-step="3"><span class="num" aria-hidden="true">3</span><span data-i18n="step_fit">Fit</span></li>
+    <li data-step="4"><span class="num" aria-hidden="true">4</span><span data-i18n="step_build">Build</span></li>
+  </ol>
+</nav>
+
+<main id="main" tabindex="-1">
+  <!-- STEP 1 · START -->
+  <section id="step-1" class="step wrap" aria-labelledby="s1-title">
+    <div class="start">
+      <div class="start-main">
+        <h1 id="s1-title" data-i18n="s1_title">A cuff shaped to your hand, from a 3D scan.</h1>
+        <p class="lead" data-i18n="s1_lead"></p>
+        <p class="privacy"><svg aria-hidden="true" viewBox="0 0 24 24" class="ico"><path d="M7 10V7a5 5 0 0 1 10 0v3" fill="none" stroke="currentColor" stroke-width="2"/><rect x="4.5" y="10" width="15" height="11" rx="2.5" fill="currentColor"/></svg>
+          <span><strong data-i18n="privacy">Your scan stays on this computer. Nothing is uploaded.</strong> <span data-i18n="privacy_more"></span></span></p>
+
+        <div id="drop" class="drop" tabindex="-1">
+          <svg aria-hidden="true" viewBox="0 0 48 48" class="drop-ico"><path d="M24 31V11m0 0-8 8m8-8 8 8" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M9 29v6a4 4 0 0 0 4 4h22a4 4 0 0 0 4-4v-6" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg>
+          <p class="drop-title" data-i18n="drop_title">Drop a hand scan here</p>
+          <p class="drop-or"><span data-i18n="drop_or">or</span></p>
+          <label class="btn btn-secondary btn-lg" for="file"><span data-i18n="drop_choose">Choose a file</span></label>
+          <input id="file" class="sr-only" type="file" accept=".stl,.obj,.ply,.glb,.gltf,.usdz">
+          <p class="drop-formats" data-i18n="drop_formats"></p>
+        </div>
+
+        <div class="sample-row">
+          <button id="sample" type="button" class="btn btn-primary btn-lg btn-block">
+            <svg aria-hidden="true" viewBox="0 0 24 24" class="ico"><path d="M8 5v14l11-7z" fill="currentColor"/></svg>
+            <span data-i18n="sample_btn">Try with a sample hand</span></button>
+          <p class="credit" data-i18n="sample_credit">Sample: “Hand” by Artec 3D, licensed CC BY 3.0.</p>
+        </div>
+
+        <div id="tools" class="tools" role="status" aria-live="polite">
+          <div class="tools-bar" aria-hidden="true"><span id="tools-fill"></span></div>
+          <p><span id="tools-text" data-i18n="tools_loading">Preparing the tools in the background…</span> <span id="tools-sub" class="muted" data-i18n="tools_loading_first"></span></p>
+        </div>
+        <p id="start-status" class="status" role="status" aria-live="polite"></p>
+
+        <div class="card notice notice-start" role="note">
+          <h2><svg aria-hidden="true" viewBox="0 0 24 24" class="ico"><path d="M12 3 2 21h20z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M12 10v5m0 3v.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+            <span data-i18n="exp_title">Experimental — please read</span></h2>
+          <ul>
+            <li data-i18n="exp_1"></li>
+            <li data-i18n="exp_2"></li>
+            <li data-i18n="exp_3"></li>
+          </ul>
+        </div>
+        <details class="opts" id="opts">
+          <summary><span data-i18n="opt_title">Optional details</span></summary>
+          <div class="opts-body">
+            <fieldset class="field">
+              <legend data-i18n="opt_hand">Which hand is it?</legend>
+              <div class="seg" role="radiogroup">
+                <label><input type="radio" name="hand" value="auto" checked><span data-i18n="hand_auto">Detect</span></label>
+                <label><input type="radio" name="hand" value="left"><span data-i18n="hand_left">Left</span></label>
+                <label><input type="radio" name="hand" value="right"><span data-i18n="hand_right">Right</span></label>
+              </div>
+            </fieldset>
+            <div class="field">
+              <label for="tape" data-i18n="opt_tape">Tape measure around the knuckles (cm)</label>
+              <input id="tape" type="number" inputmode="decimal" min="12" max="30" step="0.1" placeholder="18.5" aria-describedby="tape-help">
+              <p id="tape-help" class="help" data-i18n="opt_tape_help"></p>
+            </div>
+            <div class="field">
+              <label for="units" data-i18n="opt_units">Scan units</label>
+              <select id="units" aria-describedby="units-help">
+                <option value="auto" data-i18n="units_auto">Detect</option>
+                <option value="1" data-i18n="units_mm">Millimetres</option>
+                <option value="10" data-i18n="units_cm">Centimetres</option>
+                <option value="1000" data-i18n="units_m">Metres</option>
+                <option value="25.4" data-i18n="units_in">Inches</option>
+              </select>
+              <p id="units-help" class="help" data-i18n="opt_units_help"></p>
+            </div>
+          </div>
+        </details>
+      </div>
+
+      <div class="start-side">
+        <figure class="card product">
+          <img src="ui/img/cuff_hero.webp" width="760" height="570" alt="" data-i18n-alt="product_alt">
+          <figcaption data-i18n="product_cap"></figcaption>
+        </figure>
+        <div class="card how">
+          <h2 data-i18n="how_title">How it works</h2>
+          <ol class="how-list">
+            <li><span class="how-n" aria-hidden="true">1</span><div><strong data-i18n="how_1_t">Scan</strong><p data-i18n="how_1"></p></div></li>
+            <li><span class="how-n" aria-hidden="true">2</span><div><strong data-i18n="how_2_t">Check</strong><p data-i18n="how_2"></p></div></li>
+            <li><span class="how-n" aria-hidden="true">3</span><div><strong data-i18n="how_3_t">Fit</strong><p data-i18n="how_3"></p></div></li>
+            <li><span class="how-n" aria-hidden="true">4</span><div><strong data-i18n="how_4_t">Build</strong><p data-i18n="how_4"></p></div></li>
+          </ol>
+        </div>
+        <div class="card tips">
+          <h2 data-i18n="scan_tips_title">A good scan</h2>
+          <ul>
+            <li data-i18n="scan_tip_1"></li>
+            <li data-i18n="scan_tip_2"></li>
+            <li data-i18n="scan_tip_3"></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STEPS 2–4 share the 3D view -->
+  <section id="work" class="work wrap" hidden>
+    <div class="panel">
+      <!-- STEP 2 · CHECK -->
+      <div id="step-2" class="step-panel" hidden aria-labelledby="s2-title">
+        <p class="eyebrow" data-step-of="2"></p>
+        <h1 id="s2-title" data-i18n="s2_title" tabindex="-1">Check the hand</h1>
+        <p class="lead" data-i18n="s2_lead"></p>
+        <div id="s2-wait" class="card wait" role="status" aria-live="polite">
+          <span class="spinner" aria-hidden="true"></span>
+          <div><strong id="s2-wait-t" data-i18n="reading">Reading the scan…</strong><p id="s2-wait-sub" class="muted"></p></div>
+        </div>
+        <div id="s2-body" hidden>
+        <div id="needs" class="callout callout-warn" hidden>
+          <h2 data-i18n="needs_input_title">Please check this</h2>
+          <p data-i18n="needs_input_lead"></p>
+          <ul id="needs-list"></ul>
+        </div>
+        <div class="card">
+          <h2 data-i18n="s2_checklist_title">Look for three things</h2>
+          <ol class="checks">
+            <li><span class="swatch sw-line" aria-hidden="true"></span><span data-i18n="s2_check_1"></span></li>
+            <li><span class="swatch sw-band" aria-hidden="true"></span><span data-i18n="s2_check_2"></span></li>
+            <li><span class="swatch sw-label" aria-hidden="true"></span><span data-i18n="s2_check_3"></span></li>
+          </ol>
+        </div>
+        <div class="card">
+          <div class="quality">
+            <div>
+              <h2 data-i18n="quality_title">Scan quality</h2>
+              <p id="q-word" class="q-word"></p>
+            </div>
+            <div class="meter" id="q-meter" role="meter" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" data-i18n-aria="quality_title"><span id="q-fill"></span><b id="q-num">–</b></div>
+          </div>
+          <ul id="q-notes" class="notes"></ul>
+          <h2 class="mt" data-i18n="detected_title">What we detected</h2>
+          <dl class="facts" id="facts"></dl>
+        </div>
+        <div class="card">
+          <h2 data-i18n="fix_title">Fix it</h2>
+          <div class="fix-grid">
+            <button type="button" class="btn btn-secondary" id="fx-flip" aria-pressed="false"><svg aria-hidden="true" viewBox="0 0 24 24" class="ico"><path d="M4 9a8 8 0 0 1 14-3l2 2M20 15a8 8 0 0 1-14 3l-2-2M20 4v4h-4M4 20v-4h4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-i18n="fix_flip">Flip back / palm</span></button>
+            <button type="button" class="btn btn-secondary" id="fx-fingers" aria-pressed="false"><svg aria-hidden="true" viewBox="0 0 24 24" class="ico"><path d="M8 4v16m0-16-4 4m4-4 4 4M16 20V4m0 16-4-4m4 4 4-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-i18n="fix_fingers">Swap finger end</span></button>
+            <button type="button" class="btn btn-secondary" id="fx-side" aria-pressed="false"><svg aria-hidden="true" viewBox="0 0 24 24" class="ico"><path d="M12 3v18M8 7 4 12l4 5M16 7l4 5-4 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-i18n="fix_side">Left / Right</span></button>
+          </div>
+          <div class="move">
+            <p class="move-t"><strong data-i18n="fix_move">Move the knuckle line</strong> <span class="help" data-i18n="fix_move_help"></span></p>
+            <div class="move-row">
+              <button type="button" class="btn btn-secondary" id="fx-up"><svg aria-hidden="true" viewBox="0 0 24 24" class="ico"><path d="M12 19V5m0 0-6 6m6-6 6 6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-i18n="fix_toward_fingers">Toward fingers</span></button>
+              <button type="button" class="btn btn-secondary" id="fx-down"><svg aria-hidden="true" viewBox="0 0 24 24" class="ico"><path d="M12 5v14m0 0-6-6m6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-i18n="fix_toward_wrist">Toward wrist</span></button>
+            </div>
+          </div>
+          <p id="fix-status" class="status" role="status" aria-live="polite"></p>
+          <button type="button" class="btn btn-link" id="fx-reset" hidden data-i18n="fix_reset">Undo my changes</button>
+        </div>
+        </div>
+        <div class="actions">
+          <button type="button" class="btn btn-quiet" id="s2-back" data-i18n="back">Back</button>
+          <button type="button" class="btn btn-primary btn-lg" id="s2-go"><span data-i18n="s2_continue">Looks right — continue</span><svg aria-hidden="true" viewBox="0 0 24 24" class="ico"><path d="M5 12h14m0 0-6-6m6 6-6 6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+        </div>
+      </div>
+
+      <!-- STEP 3 · FIT -->
+      <div id="step-3" class="step-panel" hidden aria-labelledby="s3-title">
+        <p class="eyebrow" data-step-of="3"></p>
+        <h1 id="s3-title" data-i18n="s3_title" tabindex="-1">How the cuff fits</h1>
+        <p class="lead" data-i18n="s3_lead"></p>
+        <div id="rec" class="card rec"></div>
+        <div class="card">
+          <h2 data-i18n="sizes_title">All standard sizes</h2>
+          <div class="table-wrap">
+            <table class="sizes" id="sizes">
+              <caption class="sr-only" data-i18n="sizes_caption"></caption>
+              <thead><tr><th scope="col" data-i18n="th_size">Size</th><th scope="col" data-i18n="th_fit">Fit</th><th scope="col" class="num" data-i18n="th_min">Tightest point</th><th scope="col" class="num" data-i18n="th_back">Back of hand</th><th scope="col" class="num" data-i18n="th_sides">Sides</th></tr></thead>
+              <tbody></tbody>
+            </table>
+          </div>
+          <p class="help" data-i18n="sizes_caption"></p>
+        </div>
+        <details class="card fit-notes" id="fit-notes" hidden>
+          <summary><h2 data-i18n="notes_title">Details of the reading</h2></summary>
+          <ul></ul>
+        </details>
+        <div class="actions">
+          <button type="button" class="btn btn-quiet" id="s3-back" data-i18n="back">Back</button>
+          <span id="s3-actions"></span>
+        </div>
+      </div>
+
+      <!-- STEP 4 · BUILD -->
+      <div id="step-4" class="step-panel" hidden aria-labelledby="s4-title">
+        <p class="eyebrow" data-step-of="4"></p>
+        <h1 id="s4-title" tabindex="-1"></h1>
+        <div id="build-progress">
+          <p class="lead" data-i18n="s4_lead"></p>
+          <ol class="progress" id="build-steps" aria-live="polite"></ol>
+          <p class="elapsed" id="build-elapsed"></p>
+        </div>
+        <div id="build-done" hidden>
+          <div class="card">
+            <h2 data-i18n="dl_title">Downloads</h2>
+            <div class="downloads" id="downloads"></div>
+          </div>
+          <div class="card" id="verif"></div>
+          <div class="card">
+            <h2 data-i18n="print_title">Print and dry-fit</h2>
+            <ol class="numbered">
+              <li data-i18n="print_1"></li><li data-i18n="print_2"></li><li data-i18n="print_3"></li><li data-i18n="print_4"></li><li data-i18n="print_5"></li>
+            </ol>
+          </div>
+          <div class="card feedback">
+            <h2 data-i18n="feedback_title">Tell us how it went</h2>
+            <p data-i18n="feedback_lead"></p>
+            <a class="btn btn-secondary" id="feedback" href="https://github.com/sensecraft3d-eng/freshcuff-fit/issues/new?template=fit-feedback.yml" target="_blank" rel="noopener noreferrer"><span data-i18n="feedback_btn">Send fit feedback</span></a>
+          </div>
+        </div>
+        <div class="actions">
+          <button type="button" class="btn btn-quiet" id="s4-back" data-i18n="back">Back</button>
+          <button type="button" class="btn btn-secondary" id="s4-over" data-i18n="start_over">Start over with another scan</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="stage" id="stage">
+      <div class="viewer" id="viewer" tabindex="0" role="img" data-i18n-aria="viewer_aria">
+        <canvas id="canvas"></canvas>
+        <div class="labels" id="labels" aria-hidden="true"></div>
+        <div class="v-loading" id="v-loading" hidden><span class="spinner" aria-hidden="true"></span><span id="v-loading-text" data-i18n="view_loading"></span></div>
+      </div>
+      <div class="v-bar">
+        <div class="v-views" role="group">
+          <button type="button" class="btn btn-tool" data-view="back" data-i18n="view_back">Back</button>
+          <button type="button" class="btn btn-tool" data-view="palm" data-i18n="view_palm">Palm</button>
+          <button type="button" class="btn btn-tool" data-view="side" data-i18n="view_side">Side</button>
+          <button type="button" class="btn btn-tool" data-view="reset" data-i18n="view_reset">Reset view</button>
+        </div>
+        <div class="v-toggle" id="v-toggle" role="group" hidden>
+          <button type="button" class="btn btn-tool" data-show="hand" aria-pressed="false" data-i18n="view_hand_only">Hand</button>
+          <button type="button" class="btn btn-tool" data-show="both" aria-pressed="true" data-i18n="view_with_cuff">Hand + cuff</button>
+        </div>
+      </div>
+      <div class="legend" id="legend" hidden></div>
+      <p class="v-hint" data-i18n="view_hint">Drag to turn · scroll to zoom</p>
+    </div>
+  </section>
+
+  <!-- ERROR (never a dead end) -->
+  <section id="error" class="wrap step" hidden aria-labelledby="err-title">
+    <div class="card err">
+      <h1 id="err-title" tabindex="-1" data-i18n="err_title">Something went wrong</h1>
+      <h2 data-i18n="err_what">What happened</h2>
+      <p id="err-msg"></p>
+      <h2 data-i18n="err_try">What to try</h2>
+      <ul id="err-tips"></ul>
+      <div class="actions left">
+        <button type="button" class="btn btn-primary" id="err-retry" data-i18n="err_retry">Try again</button>
+        <button type="button" class="btn btn-secondary" id="err-file" data-i18n="err_other_file">Choose another file</button>
+        <button type="button" class="btn btn-quiet" id="err-sample" data-i18n="sample_btn">Try with a sample hand</button>
+      </div>
+      <details class="tech"><summary data-i18n="err_details">Technical details</summary><pre id="err-tech"></pre></details>
+    </div>
+  </section>
+</main>
+
+<footer class="foot">
+  <div class="wrap foot-in">
+    <p><strong>SenseCraft</strong> · FreshCuff Fit · <span data-i18n="footer_privacy"></span></p>
+    <p class="muted"><span data-i18n="footer_license"></span> · <span data-i18n="footer_sample"></span></p>
+  </div>
+</footer>
+<script type="module" src="app.js"></script>
+</body>
+</html>

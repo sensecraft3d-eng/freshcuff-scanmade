@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: FreshCuff model, standard sizes and sizing rings (MakerWorld)
+    url: https://makerworld.com/en/models/3595433
+    about: Print files, the assembly manual and comments about the standard FreshCuff.
+  - name: Report a security problem privately
+    url: https://github.com/sensecraft3d-eng/freshcuff-fit/security/advisories/new
+    about: Please do not open a public issue for security problems.
+  - name: How to scan your hand
+    url: https://github.com/sensecraft3d-eng/freshcuff-fit/blob/main/docs/SCANNING.md
+    about: Read this first if the app cannot read your scan.

@@ -1,0 +1,65 @@
+{
+ "1": {
+  "caso": "W70_padrao",
+  "ref": "FreshCuff_R08A_T1.stl",
+  "desvio_max_mm": 0.0,
+  "p99_mm": 0.0,
+  "xor_fora_gravacao_mm3": 0.0,
+  "vol_gerado_cm3": 45.881,
+  "vol_publicado_cm3": 45.882
+ },
+ "2": {
+  "caso": "W74_padrao",
+  "ref": "FreshCuff_R08A_T2.stl",
+  "desvio_max_mm": 0.0,
+  "p99_mm": 0.0,
+  "xor_fora_gravacao_mm3": -0.0,
+  "vol_gerado_cm3": 48.249,
+  "vol_publicado_cm3": 48.249
+ },
+ "3": {
+  "caso": "W78_padrao",
+  "ref": "FreshCuff_R08A_T3.stl",
+  "desvio_max_mm": 0.0,
+  "p99_mm": 0.0,
+  "xor_fora_gravacao_mm3": 0.0,
+  "vol_gerado_cm3": 50.616,
+  "vol_publicado_cm3": 50.616
+ },
+ "4": {
+  "caso": "W82_ref",
+  "ref": "FreshCuff_R08A_T4.stl",
+  "desvio_max_mm": 0.0,
+  "p99_mm": 0.0,
+  "xor_fora_gravacao_mm3": 0.0,
+  "vol_gerado_cm3": 52.979,
+  "vol_publicado_cm3": 52.978
+ },
+ "5": {
+  "caso": "W86_padrao",
+  "ref": "FreshCuff_R08A_T5.stl",
+  "desvio_max_mm": 0.0,
+  "p99_mm": 0.0,
+  "xor_fora_gravacao_mm3": 0.0,
+  "vol_gerado_cm3": 55.337,
+  "vol_publicado_cm3": 55.336
+ },
+ "6": {
+  "caso": "W90_padrao",
+  "ref": "FreshCuff_R08A_T6.stl",
+  "desvio_max_mm": 0.0,
+  "p99_mm": 0.0,
+  "xor_fora_gravacao_mm3": 0.0,
+  "vol_gerado_cm3": 57.688,
+  "vol_publicado_cm3": 57.687
+ },
+ "7": {
+  "caso": "W94_padrao",
+  "ref": "FreshCuff_R08A_T7.stl",
+  "desvio_max_mm": 0.0,
+  "p99_mm": 0.0,
+  "xor_fora_gravacao_mm3": 0.0,
+  "vol_gerado_cm3": 60.048,
+  "vol_publicado_cm3": 60.048
+ }
+}

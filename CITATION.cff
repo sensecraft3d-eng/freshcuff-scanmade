@@ -1,0 +1,57 @@
+cff-version: 1.2.0
+message: "If you use FreshCuff Fit or the FreshCuff geometry in your work, please cite it as below."
+type: software
+title: "FreshCuff Fit: custom 3D-printable assistive hand cuffs from hand scans, in the browser"
+abstract: >-
+  FreshCuff Fit reads a 3D scan of a hand, compares the knuckle band with the seven
+  standard sizes of the FreshCuff assistive cuff, and, for hands in the custom range,
+  generates a cuff whose spring follows the back of the hand. It runs entirely in the
+  browser (Pyodide); the scan never leaves the user's computer. Experimental: geometry
+  checked in CAD only, not yet validated on a real wearer.
+authors:
+  - name: SenseCraft
+    website: "https://makerworld.com/en/models/3595433"
+repository-code: "https://github.com/sensecraft3d-eng/freshcuff-fit"
+url: "https://sensecraft3d-eng.github.io/freshcuff-fit/"
+license: PolyForm-Noncommercial-1.0.0
+keywords:
+  - assistive technology
+  - 3D printing
+  - hand scan
+  - custom fit
+  - accessibility
+  - Pyodide
+references:
+  - type: data
+    title: "Coming in handy: CeTI-Age — A comprehensive database of kinematic hand movements across the lifespan (dataset)"
+    authors:
+      - family-names: "Muschter"
+        given-names: "Evelyn"
+      - family-names: "Schulz"
+        given-names: "Jonas"
+      - family-names: "Tömösközi"
+        given-names: "Máté"
+      - family-names: "Herbst"
+        given-names: "Leonie"
+      - family-names: "Küssel"
+        given-names: "Lena"
+      - family-names: "Sefunç"
+        given-names: "Merve"
+      - family-names: "Holtzhausen"
+        given-names: "Stefan"
+      - family-names: "Speidel"
+        given-names: "Stefanie"
+      - family-names: "Fitzek"
+        given-names: "Frank H. P."
+      - family-names: "Li"
+        given-names: "Shu-Chen"
+    doi: "10.6084/m9.figshare.23502060.v1"
+    license: CC0-1.0
+    notes: "Used to shape the standard spring profile. See NOTICE.md for the data descriptor (doi:10.1038/s41597-023-02738-3)."
+  - type: data
+    title: "Hand (3D scan)"
+    authors:
+      - name: Artec 3D
+    url: "https://www.artec3d.com/3d-models/hand"
+    license: CC-BY-3.0
+    notes: "Sample scan in examples/Artec_Hand.ply."

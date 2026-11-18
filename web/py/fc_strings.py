@@ -1,0 +1,211 @@
+# -*- coding: utf-8 -*-
+"""FreshCuff Fit - user-facing strings.  Key = message code; value = text per language ('en' complete; 'pt' where
+available, falling back to English).  No internal codes (gate names, revision ids) in any user text."""
+
+STRINGS = {
+    # ---- scan / units / mesh
+    'load_failed': {'en': 'The file could not be read as a 3D mesh ({detail}). Supported: STL, OBJ, PLY, GLB.',
+                    'pt': 'Não consegui ler o arquivo como malha 3D ({detail}). Formatos: STL, OBJ, PLY, GLB.'},
+    'too_big': {'en': 'The scan file is too large ({mb:.0f} MB; limit {limit} MB). Reduce it in the scanner app (1-2 million triangles is plenty).',
+                'pt': 'Scan grande demais ({mb:.0f} MB; limite {limit} MB). Reduza a malha no app do scanner (1 a 2 milhões de triângulos bastam).'},
+    'units': {'en': 'Units detected: {units} (longest side {ext:.0f} mm after conversion).',
+              'pt': 'Unidade detectada: {units} (maior lado {ext:.0f} mm depois da conversão).'},
+    'units_unsure': {'en': 'The scan size is unusual for a hand ({ext:.0f} mm long as {units}). If the units are wrong, set "millimetres per unit" by hand.',
+                     'pt': 'O tamanho do scan é incomum para uma mão ({ext:.0f} mm de comprimento em {units}). Se a unidade estiver errada, informe "milímetros por unidade".'},
+    'units_cm_or_inch': {'en': 'The size fits both centimetres and inches; centimetres assumed. If the hand looks 2.5x too small, set 25.4 mm per unit.',
+                         'pt': 'O tamanho serve para centímetros e polegadas; assumi centímetros. Se a mão ficar 2,5x menor, use 25,4 mm por unidade.'},
+    'dropped_parts': {'en': '{n} loose piece(s) that are not part of the hand were ignored.',
+                      'pt': '{n} pedaço(s) solto(s) que não fazem parte da mão foram ignorados.'},
+    'open_far': {'en': 'The mesh is open away from the cuff band ({n} open edges, e.g. at the wrist cut). That is fine.',
+                 'pt': 'A malha é aberta longe da faixa do cuff ({n} arestas de borda, por exemplo no corte do punho). Sem problema.'},
+    'open_near_band': {'en': 'The scan has a hole or open edge within {margin:.0f} mm of the cuff band ({n} open-edge points). Close the mesh in the scanner app ("fill holes" / "watertight") or scan again.',
+                       'pt': 'O scan tem furo ou borda aberta a menos de {margin:.0f} mm da faixa do cuff ({n} pontos de borda). Feche a malha no app do scanner ou refaça a captura.'},
+    'open_surface': {'en': 'This scan is an open surface: {pct:.0f}% of the cross-sections do not close (for example only one side of the hand was captured). A closed scan of the whole hand is needed.',
+                     'pt': 'Este scan é uma superfície aberta: {pct:.0f}% dos cortes não fecham (por exemplo, só um lado da mão foi capturado). É preciso um scan fechado da mão inteira.'},
+    'open_sections_warn': {'en': '{pct:.0f}% of the cross-sections of this scan do not close (holes away from the band). The band itself is checked separately.',
+                           'pt': '{pct:.0f}% dos cortes deste scan não fecham (furos longe da faixa). A faixa é conferida à parte.'},
+    # ---- orientation / landmarks
+    'amb_fingers': {'en': 'I could not tell which end of the scan has the fingers. Look at the 3D preview: the wrist should be at the blue (+z) end. If not, choose "flip fingers/wrist".',
+                    'pt': 'Não consegui saber em que ponta do scan estão os dedos. Veja a prévia 3D: o punho deve ficar na ponta azul (+z). Se não, escolha "trocar dedos/punho".'},
+    'amb_dorsum': {'en': 'Back of the hand vs palm is ambiguous: {why}. Look at the 3D preview and choose which side is the back of the hand (or tell me whether it is a left or a right hand).',
+                   'pt': 'Dorso x palma ambíguo: {why}. Veja a prévia 3D e escolha qual lado é o dorso (ou diga se é mão esquerda ou direita).'},
+    'amb_dorsum_why': {'en': 'the knuckle arch points one way ({ft:.1f} vs {ff:.1f} mm) and {other} points the other way',
+                       'pt': 'o arco dos nós indica um lado ({ft:.1f} x {ff:.1f} mm) e {other} indica o outro'},
+    'clue_thumb': {'en': 'the thumb position', 'pt': 'a posição do polegar'},
+    'clue_curl': {'en': 'the curl of the fingers', 'pt': 'a curvatura dos dedos'},
+    'clue_weak': {'en': 'the shape clues are too weak to decide', 'pt': 'as pistas de forma são fracas demais para decidir'},
+    'amb_side': {'en': 'You selected a {declared} hand, but with this reading of the scan the thumb is on the side of a {found} hand. Either the hand side or the back/palm reading is wrong: pick the correct option in the preview.',
+                 'pt': 'Você escolheu mão {declared}, mas nesta leitura do scan o polegar fica do lado de uma mão {found}. Ou o lado da mão ou a leitura dorso/palma está trocada: escolha a opção certa na prévia.'},
+    'amb_knuckles': {'en': 'I could not find the knuckle line automatically ({why}). Click the knuckle line on the 3D preview (the widest part of the hand, where the fingers start).',
+                     'pt': 'Não achei a linha dos nós sozinho ({why}). Clique na linha dos nós na prévia 3D (parte mais larga da mão, onde os dedos começam).'},
+    'amb_knuckles_why': {'en': 'found {n} of the 2 separations needed: thumb and fingers; common causes are fingers held together or the thumb against the hand',
+                         'pt': 'achei {n} das 2 separações necessárias: polegar e dedos; causas comuns são dedos colados ou polegar junto da mão'},
+    'amb_thumb': {'en': 'I could not find where the thumb leaves the hand. Click the base of the thumb (the web between thumb and index finger) on the 3D preview.',
+                  'pt': 'Não achei onde o polegar se separa da mão. Clique na base do polegar (a dobra entre polegar e indicador) na prévia 3D.'},
+    'cand_dorsum_keep': {'en': 'The back of the hand is the side shown on top (this is a {side} hand)',
+                         'pt': 'O dorso é o lado mostrado em cima (mão {side})'},
+    'cand_dorsum_flip': {'en': 'The back of the hand is the other side (this is a {side} hand)',
+                         'pt': 'O dorso é o outro lado (mão {side})'},
+    'cand_fingers': {'en': 'Fingers are at the {end} end', 'pt': 'Os dedos estão na ponta {end}'},
+    'cand_side_keep': {'en': 'It is a {side} hand (the back/palm reading must then be flipped)',
+                       'pt': 'É mão {side} (então a leitura dorso/palma precisa ser invertida)'},
+    'cand_side_other': {'en': 'It is actually a {side} hand (keep the back/palm reading)',
+                        'pt': 'Na verdade é mão {side} (mantém a leitura dorso/palma)'},
+    'left': {'en': 'left', 'pt': 'esquerda'}, 'right': {'en': 'right', 'pt': 'direita'},
+    'high': {'en': 'high', 'pt': 'alta'}, 'low': {'en': 'low', 'pt': 'baixa'},
+    'manual_orientation': {'en': 'Orientation set by hand ({what}): check the 3D preview before printing.',
+                           'pt': 'Orientação decidida à mão ({what}): confira a prévia 3D antes de imprimir.'},
+    'dorsum_weak': {'en': 'Back vs palm is not very clear on this scan (knuckle arch {ft:.1f} vs {ff:.1f} mm): confirm in the preview that the back of the hand is on top.',
+                    'pt': 'Dorso x palma pouco claro neste scan (arco {ft:.1f} x {ff:.1f} mm): confirme na prévia que o dorso está em cima.'},
+    'bad_z': {'en': 'The clicked position ({name}) is outside the hand or on a hole of the mesh. Click again on the hand.',
+              'pt': 'A posição clicada ({name}) está fora da mão ou num furo da malha. Clique de novo sobre a mão.'},
+    'knuckle_open': {'en': 'The cross-section at the knuckle line is open ({mm:.0f} mm of open edge): hole in the mesh.',
+                     'pt': 'O corte na linha dos nós está aberto ({mm:.0f} mm de borda): furo na malha.'},
+    'drift': {'en': 'The band sections shift {mm:.0f} mm sideways along 26 mm: the hand may be oblique (bent wrist, forearm pulling the axis). Scan with a straight wrist.',
+              'pt': 'Os cortes da faixa se deslocam {mm:.0f} mm de lado em 26 mm: a mão pode estar oblíqua (punho dobrado). Escaneie com o punho reto.'},
+    # ---- tape / scale
+    'no_tape': {'en': 'No tape measurement given: the scale check was skipped. Measuring around the knuckles with a tape ({scan:.1f} cm on the scan) is a cheap way to catch a wrong scale.',
+                'pt': 'Sem medida de fita: a conferência de escala foi pulada. Medir a volta nos nós com fita ({scan:.1f} cm no scan) é um jeito barato de pegar escala errada.'},
+    'tape_ok': {'en': 'Around the knuckles: {scan:.1f} cm on the scan, {tape:.1f} cm by tape (difference {diff:+.1f} cm). Scale check passed.',
+                'pt': 'Volta nos nós: {scan:.1f} cm no scan, {tape:.1f} cm na fita (diferença {diff:+.1f} cm). Escala conferida.'},
+    'tape_mismatch': {'en': 'Around the knuckles the scan measures {scan:.1f} cm but the tape says {tape:.1f} cm (difference {diff:+.1f} cm, limit {tol:.1f}). The scale or the hand pose is in doubt, so no cuff is generated. Check the units, measure again in the same pose as the scan, or clear the tape field to skip this check.',
+                      'pt': 'Na volta dos nós o scan mede {scan:.1f} cm e a fita {tape:.1f} cm (diferença {diff:+.1f} cm, limite {tol:.1f}). Escala ou pose em dúvida; nenhum cuff é gerado. Confira a unidade, meça de novo na mesma pose, ou apague a fita para pular esta conferência.'},
+    'tape_range': {'en': 'The tape value must be between 10 and 35 cm.', 'pt': 'A fita precisa estar entre 10 e 35 cm.'},
+    # ---- band
+    'band_thumb': {'en': 'Part of the 26 mm band falls on the base of the thumb, so the band shape cannot be read reliably. Try moving the band toward the fingers (band shift) or click the knuckle line by hand.',
+                   'pt': 'Parte da faixa de 26 mm cai na base do polegar; a forma da faixa não pode ser lida com segurança. Tente deslocar a faixa para os dedos ou clicar a linha dos nós.'},
+    'band_gap': {'en': 'There is a hole in the mesh inside the cuff band (between z {z0:.0f} and {z1:.0f} mm). A new scan or a repaired mesh is needed.',
+                 'pt': 'Há um furo na malha dentro da faixa do cuff (z {z0:.0f} a {z1:.0f} mm). Precisa de novo scan ou de reparo.'},
+    'band_incomplete': {'en': 'The band is incomplete on the scan (a section is missing or open).',
+                        'pt': 'A faixa está incompleta no scan (falta um corte ou ele está aberto).'},
+    'no_thumb_side': {'en': 'I could not tell on which side the thumb is. Click the base of the thumb on the 3D preview.',
+                      'pt': 'Não achei de que lado está o polegar. Clique na base do polegar na prévia 3D.'},
+    # ---- sizes
+    'size_by_tape': {'en': 'By the knuckle circumference ({cm:.1f} cm, {src}): size {size}.',
+                     'pt': 'Pela volta nos nós ({cm:.1f} cm, {src}): tamanho {size}.'},
+    'src_tape': {'en': 'tape', 'pt': 'fita'}, 'src_scan': {'en': 'measured on the scan', 'pt': 'medida no scan'},
+    'size_border': {'en': 'That is within 0.3 cm of the {lim:.1f} cm boundary: try the neighbouring size too.',
+                    'pt': 'Está a 0,3 cm da fronteira de {lim:.1f} cm: prove também o tamanho vizinho.'},
+    'size_by_shape': {'en': 'By the shape of the band, the smallest standard size that fits is size {size}.',
+                      'pt': 'Pela forma da faixa, o menor tamanho padrão que serve é o {size}.'},
+    'size_none': {'en': 'By the shape of the band, no standard size fits within the assumptions of the check.',
+                  'pt': 'Pela forma da faixa, nenhum tamanho padrão serve dentro das hipóteses da conferência.'},
+    'size_differs': {'en': 'Tape and shape disagree (size {tape} vs size {shape}): hands differ in proportion. Trust a dry fit; the shape result is the more specific one.',
+                     'pt': 'Fita e forma discordam (tamanho {tape} x {shape}): mãos variam em proporção. Confie na prova a seco; a forma é mais específica.'},
+    'left_mirror_note': {'en': 'Left hand: standard sizes are compared as mirrored prints (mirror the model in the slicer).',
+                         'pt': 'Mão esquerda: os tamanhos padrão são comparados como impressões espelhadas (espelhe o modelo no fatiador).'},
+    'note_nofit': {'en': 'does not fit ({why})', 'pt': 'não serve ({why})'},
+    'note_rigid_in': {'en': 'rigid part would press {mm:.2f} mm into the hand (limit {tol} mm)',
+                      'pt': 'parte rígida invadiria {mm:.2f} mm (limite {tol} mm)'},
+    'note_dors_up': {'en': 'back of the hand would lift the spring {mm:.2f} mm (limit {lim} mm)',
+                     'pt': 'o dorso levantaria a mola {mm:.2f} mm (limite {lim} mm)'},
+    'note_fit': {'en': 'fits: {parts}', 'pt': 'serve: {parts}'},
+    'note_rigid_press': {'en': 'light skin compression {mm:.2f} mm', 'pt': 'leve compressão de pele {mm:.2f} mm'},
+    'note_rigid_touch': {'en': 'rigid part just touching', 'pt': 'parte rígida encostando'},
+    'note_rigid_free': {'en': 'no rigid contact', 'pt': 'sem contato rígido'},
+    'note_dors_lift': {'en': 'spring lifted {mm:.2f} mm', 'pt': 'mola levantada {mm:.2f} mm'},
+    'note_dors_touch': {'en': 'spring touching the back of the hand', 'pt': 'mola encostando no dorso'},
+    'note_dors_gap': {'en': 'gap of {mm:.1f} mm under the spring', 'pt': 'folga de {mm:.1f} mm sob a mola'},
+    'note_at_limit': {'en': 'best position at the edge of the search ({what})',
+                      'pt': 'melhor posição no limite da busca ({what})'},
+    # ---- custom
+    'custom_none': {'en': 'No width in the custom range (W 80-84 mm) accommodates this hand. Use the standard size {size} (and the sizing rings).',
+                    'pt': 'Nenhuma largura da faixa sob medida (W 80-84 mm) acomoda esta mão. Use o tamanho padrão {size} (e os anéis de prova).'},
+    'custom_lateral': {'en': 'No width in the custom range gives the minimum side clearance of {need} mm (best: {best:.2f} mm). Use the standard size {size}.',
+                       'pt': 'Nenhuma largura da faixa sob medida dá a folga lateral mínima de {need} mm (melhor: {best:.2f} mm). Use o tamanho padrão {size}.'},
+    'custom_narrow': {'en': 'The hand is narrow for the custom range: side clearance {lat:.1f} mm at W {W:.1f} mm (maximum {mx} mm). Use the standard size {size}.',
+                      'pt': 'Mão estreita para a faixa sob medida: folga lateral {lat:.1f} mm em W {W:.1f} mm (máximo {mx} mm). Use o tamanho padrão {size}.'},
+    'custom_nan': {'en': 'A measurement came out non-finite; the scan or its sections are invalid.',
+                   'pt': 'Uma medida saiu não finita; scan ou cortes inválidos.'},
+    'custom_few_points': {'en': 'Too few points of the back of the hand under the spring; the personal profile cannot be determined.',
+                          'pt': 'Poucos pontos do dorso sob a mola; o perfil pessoal não pôde ser determinado.'},
+    'custom_overlap': {'en': 'The lowered spring face would overlap the back of the hand by more than the spring travel.',
+                       'pt': 'A face abaixada da mola sobreporia o dorso além do curso da mola.'},
+    'custom_ok': {'en': 'Custom cuff: opening width W {W:.1f} mm, {side} hand, spring face lowered up to {low:.2f} mm to follow the back of the hand.',
+                  'pt': 'Cuff sob medida: largura W {W:.1f} mm, mão {side}, face da mola abaixada até {low:.2f} mm para seguir o dorso.'},
+    'custom_gap': {'en': 'Gap between spring and back of the hand (closest section, mean): {a:.2f} mm with the standard face -> {b:.2f} mm with your profile; {pct:.0f}% of the width within 0.5 mm; largest predicted overlap {ov:.2f} mm (spring travel {travel} mm).',
+                   'pt': 'Folga entre mola e dorso (corte mais próximo, média): {a:.2f} mm com a face padrão -> {b:.2f} mm com o seu perfil; {pct:.0f}% da largura a até 0,5 mm; maior sobreposição prevista {ov:.2f} mm (curso da mola {travel} mm).'},
+    'custom_palm': {'en': 'The palm seats with {mm:.2f} mm of skin compression: a provisional geometric assumption (up to 0.5 mm), not a measured pressure.',
+                    'pt': 'A palma assenta com {mm:.2f} mm de compressão de pele: hipótese geométrica provisória (até 0,5 mm), não é pressão medida.'},
+    'custom_pose_fallback': {'en': 'The seating margin of 0.05 mm could not be met; the general-fit position was used instead.',
+                             'pt': 'A margem de assento de 0,05 mm não coube; foi usada a posição do encaixe geral.'},
+    'disclaimer': {'en': 'Rigid geometry only: it does not measure pressure, comfort, retention or wet use. Experimental - always dry-fit before use. Not a medical device.',
+                   'pt': 'Geometria rígida: não mede pressão, conforto, retenção nem uso molhado. Experimental - sempre prove a seco. Não é dispositivo médico.'},
+    # ---- build
+    'build_no_analysis': {'en': 'Run the analysis first: there is no custom cuff ready to build in this session.',
+                          'pt': 'Rode a análise primeiro: não há cuff sob medida pronto para montar nesta sessão.'},
+    'build_variant_missing': {'en': 'The base file for width variant {vid} is missing or differs from the published one.',
+                              'pt': 'O arquivo base da variante {vid} está faltando ou difere do publicado.'},
+    'build_locks_failed': {'en': 'The generated solid failed a manufacturing check and was stopped: {what}.',
+                           'pt': 'O sólido gerado falhou numa trava de fabricação e foi barrado: {what}.'},
+    'build_verify_failed': {'en': 'The generated cuff did not confirm the prediction when checked against the scan: {what}.',
+                            'pt': 'O cuff gerado não confirmou a previsão ao ser conferido contra o scan: {what}.'},
+    'build_ok': {'en': 'Cuff ready: all manufacturing checks passed and the generated solid matches the prediction against your scan (gap difference {dif:+.3f} mm). Open the 3MF in Bambu Studio and review it before printing.',
+                 'pt': 'Cuff pronto: todas as travas passaram e o sólido gerado confirma a previsão contra o seu scan (diferença de folga {dif:+.3f} mm). Abra o 3MF no Bambu Studio e confira antes de imprimir.'},
+    'lock_finite': {'en': 'all measurements are finite', 'pt': 'todas as medidas são finitas'},
+    'lock_closed': {'en': 'solid is closed and in one piece', 'pt': 'sólido fechado e em uma peça'},
+    'lock_height': {'en': 'band height 26 mm', 'pt': 'altura da faixa 26 mm'},
+    'lock_leaf': {'en': 'spring leaf thickness', 'pt': 'espessura da lâmina da mola'},
+    'lock_sidegap': {'en': 'side gap of the spring leaf', 'pt': 'vão lateral da lâmina'},
+    'lock_fasteners': {'en': 'fastener seats unchanged', 'pt': 'assentos dos fixadores inalterados'},
+    'lock_slit': {'en': 'slit width', 'pt': 'largura da fenda'},
+    'lock_shoulder': {'en': 'shoulder ring width', 'pt': 'largura do aro no ombro'},
+    'lock_size': {'en': 'fits the printer (largest dimension)', 'pt': 'cabe na impressora (maior dimensão)'},
+    'ver_gap': {'en': 'predicted gap under the spring not confirmed on the solid', 'pt': 'previsão de folga dorsal não confirmada no sólido'},
+    'ver_overlap': {'en': 'overlap on the back of the hand above the spring travel', 'pt': 'sobreposição dorsal acima do curso da mola'},
+    'ver_rigid': {'en': 'rigid part presses beyond the skin assumption', 'pt': 'parte rígida invade além da hipótese de pele'},
+    'ver_lateral': {'en': 'side clearance below the minimum', 'pt': 'folga lateral abaixo do mínimo'},
+    'ver_seat': {'en': 'the hand does not seat in the generated opening', 'pt': 'a mão não assenta na abertura gerada'},
+    'ver_nan': {'en': 'a verification value is missing or non-finite', 'pt': 'valor de conferência ausente ou não finito'},
+    'internal_note': {'en': 'Note: {detail}.', 'pt': 'Nota: {detail}.'},
+    # ---- progress lines
+    'prog_read': {'en': 'Reading the scan...', 'pt': 'Lendo o scan...'},
+    'prog_landmarks': {'en': 'Finding the knuckle line...', 'pt': 'Procurando a linha dos nós...'},
+    'prog_hand': {'en': 'Reading the hand...', 'pt': 'Lendo a mão...'},
+    'prog_sizes': {'en': 'Comparing with the 7 standard sizes...', 'pt': 'Comparando com os 7 tamanhos padrão...'},
+    'prog_custom': {'en': 'Designing the custom cuff...', 'pt': 'Desenhando o cuff sob medida...'},
+    'prog_shape': {'en': 'Shaping the spring face to your hand...', 'pt': 'Moldando a face da mola à sua mão...'},
+    'prog_locks': {'en': 'Manufacturing checks...', 'pt': 'Conferindo as travas de fabricação...'},
+    'prog_3mf': {'en': 'Writing the Bambu Studio project (3MF)...', 'pt': 'Gravando o projeto do Bambu Studio (3MF)...'},
+    'prog_verify': {'en': 'Checking the generated cuff against your scan...', 'pt': 'Conferindo o cuff gerado contra o seu scan...'},
+    # ---- quality notes
+    'q_density_fine': {'en': 'Detail at the band: triangles about {mm:.1f} mm (fine).', 'pt': 'Detalhe na faixa: triângulos de ~{mm:.1f} mm (bom).'},
+    'q_density_ok': {'en': 'Detail at the band: triangles about {mm:.1f} mm (acceptable; under 1.5 mm is better).', 'pt': 'Detalhe na faixa: triângulos de ~{mm:.1f} mm (aceitável; abaixo de 1,5 mm é melhor).'},
+    'q_density_coarse': {'en': 'Detail at the band: triangles about {mm:.1f} mm (coarse: the fit is less reliable).', 'pt': 'Detalhe na faixa: triângulos de ~{mm:.1f} mm (grosso: o encaixe fica menos confiável).'},
+    'q_closed': {'en': 'Closed (watertight) mesh.', 'pt': 'Malha fechada (estanque).'},
+    'q_open_far': {'en': 'Open edges only away from the band ({n}).', 'pt': 'Bordas abertas só longe da faixa ({n}).'},
+    'q_open_near': {'en': 'Holes or open edges at the band ({n} points).', 'pt': 'Furos ou bordas abertas na faixa ({n} pontos).'},
+    'q_components': {'en': '{n} separate pieces in the file; {kept} kept.', 'pt': '{n} pedaços separados no arquivo; {kept} mantido(s).'},
+    'q_one_piece': {'en': 'Single piece.', 'pt': 'Peça única.'},
+    'q_units': {'en': 'Units: {units} (confidence {c:.0f}%).', 'pt': 'Unidade: {units} (confiança {c:.0f}%).'},
+    'q_nonmanifold': {'en': '{n} edges shared by more than two triangles (overlapping surfaces).', 'pt': '{n} arestas com mais de dois triângulos (superfícies sobrepostas).'},
+    'q_sections_open': {'en': '{pct:.0f}% of cross-sections do not close.', 'pt': '{pct:.0f}% dos cortes não fecham.'},
+    'q_orientation': {'en': 'Orientation needed manual help or is uncertain.', 'pt': 'A orientação precisou de ajuda manual ou está incerta.'},
+    'q_landmarks_ok': {'en': 'Knuckle line and thumb found automatically.', 'pt': 'Linha dos nós e polegar achados automaticamente.'},
+}
+
+
+def tr(key, lang='en', **kw):
+    e = STRINGS.get(key)
+    if e is None:
+        return key
+    s = e.get(lang) or e['en']
+    try:
+        return s.format(**kw)
+    except Exception:
+        return s
+
+
+class Messages(list):
+    """List of {level, code, text}."""
+
+    def __init__(self, lang='en'):
+        super().__init__()
+        self.lang = lang
+
+    def add(self, level, key, **kw):
+        self.append({'level': level, 'code': key, 'text': tr(key, self.lang, **kw)})
+
+    def info(self, key, **kw): self.add('info', key, **kw)
+    def warn(self, key, **kw): self.add('warn', key, **kw)
+    def error(self, key, **kw): self.add('error', key, **kw)

@@ -1,0 +1,18 @@
+# Line endings for the launchers: Windows batch needs CRLF, shell scripts need LF.
+*.bat      text eol=crlf
+*.cmd      text eol=crlf
+*.sh       text eol=lf
+*.command  text eol=lf
+*.py       text eol=lf
+
+# Binary data: never touch line endings, no text diffs.
+*.stl      binary
+*.ply      binary
+*.glb      binary
+*.3mf      binary
+*.whl      binary
+*.wasm     binary
+*.zip      binary
+*.woff2    binary
+*.png      binary
+*.npz      binary

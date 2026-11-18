@@ -1,0 +1,72 @@
+name: Bug report
+description: Something in the app, the CLI or the documentation does not work.
+title: "[Bug] "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting! **Please do not attach a hand scan** (issues are public). If the bug only happens with your scan, say so and describe the scan (scanner, format, size in MB, number of triangles if known).
+        For a security problem, do not open an issue: see SECURITY.md.
+
+  - type: dropdown
+    id: where
+    attributes:
+      label: Where did it happen?
+      options:
+        - Online app (GitHub Pages)
+        - Offline launcher
+        - Command line (fc_cli.py)
+        - Documentation
+        - Other
+    validations:
+      required: true
+
+  - type: input
+    id: version
+    attributes:
+      label: Version
+      description: Shown in the footer of the page or in the report file. For the CLI, the commit or release.
+      placeholder: "e.g. 0.1.0 or commit abc1234"
+
+  - type: input
+    id: environment
+    attributes:
+      label: Browser and operating system (or Python version for the CLI)
+      placeholder: "e.g. Chrome 131 on Windows 11, 16 GB RAM"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: sample
+    attributes:
+      label: Does it also happen with the sample hand ("Try with a sample hand")?
+      options:
+        - "Yes"
+        - "No"
+        - Not tried
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Open ...
+        2. Load ...
+        3. Click ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: What happened, and what did you expect?
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Messages or console log
+      description: Copy error messages from the page, or from the browser console (F12 → Console). For the CLI, the terminal output.
+      render: text

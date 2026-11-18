@@ -1,0 +1,127 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  python-tests:
+    name: Python tests (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    env:
+      PYTHONUTF8: "1"
+      MPLBACKEND: Agg
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: .github/workflows/ci.yml
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install numpy scipy shapely trimesh matplotlib networkx pytest
+
+      - name: Run tests (fast set)
+        run: python -m pytest -m "not slow" -ra
+
+      - name: Check the offline launcher starts (syntax only)
+        run: python -m py_compile launchers/start_local.py
+
+  browser-e2e:
+    name: Browser end-to-end (Chromium, sample hand)
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Is there an end-to-end test?
+        id: e2e
+        shell: bash
+        run: |
+          if [ -f tests/e2e/run_sample.mjs ]; then echo "present=true" >> "$GITHUB_OUTPUT"; else echo "present=false" >> "$GITHUB_OUTPUT"; echo "No tests/e2e/run_sample.mjs: skipping."; fi
+
+      - uses: actions/setup-python@v5
+        if: steps.e2e.outputs.present == 'true'
+        with:
+          python-version: "3.12"
+
+      - uses: actions/setup-node@v4
+        if: steps.e2e.outputs.present == 'true'
+        with:
+          node-version: "20"
+
+      - name: Install Playwright
+        if: steps.e2e.outputs.present == 'true'
+        shell: bash
+        run: |
+          if [ -f tests/e2e/package.json ]; then
+            (cd tests/e2e && if [ -f package-lock.json ]; then npm ci; else npm install; fi)
+          else
+            npm install --no-save --no-package-lock playwright@1.48.2
+          fi
+          npx playwright install --with-deps chromium
+
+      - name: Check the integrity manifest is up to date
+        if: steps.e2e.outputs.present == 'true'
+        run: python tools/build_manifest.py --check
+
+      - name: Start local server
+        if: steps.e2e.outputs.present == 'true'
+        shell: bash
+        run: |
+          if [ -f tools/serve.py ]; then
+            nohup python tools/serve.py --port 8765 > server.log 2>&1 &
+          else
+            nohup python -m http.server 8765 --bind 127.0.0.1 --directory web > server.log 2>&1 &
+          fi
+          for i in $(seq 1 30); do curl -sf http://127.0.0.1:8765/ > /dev/null && break; sleep 1; done
+          curl -sf http://127.0.0.1:8765/ > /dev/null
+
+      - name: Run the sample hand in Chromium
+        if: steps.e2e.outputs.present == 'true'
+        env:
+          FRESHCUFF_URL: http://127.0.0.1:8765/
+        run: node tests/e2e/run_sample.mjs
+
+      - name: Upload screenshots and logs
+        if: always() && steps.e2e.outputs.present == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: e2e-output
+          path: |
+            tests/e2e/out/
+            server.log
+          if-no-files-found: ignore
+          retention-days: 14
+
+  cad-build:
+    name: CAD rebuild (OpenCascade, size 4 byte-identical)
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install CAD dependencies
+        run: python -m pip install numpy scipy shapely trimesh cadquery-ocp manifold3d pytest
+      - name: Rebuild and compare
+        run: python -m pytest tests/cad -ra

@@ -1,0 +1,179 @@
+{
+ "source": "legacy gerador_web R07 (site_R07) on examples/Artec_Hand.ply, side esquerda, tape 18.2 cm; CPython, 2026-11-18",
+ "seconds": {
+  "analysis": 115.0,
+  "build": 12.6
+ },
+ "variant": "W82.0_L",
+ "result": "CUFF_PRONTO",
+ "W": 82.0,
+ "pose": {
+  "giro_grau": 0.0,
+  "dx_mm": -0.75,
+  "dy_mm": -0.15000000000000002
+ },
+ "rigid_min_raw": -0.44084804666753064,
+ "lateral_min_raw": 0.6587328330264643,
+ "grid": {
+  "80.0": {
+   "viavel": true,
+   "lateral_min_mm": 0.15,
+   "rigido_min_mm": -0.405,
+   "dorso_min_mm": -0.196,
+   "giro_grau": 0.0,
+   "dx_mm": 0.0
+  },
+  "80.5": {
+   "viavel": true,
+   "lateral_min_mm": 0.124,
+   "rigido_min_mm": -0.405,
+   "dorso_min_mm": 0.021,
+   "giro_grau": 0.0,
+   "dx_mm": -0.25
+  },
+  "81.0": {
+   "viavel": true,
+   "lateral_min_mm": 0.426,
+   "rigido_min_mm": -0.437,
+   "dorso_min_mm": 0.299,
+   "giro_grau": 0.0,
+   "dx_mm": -0.25
+  },
+  "81.5": {
+   "viavel": true,
+   "lateral_min_mm": 0.469,
+   "rigido_min_mm": -0.41,
+   "dorso_min_mm": 0.527,
+   "giro_grau": 0.0,
+   "dx_mm": 0.0
+  },
+  "82.0": {
+   "viavel": true,
+   "lateral_min_mm": 0.659,
+   "rigido_min_mm": -0.441,
+   "dorso_min_mm": 0.753,
+   "giro_grau": 0.0,
+   "dx_mm": -0.75
+  },
+  "82.5": {
+   "viavel": true,
+   "lateral_min_mm": 0.833,
+   "rigido_min_mm": -0.414,
+   "dorso_min_mm": 0.977,
+   "giro_grau": 0.0,
+   "dx_mm": -0.5
+  },
+  "83.0": {
+   "viavel": true,
+   "lateral_min_mm": 0.909,
+   "rigido_min_mm": -0.448,
+   "dorso_min_mm": 1.203,
+   "giro_grau": 0.0,
+   "dx_mm": -1.0
+  },
+  "83.5": {
+   "viavel": true,
+   "lateral_min_mm": 1.271,
+   "rigido_min_mm": -0.424,
+   "dorso_min_mm": 1.432,
+   "giro_grau": 0.0,
+   "dx_mm": -0.75
+  },
+  "84.0": {
+   "viavel": true,
+   "lateral_min_mm": 1.263,
+   "rigido_min_mm": -0.448,
+   "dorso_min_mm": 1.71,
+   "giro_grau": 0.0,
+   "dx_mm": -0.5
+  }
+ },
+ "prediction": {
+  "antes": {
+   "folga_media_todos_cortes_mm": 5.28,
+   "frac_todos_cortes_ate_0_5mm": 0.0,
+   "folga_media_corte_mais_proximo_mm": 2.52,
+   "frac_corte_mais_proximo_ate_0_5mm": 0.0,
+   "maior_sobreposicao_mm": 0.0
+  },
+  "depois": {
+   "folga_media_todos_cortes_mm": 3.47,
+   "frac_todos_cortes_ate_0_5mm": 0.143,
+   "folga_media_corte_mais_proximo_mm": 0.72,
+   "frac_corte_mais_proximo_ate_0_5mm": 0.648,
+   "maior_sobreposicao_mm": 0.44
+  },
+  "depois_bruto": {
+   "folga_media_todos_cortes_mm": 3.4680014255878016,
+   "frac_todos_cortes_ate_0_5mm": 0.14285714285714285,
+   "folga_media_corte_mais_proximo_mm": 0.719434333342108,
+   "frac_corte_mais_proximo_ate_0_5mm": 0.6476190476190476,
+   "maior_sobreposicao_mm": 0.4384096867255387
+  },
+  "curso_mm": 2.1,
+  "abaixamento_max_mm": 3.0,
+  "nota": "folga vertical face da mola × topo da mão, |x| ≤ 26, nos 5 cortes, mesma pose; CAD rígido"
+ },
+ "fit": {
+  "nos": {
+   "fita_scan_cm": 18.22,
+   "largura_mm": 79.4,
+   "espessura_mm": 28.4,
+   "borda_aberta_mm": 0.0
+  },
+  "tamanho_pela_fita_scan": 2,
+  "menor_tamanho_compativel_faixa": 4
+ },
+ "locks_raw": {
+  "estanque": true,
+  "pecas": 1,
+  "faixa_z": 26.0,
+  "abertura_L": 81.99999174172328,
+  "abertura_H": 32.39796496626237,
+  "lamina_min": 0.8700650514584004,
+  "vao_lateral_min": 0.6614856211827987,
+  "aro_ombro_min": 7.661063629360277,
+  "fenda": 2.106172143586745,
+  "maior": 110.59915161132812,
+  "fix_desloc_max_mm": 0.0,
+  "fix_variante_mm3": 0.0119,
+  "desloc_max_mm": 3.000018412189558
+ },
+ "stl_sha256": "9f9de1ad513e47ee73136f6c5856642ed8f4891be2563807bc4974dada80762c",
+ "verification_same_pose_raw": {
+  "folga_media_todos_cortes_mm": 3.4802296578836236,
+  "frac_todos_cortes_ate_0_5mm": 0.13714285714285715,
+  "folga_media_corte_mais_proximo_mm": 0.724188690971003,
+  "frac_corte_mais_proximo_ate_0_5mm": 0.6285714285714286,
+  "maior_sobreposicao_mm": 0.3583942032916898,
+  "rigido_min_mm": -0.4473310752904551,
+  "lateral_min_mm": 0.6625293376069692
+ },
+ "verification_free_pose": {
+  "viavel": true,
+  "rigido_min_mm": -0.037,
+  "dorso_min_mm": -1.447,
+  "lateral_min_mm": 0.419,
+  "giro_grau": 0.0,
+  "dx_mm": 1.0,
+  "dy_mm": 0.5,
+  "folga_media_todos_cortes_mm": 2.69,
+  "frac_todos_cortes_ate_0_5mm": 0.23,
+  "folga_media_corte_mais_proximo_mm": 0.01,
+  "frac_corte_mais_proximo_ate_0_5mm": 0.752,
+  "maior_sobreposicao_mm": 1.45
+ },
+ "verdict": {
+  "resultado": "APROVADO",
+  "falhas": [],
+  "dif_folga_bruta_mm": 0.0047543576288949785,
+  "limites": {
+   "dif_folga_corte_proximo_mm": 0.15,
+   "rigido_min_mm": -0.5,
+   "lateral_tolerancia_mm": 0.1,
+   "curso_mm": 2.1,
+   "folga_lateral_alvo_mm": 0.5
+  },
+  "comparacao": "valores brutos"
+ }
+}

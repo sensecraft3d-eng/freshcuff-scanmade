@@ -1,0 +1,52 @@
+# --- Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.venv/
+venv/
+.env
+
+# --- Node (browser tests)
+node_modules/
+tests/e2e/out/
+playwright-report/
+test-results/
+
+# --- Run outputs and work folders (CLI, tests, CAD)
+out/
+work/
+_work/
+*_work/
+tmp/
+fit_saida/
+casos/
+cad/out/
+cad/saida*/
+server.log
+
+# --- Private hand scans: never commit a real person's scan
+# Name local test scans like  myhand.private.stl  or put them in a private/ folder.
+*.private.*
+private/
+scans/
+
+# --- Large CAD intermediates (regenerate them; see cad/README.md)
+*.step
+*.stp
+cad/**/*.stl
+!cad/assets/**
+
+# --- Pages build folder
+_site/
+
+# --- OS / editor
+.DS_Store
+Thumbs.db
+desktop.ini
+.idea/
+.vscode/
+*.swp
+tests/e2e/mock/

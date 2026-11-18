@@ -1,0 +1,171 @@
+name: Fit feedback
+description: Tell us how FreshCuff Fit handled your hand scan, and how the cuff fitted if you printed one.
+title: "[Fit] "
+labels: ["fit-feedback"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you! Every report helps validate the custom cuffs, which have **not yet been tested on a real wearer**.
+
+        **Privacy:** GitHub issues are public. Please **do not attach your hand scan** unless you really want to share it publicly. The app's report file (`.json`) is usually enough. Check it before attaching, and rename it if the file name contains your name.
+        Reports where the app *refused* your scan are just as useful.
+
+  - type: dropdown
+    id: scanner
+    attributes:
+      label: Scanner or app used
+      options:
+        - Polycam
+        - Scaniverse
+        - KIRI Engine
+        - Heges
+        - 3d Scanner App
+        - Shining 3D EinScan
+        - Revopoint
+        - Creality
+        - Bambu Lab S1
+        - Professional scanning service
+        - Other (say which below)
+    validations:
+      required: true
+
+  - type: input
+    id: scanner_details
+    attributes:
+      label: Scanner details
+      description: Model or app mode (e.g. photo mode or LiDAR), and the export format.
+      placeholder: "e.g. Revopoint MINI 2, exported STL in mm"
+
+  - type: dropdown
+    id: side
+    attributes:
+      label: Hand side
+      options:
+        - Right
+        - Left
+    validations:
+      required: true
+
+  - type: input
+    id: tape
+    attributes:
+      label: Tape measurement around the knuckles (cm)
+      description: Same pose as the scan. See docs/SCANNING.md.
+      placeholder: "e.g. 20.8"
+
+  - type: dropdown
+    id: standard_size
+    attributes:
+      label: Standard FreshCuff size you wear or tried (if any)
+      options:
+        - None / not tried
+        - "1"
+        - "2"
+        - "3"
+        - "4"
+        - "5"
+        - "6"
+        - "7"
+
+  - type: input
+    id: recommended
+    attributes:
+      label: Size recommended by the app
+      placeholder: "e.g. 4, or 'custom W 82.0'"
+
+  - type: dropdown
+    id: outcome
+    attributes:
+      label: What did the app do?
+      options:
+        - Built a custom cuff
+        - Recommended a standard size only
+        - Refused the scan (please paste the message below)
+        - Crashed or got stuck (please also open a bug report)
+    validations:
+      required: true
+
+  - type: textarea
+    id: app_messages
+    attributes:
+      label: Messages from the app
+      description: Copy any warnings or refusal messages. Mention anything you had to correct (knuckle line, back/palm, side).
+      render: text
+
+  - type: dropdown
+    id: printed
+    attributes:
+      label: Did you print a cuff?
+      options:
+        - "No"
+        - Yes, the custom cuff
+        - Yes, a standard size
+        - Yes, both (custom and standard)
+    validations:
+      required: true
+
+  - type: input
+    id: print_setup
+    attributes:
+      label: Printer and filament
+      placeholder: "e.g. Bambu Lab A1, Bambu PETG HF, settings from the 3MF"
+
+  - type: textarea
+    id: dryfit
+    attributes:
+      label: Dry-fit observations
+      description: |
+        Only if you tried a cuff on. Where was there a gap? Any pressure points (where, and how strong)?
+        Did the cuff stay in place during gentle brushing movements? Any marks on the skin after removal, and how long did they last?
+      placeholder: |
+        Back of the hand:
+        Under the palm:
+        Sides:
+        Stays in place:
+        Skin after removal:
+
+  - type: dropdown
+    id: removal
+    attributes:
+      label: Ease of taking it off
+      options:
+        - Not tried
+        - Easy, without help
+        - Possible, but awkward
+        - Needed help
+        - Hard to remove (please explain above)
+
+  - type: dropdown
+    id: comfort
+    attributes:
+      label: Comfort (1 = painful, 5 = comfortable)
+      options:
+        - Not tried
+        - "1"
+        - "2"
+        - "3"
+        - "4"
+        - "5"
+
+  - type: textarea
+    id: report_json
+    attributes:
+      label: Report file (optional)
+      description: Drag the app's report `.json` into this box, or paste its contents. Optional. Please check it first.
+
+  - type: textarea
+    id: other
+    attributes:
+      label: Anything else
+      description: Who is the cuff for (no names, please), what you would change, what was confusing.
+
+  - type: checkboxes
+    id: consent
+    attributes:
+      label: Privacy
+      options:
+        - label: I did NOT attach my scan, unless I want to share it publicly.
+          required: true
+        - label: I understand FreshCuff is experimental and not a medical device.
+          required: true

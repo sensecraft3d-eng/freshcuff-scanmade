@@ -1,0 +1,240 @@
+{
+ "1": {
+  "W": 70,
+  "DW": -6.0,
+  "DH": -5.195,
+  "fechado": true,
+  "pecas": 1,
+  "volume_cm3": 45.882,
+  "massa_PETG_g_macica": 58.3,
+  "ext": [
+   98.6,
+   50.4,
+   26.0
+  ],
+  "abertura_largura_y0": 70.0,
+  "abertura_altura_x0": 29.3,
+  "abertura_perimetro": 179.5,
+  "lamina_normal_min": [
+   11.208,
+   0.886
+  ],
+  "lamina_centro": 0.905,
+  "vao_lateral_min": [
+   -35.559,
+   3.25,
+   0.658
+  ],
+  "aro_ombro_min": [
+   22.958,
+   7.256
+  ],
+  "aro_coroa": 5.408,
+  "fenda_vertical_centro": 2.101,
+  "regiao_fixadores_diferenca_T4_mm3": 0.0024
+ },
+ "2": {
+  "W": 74,
+  "DW": -4.0,
+  "DH": -3.463,
+  "fechado": true,
+  "pecas": 1,
+  "volume_cm3": 48.249,
+  "massa_PETG_g_macica": 61.3,
+  "ext": [
+   102.6,
+   52.1,
+   26.0
+  ],
+  "abertura_largura_y0": 74.0,
+  "abertura_altura_x0": 31.03,
+  "abertura_perimetro": 190.7,
+  "lamina_normal_min": [
+   -15.944,
+   0.891
+  ],
+  "lamina_centro": 0.904,
+  "vao_lateral_min": [
+   -37.607,
+   4.875,
+   0.662
+  ],
+  "aro_ombro_min": [
+   -24.944,
+   7.45
+  ],
+  "aro_coroa": 5.407,
+  "fenda_vertical_centro": 2.101,
+  "regiao_fixadores_diferenca_T4_mm3": 0.0012
+ },
+ "3": {
+  "W": 78,
+  "DW": -2.0,
+  "DH": -1.732,
+  "fechado": true,
+  "pecas": 1,
+  "volume_cm3": 50.616,
+  "massa_PETG_g_macica": 64.3,
+  "ext": [
+   106.6,
+   53.8,
+   26.0
+  ],
+  "abertura_largura_y0": 78.0,
+  "abertura_altura_x0": 32.76,
+  "abertura_perimetro": 201.9,
+  "lamina_normal_min": [
+   -23.597,
+   0.889
+  ],
+  "lamina_centro": 0.905,
+  "vao_lateral_min": [
+   39.893,
+   6.0,
+   0.661
+  ],
+  "aro_ombro_min": [
+   26.403,
+   7.568
+  ],
+  "aro_coroa": 5.409,
+  "fenda_vertical_centro": 2.101,
+  "regiao_fixadores_diferenca_T4_mm3": 0.0007
+ },
+ "4": {
+  "W": 82,
+  "DW": 0.0,
+  "DH": 0.0,
+  "fechado": true,
+  "pecas": 1,
+  "volume_cm3": 52.978,
+  "massa_PETG_g_macica": 67.3,
+  "ext": [
+   110.6,
+   55.6,
+   26.0
+  ],
+  "abertura_largura_y0": 82.0,
+  "abertura_altura_x0": 34.49,
+  "abertura_perimetro": 213.3,
+  "lamina_normal_min": [
+   18.0,
+   0.888
+  ],
+  "lamina_centro": 0.904,
+  "vao_lateral_min": [
+   41.885,
+   7.75,
+   0.662
+  ],
+  "aro_ombro_min": [
+   27.75,
+   7.661
+  ],
+  "aro_coroa": 5.407,
+  "fenda_vertical_centro": 2.101,
+  "regiao_fixadores_diferenca_T4_mm3": 0.0
+ },
+ "5": {
+  "W": 86,
+  "DW": 2.0,
+  "DH": 1.732,
+  "fechado": true,
+  "pecas": 1,
+  "volume_cm3": 55.336,
+  "massa_PETG_g_macica": 70.3,
+  "ext": [
+   114.6,
+   57.3,
+   26.0
+  ],
+  "abertura_largura_y0": 86.0,
+  "abertura_altura_x0": 36.22,
+  "abertura_perimetro": 224.6,
+  "lamina_normal_min": [
+   8.347,
+   0.891
+  ],
+  "lamina_centro": 0.904,
+  "vao_lateral_min": [
+   43.877,
+   9.5,
+   0.663
+  ],
+  "aro_ombro_min": [
+   -29.153,
+   7.723
+  ],
+  "aro_coroa": 5.409,
+  "fenda_vertical_centro": 2.101,
+  "regiao_fixadores_diferenca_T4_mm3": 0.0003
+ },
+ "6": {
+  "W": 90,
+  "DW": 4.0,
+  "DH": 3.463,
+  "fechado": true,
+  "pecas": 1,
+  "volume_cm3": 57.687,
+  "massa_PETG_g_macica": 73.3,
+  "ext": [
+   118.6,
+   59.0,
+   26.0
+  ],
+  "abertura_largura_y0": 90.0,
+  "abertura_altura_x0": 37.95,
+  "abertura_perimetro": 235.9,
+  "lamina_normal_min": [
+   8.194,
+   0.891
+  ],
+  "lamina_centro": 0.905,
+  "vao_lateral_min": [
+   -45.971,
+   11.0,
+   0.667
+  ],
+  "aro_ombro_min": [
+   28.444,
+   7.766
+  ],
+  "aro_coroa": 5.408,
+  "fenda_vertical_centro": 2.101,
+  "regiao_fixadores_diferenca_T4_mm3": 0.0013
+ },
+ "7": {
+  "W": 94,
+  "DW": 6.0,
+  "DH": 5.195,
+  "fechado": true,
+  "pecas": 1,
+  "volume_cm3": 60.048,
+  "massa_PETG_g_macica": 76.3,
+  "ext": [
+   122.6,
+   60.8,
+   26.0
+  ],
+  "abertura_largura_y0": 94.0,
+  "abertura_altura_x0": 39.69,
+  "abertura_perimetro": 247.3,
+  "lamina_normal_min": [
+   -4.458,
+   0.894
+  ],
+  "lamina_centro": 0.904,
+  "vao_lateral_min": [
+   -48.104,
+   12.375,
+   0.671
+  ],
+  "aro_ombro_min": [
+   -29.958,
+   7.795
+  ],
+  "aro_coroa": 5.408,
+  "fenda_vertical_centro": 2.101,
+  "regiao_fixadores_diferenca_T4_mm3": 0.0007
+ }
+}
