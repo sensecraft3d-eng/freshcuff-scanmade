@@ -182,7 +182,7 @@ A custom cuff is offered when the hand fits the **custom range**: cuff opening w
 
 The width variants step by **0.5 mm** (80.0, 80.5, … 84.0: nine widths). Each width is a smooth stretch of the size-4 geometry. The cuff is widened where its walls are horizontal (top and bottom), and the flanks translate outward. The height grows with the width, by 35.5 mm × (W / 82 − 1). The total height stays within +1.5 mm of size 4. The fastener block, wall thicknesses and radii are unchanged.
 
-For each width the hand is seated as in step 4. The app keeps the **smallest width that seats and leaves at least 0.5 mm of clearance on both sides**. The seating keeps a further 0.05 mm inside the skin assumption, as margin for the mesh. If no width seats, or if even 80 mm leaves more than 6 mm of side clearance (the hand is too narrow for the custom range), the app recommends a standard size instead.
+For each width the hand is seated as in step 4. The app keeps the **smallest width that seats and leaves at least 0.5 mm of clearance on both sides**. The seating keeps a further 0.05 mm inside the skin assumption, as margin for the mesh. If no width seats, or if even 80 mm leaves more than 6 mm of side clearance (the hand is too narrow for the custom range), no custom cuff is made. The app then recommends a standard size only if one passed the check in step 4; otherwise it says that no size was verified and suggests the printed sizing rings.
 
 If the chosen placement uses more than 0.4 mm of the 0.5 mm skin allowance under the palm, the report adds a warning. This is a geometric assumption, not a pressure measurement.
 

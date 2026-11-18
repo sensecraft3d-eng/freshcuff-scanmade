@@ -4,6 +4,14 @@ import { t, fmtNum, getLang } from './i18n.js';
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const mm = v => Number.isFinite(v) ? `${v < -0.004 ? '\u2212' : ''}${fmtNum(Math.abs(v), 2)} mm` : '—';
 
+// Single release predicate (M-R05-01): manufacturing files and print steps only when the build itself carries the
+// evidence — status cuff_ready, a non-empty list of checks that all passed, no recorded failure and an approved re-check.
+export function isReleased(b) {
+  const checks = b?.locks?.checks || [];
+  return !!b && b.status === 'cuff_ready' && checks.length > 0 && checks.every(c => c.ok === true)
+    && (b.locks.failures || []).length === 0 && b.verification?.verdict === 'approved';
+}
+export function isInconsistent(b) { return !!b && b.status === 'cuff_ready' && !isReleased(b); }
 export function fitWord(s) { return s.fits ? 'fits' : (Number.isFinite(s.rigid_min) && s.rigid_min < 0 ? 'tight' : 'loose'); }
 
 export function buildReport({ prep, ana, build, overrides, changes, snaps, scanName, files, timings }) {
@@ -36,6 +44,7 @@ export function buildReport({ prep, ana, build, overrides, changes, snaps, scanN
       ${Number.isFinite(v.closest_section_gap) ? `<tr><td>${esc(t('verif_gap'))}</td><td class="n">${mm(v.closest_section_gap)}</td></tr>` : ''}
       ${Number.isFinite(v.max_overlap) ? `<tr><td>${esc(t('verif_overlap'))}</td><td class="n">${mm(v.max_overlap)}</td></tr>` : ''}
       ${Number.isFinite(v.palm_compression) ? `<tr><td>${esc(t('verif_palm'))}</td><td class="n">${mm(v.palm_compression)}</td></tr>` : ''}
+      <tr><td>${esc(t('verif_title'))}</td><td class="n">${v0.verdict === 'approved' ? esc(t('verif_ok')) : v0.verdict ? esc(t('verif_bad')) + ((v0.failures || []).length ? ' ' + esc(v0.failures.join('; ')) : '') : esc(t('verif_notrun'))}</td></tr>
       <tr><td>${esc(t('checks_title'))}</td><td class="n">${!build.locks ? esc(t('checks_notrun')) : fails.length ? esc(t('checks_fail')) + ' ' + fails.length : ((build.locks.checks || []).length && build.locks.checks.every(c => c.ok === true)) ? esc(t('checks_pass')) : esc(t('checks_notrun'))}</td></tr></table>`;
   }
   const img = (u, cap) => u ? `<figure><img src="${u}" alt="${esc(cap)}"><figcaption>${esc(cap)}</figcaption></figure>` : '';
@@ -71,7 +80,7 @@ ${recHtml}
 ${buildHtml}
 ${snaps?.result ? `<div class="grid">${img(snaps.result, t('label_cuff'))}${img(snaps.resultSide, t('view_side'))}</div>` : ''}
 ${fileList ? `<h2>${esc(t('rep_files'))}</h2><ul>${fileList}</ul>` : ''}
-${build && build.status === 'cuff_ready' ? `<h2>${esc(t('print_title'))}</h2><ol>${['print_1', 'print_2', 'print_3', 'print_4', 'print_5'].map(k => `<li>${esc(t(k))}</li>`).join('')}</ol>` : build ? `<h2>${esc(t('print_title'))}</h2><p>${esc(t('print_not_released'))}</p>` : ''}
+${isReleased(build) ? `<h2>${esc(t('print_title'))}</h2><ol>${['print_1', 'print_2', 'print_3', 'print_4', 'print_5'].map(k => `<li>${esc(t(k))}</li>`).join('')}</ol>` : build ? `<h2>${esc(t('print_title'))}</h2><p>${esc(t('print_not_released'))}</p>` : ''}
 <footer>SenseCraft · FreshCuff ScanMade · ${esc(t('footer_license'))} · ${esc(t('footer_sample'))}${timings ? ' · ' + esc(Object.entries(timings).filter(([, v]) => Number.isFinite(v)).map(([k, v]) => `${k} ${(v / 1000).toFixed(1)} s`).join(', ')) : ''}</footer>
 </body></html>`;
 }

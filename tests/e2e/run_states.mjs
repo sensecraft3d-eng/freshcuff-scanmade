@@ -92,11 +92,23 @@ await scenario('m-R04-01 cuff_ready without check results is not shown as passed
   ok(!verif.includes('All checks passed'), 'empty checks shown as passed'); ok(!verif.includes('matches the prediction'), 'missing verdict shown as approved');
   const rep = await p.evaluate(() => window.__fc.reportHtml(false));
   ok(!rep.includes('All checks passed'), 'report shows empty checks as passed');
+  ok(!(await p.$('a.dl.primary')), '3MF offered for an inconsistent cuff_ready (M-R05-01)');
+  ok(!(await p.$('a[download$=".stl"]')), 'STL offered for an inconsistent cuff_ready (M-R05-01)');
+  ok((await p.textContent('#s4-title')).includes('not'), 'title should say not built');
+  ok((await p.textContent('#downloads')).includes('inconsistent'), 'inconsistency message missing');
+  ok(!rep.includes('<ol>') && rep.includes('No cuff was released for printing'), 'print steps in report for an inconsistent result');
 });
 for (const mode of ['buildneeds', 'buildrefused']) await scenario(`m-R04-02 report has no print steps when ${mode}`, mode, async p => {
   await toFit(p, 'sample'); await p.click('#s3-build'); await p.waitForSelector('#build-done:not([hidden])');
   const rep = await p.evaluate(() => window.__fc.reportHtml(false));
   ok(rep.includes('No cuff was released for printing'), 'missing not-released line'); ok(!rep.includes('<ol>'), 'print steps present in a refused report');
+});
+await scenario('m-R05-01 report states a rejected re-check and its reason', 'verifrejected', async p => {
+  await toFit(p, 'sample'); await p.click('#s3-build'); await p.waitForSelector('#build-done:not([hidden])');
+  ok(!(await p.$('a.dl.primary')), '3MF offered although the re-check was rejected');
+  const rep = await p.evaluate(() => window.__fc.reportHtml(false));
+  ok(rep.includes('gap differs from the prediction'), 'rejection reason missing from the report');
+  ok(rep.includes('No cuff was released for printing'), 'not-released line missing');
 });
 await scenario('B1 no verified standard fit', 'nofit', async p => {
   await toFit(p, 'file');

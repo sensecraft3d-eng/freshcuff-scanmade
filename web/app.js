@@ -3,7 +3,7 @@
 import { t, setLang, getLang, onLang, initialLang, fmtNum, applyI18n } from './ui/i18n.js';
 import { Viewer } from './ui/viewer.js';
 import { readScan, supported, extOf, LIMIT_MB } from './ui/convert.js';
-import { buildReport, fitWord } from './ui/report.js';
+import { buildReport, fitWord, isReleased, isInconsistent } from './ui/report.js';
 
 const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
@@ -502,7 +502,7 @@ async function runBuild() {
 function blobUrl(bytes, type) { const u = URL.createObjectURL(new Blob([bytes], { type })); S.urls.push(u); return u; }
 const sizeTxt = b => b > 1e6 ? `${fmtNum(b / 1e6, 1)} MB` : `${fmtNum(b / 1e3, 0)} kB`;
 async function showResult() {
-  const r = S.build; const ok = r.status === 'cuff_ready';
+  const r = S.build; const ok = isReleased(r);
   $('#s4-title').textContent = ok ? t('s4_done_title') : t('s4_stopped_title');
   $('#build-progress').hidden = true; $('#build-done').hidden = false;
   if (r.legend) renderLegend(r.legend);
@@ -513,7 +513,7 @@ async function showResult() {
   $('#s4-title').focus();
 }
 function renderResult() {
-  const r = S.build; if (!r) return; const ok = r.status === 'cuff_ready'; const F = S.files || {};
+  const r = S.build; if (!r) return; const ok = isReleased(r); const F = S.files || {};
   $('#s4-title').textContent = ok ? t('s4_done_title') : t('s4_stopped_title');
   S.urls.forEach(u => URL.revokeObjectURL(u)); S.urls = [];
   const item = (cls, ext, title, sub, href, name, bytes) => `<a class="dl ${cls}" href="${href}" download="${esc(name)}"><span class="fi">${ext}</span><span><span class="dt">${esc(title)}</span><span class="ds">${esc(sub)}</span></span><span class="dsz">${bytes ? sizeTxt(bytes) : ''}</span></a>`;
@@ -529,6 +529,7 @@ function renderResult() {
   const share = reportHtml(false);
   h += item('', 'HTML', t('dl_report_share'), t('dl_report_share_sub'), blobUrl(share, 'text/html'), 'FreshCuff_ScanMade_report_shareable.html', share.length);
   const js = dataJson(); h += item('', 'JSON', t('dl_json'), t('dl_json_sub'), blobUrl(js, 'application/json'), 'FreshCuff_ScanMade_data.json', js.length);
+  if (isInconsistent(r)) h = `<p class="badline">${esc(t('result_inconsistent'))}</p>` + h;
   if (!ok && (r.status === 'needs_input' || r.status === 'refused')) h = `<ul class="notes">${(r.messages || []).filter(m => m.level !== 'info').map(m => `<li>${esc(m.text)}</li>`).join('')}</ul>
     <button type="button" class="btn btn-primary" id="s4-tape">${esc(t('build_stop_tape'))}</button>` + h;
   if (!ok) h += `<a class="btn btn-secondary" href="${MAKERWORLD}" target="_blank" rel="noopener noreferrer">${esc(t('std_only_btn_generic'))}</a>`;
