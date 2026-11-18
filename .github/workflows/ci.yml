@@ -51,7 +51,7 @@ jobs:
 
   browser-e2e:
     name: Browser end-to-end (Chromium, sample hand)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04   # Playwright 1.56 has no browser build for newer Ubuntu images
     timeout-minutes: 40
     steps:
       - uses: actions/checkout@v4
@@ -121,7 +121,7 @@ jobs:
           retention-days: 14
 
   cad-build:
-    name: CAD rebuild (OpenCascade, size 4 byte-identical)
+    name: CAD rebuild (OpenCascade, size 4 and grid geometry)
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:

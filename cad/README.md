@@ -106,7 +106,7 @@ This prints the volumes, the bounding-box difference, and the two-sided surface 
 
 ## Verification
 
-These were run on Linux, Python 3.13, cadquery-ocp 7.9.3.1.1, from the repository root:
+These were run in the reference environment (Linux x86-64, Python 3.13, cadquery-ocp 7.9.3.1.1), from the repository root. Byte-identical results are expected only there: on another machine, including GitHub's CI runners, the same package can triangulate the same shape differently. The geometry is the same, and that is what CI checks (`tests/cad`; set `FC_REFERENCE_ENV=1` to also run the strict hash test):
 
 | Build | Result | Time |
 |---|---|---|

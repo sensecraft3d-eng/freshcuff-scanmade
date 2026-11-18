@@ -6,6 +6,7 @@ Fast tests need only the standard test dependencies. The build tests need cadque
 """
 import hashlib
 import json
+import os
 import re
 import subprocess
 import sys
@@ -96,9 +97,13 @@ def _build_size4(tmp_path):
 
 
 @pytest.mark.slow
-@pytest.mark.skipif(not sys.platform.startswith('linux'), reason='bit-identical tessellation is only promised on Linux (see the geometric test)')
-def test_size4_sha256_equals_published_on_linux(tmp_path):
-    """Strict: on Linux the rebuilt size 4 must be byte-identical to the published solid."""
+@pytest.mark.skipif(not os.environ.get('FC_REFERENCE_ENV'),
+                    reason='byte identity is checked only in the reference environment (set FC_REFERENCE_ENV=1); '
+                           'elsewhere OpenCascade may triangulate differently, see the geometric test')
+def test_size4_sha256_equals_published_in_reference_env(tmp_path):
+    """Strict, reference environment only (Linux x86-64, Python 3.13, cadquery-ocp 7.9.3.1.1, see cad/README.md):
+    the rebuilt size 4 must be byte-identical to the published solid. The same OCP wheel on GitHub's runners
+    gives a different triangulation of the same shape, so CI relies on the geometric test below."""
     _needs_ocp()
     stl, published = _build_size4(tmp_path)
     assert sha256(stl) == published
