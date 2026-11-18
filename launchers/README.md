@@ -1,12 +1,12 @@
 # Offline launchers
 
-These start FreshCuff Fit **on your own computer**, without internet, after you have downloaded the repository (**Code → Download ZIP** on GitHub, then unzip).
+These start FreshCuff ScanMade **on your own computer**, without internet, after you have downloaded the repository (**Code → Download ZIP** on GitHub, then unzip).
 
 | System | Double-click |
 |---|---|
-| Windows | `FreshCuff-Fit-Windows.bat` |
-| macOS | `FreshCuff-Fit-macOS.command` |
-| Linux | `freshcuff-fit-linux.sh` (or run `bash launchers/freshcuff-fit-linux.sh` in a terminal) |
+| Windows | `FreshCuff-ScanMade-Windows.bat` |
+| macOS | `FreshCuff-ScanMade-macOS.command` |
+| Linux | `freshcuff-scanmade-linux.sh` (or run `bash launchers/freshcuff-scanmade-linux.sh` in a terminal) |
 
 What happens:
 
@@ -17,13 +17,13 @@ What happens:
 
 The scan is processed by the page in your browser, exactly as on the online site. The local server only hands the page its own files.
 
-**No Python?** Use the online version: <https://sensecraft3d-eng.github.io/freshcuff-fit/>. It is the same app, and it also keeps your scan on your computer. To install Python, go to <https://www.python.org/downloads/>. On Windows, tick "Add python.exe to PATH" during installation.
+**No Python?** Use the online version: <https://sensecraft3d-eng.github.io/freshcuff-scanmade/>. It is the same app, and it also keeps your scan on your computer. To install Python, go to <https://www.python.org/downloads/>. On Windows, tick "Add python.exe to PATH" during installation.
 
 ## Notes per system
 
 - **Windows.** SmartScreen may warn about a downloaded `.bat` file. Choose *More info → Run anyway* only if you downloaded it from the official repository. If Python was installed from the Microsoft Store, it works too.
 - **macOS.** The first time, Gatekeeper may refuse to open a downloaded `.command` file. Right-click it, choose *Open*, then *Open* again. If it says it is not executable, open Terminal and run `bash ` followed by the path of the file (you can drag the file into the Terminal window).
-- **Linux.** If double-clicking opens a text editor, run it from a terminal, or mark it as executable (`chmod +x launchers/freshcuff-fit-linux.sh`).
+- **Linux.** If double-clicking opens a text editor, run it from a terminal, or mark it as executable (`chmod +x launchers/freshcuff-scanmade-linux.sh`).
 
 ## Advanced
 

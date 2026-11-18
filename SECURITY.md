@@ -1,6 +1,6 @@
 # Security policy
 
-FreshCuff Fit runs entirely in the browser (or on your own computer with the offline launcher and the CLI), so the main risks are:
+FreshCuff ScanMade runs entirely in the browser (or on your own computer with the offline launcher and the CLI), so the main risks are:
 
 - a malicious or malformed scan file causing the page or the CLI to misbehave;
 - the page loading code or data from somewhere other than its own site;
@@ -10,11 +10,11 @@ FreshCuff Fit runs entirely in the browser (or on your own computer with the off
 
 Please **do not open a public issue** for security problems. Use GitHub's private reporting instead:
 
-**[Report a vulnerability](https://github.com/sensecraft3d-eng/freshcuff-fit/security/advisories/new)** (Security tab → *Report a vulnerability*).
+**[Report a vulnerability](https://github.com/sensecraft3d-eng/freshcuff-scanmade/security/advisories/new)** (Security tab → *Report a vulnerability*).
 
 Include what you found, how to reproduce it, and which version (page footer, report file or commit). You can expect a first reply within about a week. This is a small, volunteer-maintained project.
 
-If you find a case where **a cuff is accepted but should have been refused** (for example, it fails one of the manufacturing checks when measured independently), report it the same way if it could hurt a wearer. Otherwise use a normal [bug report](https://github.com/sensecraft3d-eng/freshcuff-fit/issues/new?template=bug.yml).
+If you find a case where **a cuff is accepted but should have been refused** (for example, it fails one of the manufacturing checks when measured independently), report it the same way if it could hurt a wearer. Otherwise use a normal [bug report](https://github.com/sensecraft3d-eng/freshcuff-scanmade/issues/new?template=bug.yml).
 
 ## Supported versions
 

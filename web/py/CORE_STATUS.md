@@ -1,4 +1,4 @@
-# FreshCuff Fit core — status for integrators
+# FreshCuff ScanMade core — status for integrators
 
 Last update: all phases done (API, fixtures, fast engine, robustness, no-dead-end orientation, quality score, strings,
 CLI, tests, HTML report). Verified in CPython 3.13 and in the vendored Pyodide 0.27.7 under Node (`tests/run_pyodide_node.mjs`).

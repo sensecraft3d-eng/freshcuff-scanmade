@@ -1,5 +1,5 @@
 name: Fit feedback
-description: Tell us how FreshCuff Fit handled your hand scan, and how the cuff fitted if you printed one.
+description: Tell us how FreshCuff ScanMade handled your hand scan, and how the cuff fitted if you printed one.
 title: "[Fit] "
 labels: ["fit-feedback"]
 body:

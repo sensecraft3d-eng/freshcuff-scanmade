@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""FreshCuff Fit - public API (English, JSON-serialisable results).  Same code in CPython and in Pyodide.
+"""FreshCuff ScanMade - public API (English, JSON-serialisable results).  Same code in CPython and in Pyodide.
 
     prepare(scan_path, work_dir, opts)      -> read the scan, orient it, find the band; preview.glb
     analyze(work_dir, overrides)            -> 7 standard sizes + custom cuff parameters; analysis.glb

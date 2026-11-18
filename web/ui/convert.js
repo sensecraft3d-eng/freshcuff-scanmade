@@ -1,4 +1,4 @@
-// FreshCuff Fit · reads a scan file in the page. STL/OBJ/PLY go to Python unchanged (the validated path);
+// FreshCuff ScanMade · reads a scan file in the page. STL/OBJ/PLY go to Python unchanged (the validated path);
 // GLB/GLTF/USDZ are converted here to a binary STL with the three.js loaders. Also returns a geometry for the
 // instant preview while Python reads the scan.
 import * as THREE from '../vendor/three/three.module.min.js';
@@ -32,7 +32,7 @@ function mergedPositions(root) {
 
 export function toBinarySTL(pos) {
   const tris = pos.length / 9; const buf = new ArrayBuffer(84 + tris * 50); const dv = new DataView(buf);
-  const head = 'FreshCuff Fit: converted in the browser'; for (let i = 0; i < head.length; i++) dv.setUint8(i, head.charCodeAt(i));
+  const head = 'FreshCuff ScanMade: converted in the browser'; for (let i = 0; i < head.length; i++) dv.setUint8(i, head.charCodeAt(i));
   dv.setUint32(80, tris, true);
   const a = new THREE.Vector3(), b = new THREE.Vector3(), c = new THREE.Vector3(), nrm = new THREE.Vector3();
   let o = 84;

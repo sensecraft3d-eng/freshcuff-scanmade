@@ -1,12 +1,12 @@
 @echo off
-rem FreshCuff Fit - offline launcher for Windows.
+rem FreshCuff ScanMade - offline launcher for Windows.
 rem Double-click this file. It starts a small web server on this computer only (127.0.0.1)
 rem and opens the app in your browser. Your scan never leaves this computer.
 rem Needs Python 3.8 or newer; nothing is downloaded or installed.
 setlocal
-title FreshCuff Fit (local)
+title FreshCuff ScanMade (local)
 set "HERE=%~dp0"
-set "ONLINE=https://sensecraft3d-eng.github.io/freshcuff-fit/"
+set "ONLINE=https://sensecraft3d-eng.github.io/freshcuff-scanmade/"
 set "PY="
 
 rem Prefer the Python launcher (py -3), then python. The Microsoft Store "python" alias fails this test on purpose.
@@ -32,7 +32,7 @@ goto end
 :run
 %PY% "%HERE%start_local.py" %*
 echo.
-echo   FreshCuff Fit has stopped.
+echo   FreshCuff ScanMade has stopped.
 pause
 
 :end

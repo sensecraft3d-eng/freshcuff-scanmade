@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""FreshCuff Fit - mesh utilities (load, units, components, fast plane sections, display decimation, GLB export).
+"""FreshCuff ScanMade - mesh utilities (load, units, components, fast plane sections, display decimation, GLB export).
 
 Runs unchanged in CPython and in Pyodide (numpy, scipy, shapely, trimesh only; no rtree / manifold3d /
 fast_simplification).  Sections are numerically identical to ``freshcuff_fit.corte`` (same trimesh routine), but only

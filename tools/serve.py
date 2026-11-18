@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Local dev/test server for FreshCuff Fit.
+"""Local dev/test server for FreshCuff ScanMade.
 
 Serves web/ with the same security headers as web/_headers (CSP etc.) and correct MIME types
 (.wasm, .mjs, .glb, .3mf ...). Nothing here is needed in production (Cloudflare Pages reads _headers).
@@ -81,7 +81,7 @@ def main(argv=None):
     a = ap.parse_args(argv)
     root = Path(a.root).resolve()
     with Server((a.host, a.port), make_handler(root, a.dev)) as httpd:
-        print(f'FreshCuff Fit: serving {root} at http://{a.host}:{a.port}/', flush=True)
+        print(f'FreshCuff ScanMade: serving {root} at http://{a.host}:{a.port}/', flush=True)
         try:
             httpd.serve_forever()
         except KeyboardInterrupt:

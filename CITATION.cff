@@ -1,9 +1,9 @@
 cff-version: 1.2.0
-message: "If you use FreshCuff Fit or the FreshCuff geometry in your work, please cite it as below."
+message: "If you use FreshCuff ScanMade or the FreshCuff geometry in your work, please cite it as below."
 type: software
-title: "FreshCuff Fit: custom 3D-printable assistive hand cuffs from hand scans, in the browser"
+title: "FreshCuff ScanMade: custom 3D-printable assistive hand cuffs from hand scans, in the browser"
 abstract: >-
-  FreshCuff Fit reads a 3D scan of a hand, compares the knuckle band with the seven
+  FreshCuff ScanMade reads a 3D scan of a hand, compares the knuckle band with the seven
   standard sizes of the FreshCuff assistive cuff, and, for hands in the custom range,
   generates a cuff whose spring follows the back of the hand. It runs entirely in the
   browser (Pyodide); the scan never leaves the user's computer. Experimental: geometry
@@ -11,8 +11,8 @@ abstract: >-
 authors:
   - name: SenseCraft
     website: "https://makerworld.com/en/models/3595433"
-repository-code: "https://github.com/sensecraft3d-eng/freshcuff-fit"
-url: "https://sensecraft3d-eng.github.io/freshcuff-fit/"
+repository-code: "https://github.com/sensecraft3d-eng/freshcuff-scanmade"
+url: "https://sensecraft3d-eng.github.io/freshcuff-scanmade/"
 license: PolyForm-Noncommercial-1.0.0
 keywords:
   - assistive technology

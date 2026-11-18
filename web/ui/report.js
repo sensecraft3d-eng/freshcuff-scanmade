@@ -1,4 +1,4 @@
-// FreshCuff Fit · printable fit report (a standalone HTML file, no scripts, images inlined as data: URLs).
+// FreshCuff ScanMade · printable fit report (a standalone HTML file, no scripts, images inlined as data: URLs).
 import { t, fmtNum, getLang } from './i18n.js';
 
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
@@ -51,7 +51,7 @@ figcaption{font-size:.8rem;color:#5b6266}dl{display:grid;grid-template-columns:a
 footer{margin-top:28px;border-top:1px solid #d6dbdd;padding-top:10px;font-size:.8rem;color:#5b6266}
 @media print{body{padding:0}.noprint{display:none}h2{break-after:avoid}figure,table{break-inside:avoid}}
 </style></head><body>
-<header><b>SenseCraft · FreshCuff Fit</b><span class="muted">${esc(date)}</span></header>
+<header><b>SenseCraft · FreshCuff ScanMade</b><span class="muted">${esc(date)}</span></header>
 <h1>${esc(t('rep_title'))}</h1>
 <p class="muted">${esc(t('rep_generated', { d: date }))} <span class="noprint">· ${esc(t('rep_print'))}: Ctrl/⌘ + P</span></p>
 <p class="warn">${esc(t('rep_disclaimer'))}</p>
@@ -69,6 +69,6 @@ ${buildHtml}
 ${snaps?.result ? `<div class="grid">${img(snaps.result, t('label_cuff'))}${img(snaps.resultSide, t('view_side'))}</div>` : ''}
 ${fileList ? `<h2>${esc(t('rep_files'))}</h2><ul>${fileList}</ul>` : ''}
 ${build ? `<h2>${esc(t('print_title'))}</h2><ol>${['print_1', 'print_2', 'print_3', 'print_4', 'print_5'].map(k => `<li>${esc(t(k))}</li>`).join('')}</ol>` : ''}
-<footer>SenseCraft · FreshCuff Fit · ${esc(t('footer_license'))} · ${esc(t('footer_sample'))}${timings ? ' · ' + esc(Object.entries(timings).filter(([, v]) => Number.isFinite(v)).map(([k, v]) => `${k} ${(v / 1000).toFixed(1)} s`).join(', ')) : ''}</footer>
+<footer>SenseCraft · FreshCuff ScanMade · ${esc(t('footer_license'))} · ${esc(t('footer_sample'))}${timings ? ' · ' + esc(Object.entries(timings).filter(([, v]) => Number.isFinite(v)).map(([k, v]) => `${k} ${(v / 1000).toFixed(1)} s`).join(', ')) : ''}</footer>
 </body></html>`;
 }

@@ -126,7 +126,7 @@ Until step 5 is done and reported here, treat every custom cuff as a **prototype
 If you have a scan of your hand, or you can make one, **please try the app and tell me what happened**, even if it refused your scan.
 
 1. Run the app (online or offline). Your scan stays on your computer.
-2. Open a **[fit feedback report](https://github.com/sensecraft3d-eng/freshcuff-fit/issues/new?template=fit-feedback.yml)**. The form asks for:
+2. Open a **[fit feedback report](https://github.com/sensecraft3d-eng/freshcuff-scanmade/issues/new?template=fit-feedback.yml)**. The form asks for:
    - the scanner or app you used, the hand side and your tape measurement;
    - the standard size you wear, if any, and the size the app recommended;
    - whether a custom cuff was built and printed;

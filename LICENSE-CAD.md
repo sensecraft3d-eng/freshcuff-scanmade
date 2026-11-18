@@ -29,7 +29,7 @@ Third-party material keeps its own licence, listed in [`NOTICE.md`](NOTICE.md). 
 
 When you share a FreshCuff cuff, a remix or a print photo, please credit it like this:
 
-> FreshCuff by SenseCraft, https://github.com/sensecraft3d-eng/freshcuff-fit, licensed CC BY-NC-SA 4.0
+> FreshCuff by SenseCraft, https://github.com/sensecraft3d-eng/freshcuff-scanmade, licensed CC BY-NC-SA 4.0
 
 If you changed the geometry, say so ("modified from FreshCuff by SenseCraft").
 

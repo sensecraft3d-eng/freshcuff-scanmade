@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""FreshCuff Fit - user-facing strings.  Key = message code; value = text per language ('en' complete; 'pt' where
+"""FreshCuff ScanMade - user-facing strings.  Key = message code; value = text per language ('en' complete; 'pt' where
 available, falling back to English).  No internal codes (gate names, revision ids) in any user text."""
 
 STRINGS = {

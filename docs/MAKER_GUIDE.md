@@ -1,6 +1,6 @@
 # FreshCuff maker guide
 
-*For the person who prints, assembles and checks a FreshCuff, especially a custom one from FreshCuff Fit, before handing it to a user.*
+*For the person who prints, assembles and checks a FreshCuff, especially a custom one from FreshCuff ScanMade, before handing it to a user.*
 
 > **Experimental.** Custom cuffs are checked in CAD and software only. Nobody has worn one yet. Treat every custom cuff as a prototype for a **supervised dry fit**. Read the [User guide](USER_GUIDE.md) safety section, and go through it with the user.
 
@@ -8,7 +8,7 @@
 
 | Item | Source |
 |---|---|
-| Custom cuff `.3mf` (or `.stl`) and the **fit report** | From the user, made by FreshCuff Fit |
+| Custom cuff `.3mf` (or `.stl`) and the **fit report** | From the user, made by FreshCuff ScanMade |
 | Latch plate, heads (soft brush, comb, sponge basket, universal head) and the hardware listed for the kit | FreshCuff kit on MakerWorld: <https://makerworld.com/en/models/3595433>. The custom cuff uses the **same fastener region** as the standard cuffs, so the standard plate and heads fit unchanged. |
 | PETG filament, about 0.4 mm nozzle | Any good PETG. The 3MF uses the Bambu PETG HF profile. |
 | Bambu Studio | <https://bambulab.com/en/download/studio> (or another slicer, using the STL) |
@@ -91,7 +91,7 @@ Do the first fitting **together**, following the user guide's [dry fit table](US
 
 ## 7. Please report back
 
-A short **[fit feedback report](https://github.com/sensecraft3d-eng/freshcuff-fit/issues/new?template=fit-feedback.yml)** from you or the user is the most useful contribution you can make: printer, filament, what fitted and what did not. Attach the app's report JSON if the user agrees. **Do not attach the user's scan** without their explicit consent.
+A short **[fit feedback report](https://github.com/sensecraft3d-eng/freshcuff-scanmade/issues/new?template=fit-feedback.yml)** from you or the user is the most useful contribution you can make: printer, filament, what fitted and what did not. Attach the app's report JSON if the user agrees. **Do not attach the user's scan** without their explicit consent.
 
 ## Licence reminder
 

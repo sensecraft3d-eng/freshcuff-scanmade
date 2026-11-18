@@ -1,10 +1,10 @@
 #!/bin/bash
-# FreshCuff Fit - offline launcher for macOS.
+# FreshCuff ScanMade - offline launcher for macOS.
 # Double-click in Finder (the first time: right-click -> Open, then Open again).
 # Starts a small web server on this Mac only (127.0.0.1) and opens the app in your browser.
 # Your scan never leaves this Mac. Needs Python 3.8+; nothing is downloaded or installed.
 HERE="$(cd "$(dirname "$0")" && pwd)"
-ONLINE="https://sensecraft3d-eng.github.io/freshcuff-fit/"
+ONLINE="https://sensecraft3d-eng.github.io/freshcuff-scanmade/"
 
 PY=""
 for c in python3 /usr/local/bin/python3 /opt/homebrew/bin/python3 python; do
@@ -27,4 +27,4 @@ fi
 
 "$PY" "$HERE/start_local.py" "$@"
 echo
-read -r -p "  FreshCuff Fit has stopped. Press Return to close this window... " _
+read -r -p "  FreshCuff ScanMade has stopped. Press Return to close this window... " _

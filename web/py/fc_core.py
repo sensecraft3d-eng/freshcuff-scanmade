@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""FreshCuff Fit - core engine (English orchestration of the validated Portuguese modules).
+"""FreshCuff ScanMade - core engine (English orchestration of the validated Portuguese modules).
 
 The numerical behaviour of the validated code is kept: the same sections (fc_mesh.Slicer == freshcuff_fit.corte),
 the same landmark rule (freshcuff_fit.achar_marcos), the same pose searches (fc_fastfit == encaixe_faixa /
@@ -35,7 +35,7 @@ import fc_mesh as M
 from fc_strings import tr
 
 HERE = Path(__file__).resolve().parent
-VERSION = 'FreshCuff Fit core 1.0 (2026-11-18)'
+VERSION = 'FreshCuff ScanMade core 1.0 (2026-11-18)'
 TOL_SKIN = 0.5            # mm, provisional skin-compression assumption (legacy --tol-pele)
 TOL_TAPE_CM = 0.6         # legacy --tol-fita-cm
 SETBACK = 6.0             # knuckles = finger separation - 6 mm (legacy --recuo-mm)

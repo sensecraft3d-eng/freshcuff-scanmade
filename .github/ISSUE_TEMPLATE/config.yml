@@ -4,8 +4,8 @@ contact_links:
     url: https://makerworld.com/en/models/3595433
     about: Print files, the assembly manual and comments about the standard FreshCuff.
   - name: Report a security problem privately
-    url: https://github.com/sensecraft3d-eng/freshcuff-fit/security/advisories/new
+    url: https://github.com/sensecraft3d-eng/freshcuff-scanmade/security/advisories/new
     about: Please do not open a public issue for security problems.
   - name: How to scan your hand
-    url: https://github.com/sensecraft3d-eng/freshcuff-fit/blob/main/docs/SCANNING.md
+    url: https://github.com/sensecraft3d-eng/freshcuff-scanmade/blob/main/docs/SCANNING.md
     about: Read this first if the app cannot read your scan.

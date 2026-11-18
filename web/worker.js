@@ -1,4 +1,4 @@
-// FreshCuff Fit · Python worker (Pyodide 0.27.7, vendored in pyodide/). Everything runs on this computer:
+// FreshCuff ScanMade · Python worker (Pyodide 0.27.7, vendored in pyodide/). Everything runs on this computer:
 // the tools come from this site only (no CDN, no PyPI), every file is checked against manifesto.json (sha256)
 // before use, and the scan is never sent anywhere. Calls the public core API web/py/fc_api.py:
 //   prepare(scan_path, work_dir, opts) -> analyze(work_dir, overrides) -> build(work_dir, grid_dir, data_dir)

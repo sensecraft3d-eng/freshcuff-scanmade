@@ -1,15 +1,15 @@
-// FreshCuff Fit · string table (English first, Portuguese). Plain language, no internal codes.
+// FreshCuff ScanMade · string table (English first, Portuguese). Plain language, no internal codes.
 // Keys used in HTML via data-i18n="key" (textContent), data-i18n-html (trusted markup from this file only),
 // data-i18n-aria="key" (aria-label), data-i18n-ph="key" (placeholder).
 export const STRINGS = {
   en: {
-    doc_title: 'FreshCuff Fit · a custom cuff from a hand scan · SenseCraft',
+    doc_title: 'FreshCuff ScanMade · a custom cuff from a hand scan · SenseCraft',
     skip: 'Skip to main content',
-    brand_product: 'FreshCuff Fit',
+    brand_product: 'FreshCuff ScanMade',
     tag_experimental: 'Experimental',
     lang_toggle: 'Português',
     lang_toggle_aria: 'Mudar para português',
-    phone_note: 'FreshCuff Fit works best on a computer: the 3D view and the files are easier to handle there. You can still continue on this phone.',
+    phone_note: 'FreshCuff ScanMade works best on a computer: the 3D view and the files are easier to handle there. You can still continue on this phone.',
     phone_dismiss: 'OK',
 
     step_scan: 'Scan', step_check: 'Check', step_fit: 'Fit', step_build: 'Build',
@@ -204,7 +204,7 @@ export const STRINGS = {
     footer_privacy: 'No cookies, no tracking, no uploads.',
     footer_sample: 'Sample hand: “Hand” by Artec 3D, CC BY 3.0.',
 
-    rep_title: 'FreshCuff Fit report',
+    rep_title: 'FreshCuff ScanMade report',
     rep_generated: 'Generated on {d} in the browser. The scan was not uploaded.',
     rep_print: 'Print or save as PDF',
     rep_scan: 'Scan',
@@ -219,13 +219,13 @@ export const STRINGS = {
   },
 
   pt: {
-    doc_title: 'FreshCuff Fit · cuff sob medida a partir do scan da mão · SenseCraft',
+    doc_title: 'FreshCuff ScanMade · cuff sob medida a partir do scan da mão · SenseCraft',
     skip: 'Pular para o conteúdo',
-    brand_product: 'FreshCuff Fit',
+    brand_product: 'FreshCuff ScanMade',
     tag_experimental: 'Experimental',
     lang_toggle: 'English',
     lang_toggle_aria: 'Switch to English',
-    phone_note: 'O FreshCuff Fit funciona melhor no computador: a vista 3D e os arquivos são mais fáceis de usar lá. Mesmo assim, dá para continuar no celular.',
+    phone_note: 'O FreshCuff ScanMade funciona melhor no computador: a vista 3D e os arquivos são mais fáceis de usar lá. Mesmo assim, dá para continuar no celular.',
     phone_dismiss: 'OK',
 
     step_scan: 'Scan', step_check: 'Conferir', step_fit: 'Encaixe', step_build: 'Gerar',
@@ -420,7 +420,7 @@ export const STRINGS = {
     footer_privacy: 'Sem cookies, sem rastreamento, sem envio de arquivos.',
     footer_sample: 'Mão de exemplo: “Hand”, de Artec 3D, CC BY 3.0.',
 
-    rep_title: 'Relatório FreshCuff Fit',
+    rep_title: 'Relatório FreshCuff ScanMade',
     rep_generated: 'Gerado em {d} no navegador. O scan não foi enviado.',
     rep_print: 'Imprimir ou salvar em PDF',
     rep_scan: 'Scan',

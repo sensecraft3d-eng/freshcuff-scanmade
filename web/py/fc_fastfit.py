@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""FreshCuff Fit - fast, exact replacements for the two pose searches of the validated code:
+"""FreshCuff ScanMade - fast, exact replacements for the two pose searches of the validated code:
 
     fit_band(...)     == freshcuff_fit.encaixe_faixa(...)      (one rigid pose for the 5 sections, 7 sizes / 9 widths)
     fit_lateral(...)  == gerador_scan.encaixe_lateral(...)     (stable pose used to choose W and draw the dorsal profile)

@@ -1,4 +1,4 @@
-// FreshCuff Fit · end-to-end test in Chromium (Playwright).
+// FreshCuff ScanMade · end-to-end test in Chromium (Playwright).
 // Serves web/ with tools/serve.py (same CSP as production), drives the whole flow with the KEYBOARD ONLY
 // (Tab/Enter) using "Try with a sample hand", asserts a 3MF download, records timings and screenshots,
 // asserts that no request leaves 127.0.0.1, then takes a phone-viewport screenshot.
@@ -148,7 +148,7 @@ try {
   lap('downloads saved');
 
   // report page renders (open the downloaded HTML file)
-  const rp = await ctx.newPage(); await rp.goto('file://' + path.join(OUT, 'FreshCuff_Fit_report.html')); await rp.waitForTimeout(300);
+  const rp = await ctx.newPage(); await rp.goto('file://' + path.join(OUT, 'FreshCuff_ScanMade_report.html')); await rp.waitForTimeout(300);
   await rp.screenshot({ path: path.join(OUT, '05_report.png'), fullPage: true }); await rp.close();
 
   const appT = await page.evaluate(() => window.__fc.S.timings);

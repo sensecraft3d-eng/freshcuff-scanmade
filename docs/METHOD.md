@@ -1,4 +1,4 @@
-# How FreshCuff Fit works
+# How FreshCuff ScanMade works
 
 This document explains, step by step, what the app does with a hand scan and how it turns the result into a printable cuff. It is technical but meant to be readable. Every number below is a parameter in the code (`web/py/`), and the generated report records the values used in each run.
 

@@ -1,12 +1,12 @@
-# Contributing to FreshCuff Fit
+# Contributing to FreshCuff ScanMade
 
 Thank you for helping! FreshCuff is an assistive device, so the most valuable contributions are **real-world observations**, followed by fixes that make the app more robust or clearer.
 
 ## Ways to help
 
-1. **Try the app with your own hand scan** and send a [fit feedback report](https://github.com/sensecraft3d-eng/freshcuff-fit/issues/new?template=fit-feedback.yml). Refusals and confusing messages count too.
+1. **Try the app with your own hand scan** and send a [fit feedback report](https://github.com/sensecraft3d-eng/freshcuff-scanmade/issues/new?template=fit-feedback.yml). Refusals and confusing messages count too.
 2. **Print and dry-fit** a cuff (standard or custom) and report what you observed. Please follow the safety notes in [docs/USER_GUIDE.md](docs/USER_GUIDE.md).
-3. **Report bugs** with the [bug form](https://github.com/sensecraft3d-eng/freshcuff-fit/issues/new?template=bug.yml).
+3. **Report bugs** with the [bug form](https://github.com/sensecraft3d-eng/freshcuff-scanmade/issues/new?template=bug.yml).
 4. **Improve the documentation.** Clearer wording, translations, and better scanning tips for a particular app or scanner.
 5. **Code.** See below.
 
@@ -19,8 +19,8 @@ Thank you for helping! FreshCuff is an assistive device, so the most valuable co
 ## Development setup
 
 ```bash
-git clone https://github.com/sensecraft3d-eng/freshcuff-fit.git
-cd freshcuff-fit
+git clone https://github.com/sensecraft3d-eng/freshcuff-scanmade.git
+cd freshcuff-scanmade
 python -m pip install numpy scipy shapely trimesh matplotlib networkx pytest
 python -m pytest -m "not slow"        # fast tests (what CI runs)
 python -m pytest                       # everything, including slow end-to-end runs

@@ -1,4 +1,4 @@
-/* FreshCuff Fit · SenseCraft · UI styles. Neutral greys (the cuff is light/dark grey PETG) + one accent, used sparingly. */
+/* FreshCuff ScanMade · SenseCraft · UI styles. Neutral greys (the cuff is light/dark grey PETG) + one accent, used sparingly. */
 @font-face{font-family:Inter;src:url(../InterVariable.woff2) format("woff2");font-weight:100 900;font-display:swap}
 :root{
   --bg:#eff1f1; --surface:#fff; --surface-2:#f6f7f7; --ink:#191c1e; --ink-2:#4b5357; --ink-3:#5a6266;

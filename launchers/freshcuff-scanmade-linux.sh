@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
-# FreshCuff Fit - offline launcher for Linux.
+# FreshCuff ScanMade - offline launcher for Linux.
 # Starts a small web server on this computer only (127.0.0.1) and opens the app in your browser.
 # Your scan never leaves this computer. Needs Python 3.8+; nothing is downloaded or installed.
-# Run:  ./launchers/freshcuff-fit-linux.sh      (or: bash launchers/freshcuff-fit-linux.sh)
+# Run:  ./launchers/freshcuff-scanmade-linux.sh      (or: bash launchers/freshcuff-scanmade-linux.sh)
 set -u
 HERE="$(cd "$(dirname "$0")" && pwd)"
-ONLINE="https://sensecraft3d-eng.github.io/freshcuff-fit/"
+ONLINE="https://sensecraft3d-eng.github.io/freshcuff-scanmade/"
 
 PY=""
 for c in python3 python; do

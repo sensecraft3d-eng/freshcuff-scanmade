@@ -5,7 +5,7 @@
 **"Hand" by Artec 3D**: <https://www.artec3d.com/3d-models/hand>
 Licensed under **Creative Commons Attribution 3.0** (CC BY 3.0): <https://creativecommons.org/licenses/by/3.0/>
 
-The file is included unchanged so that anyone can try FreshCuff Fit without a scanner ("Try with a sample hand" in the app). Artec 3D does not endorse this project. If you reuse the file, credit Artec 3D as above. This sample is **not** covered by the FreshCuff licences.
+The file is included unchanged so that anyone can try FreshCuff ScanMade without a scanner ("Try with a sample hand" in the app). Artec 3D does not endorse this project. If you reuse the file, credit Artec 3D as above. This sample is **not** covered by the FreshCuff licences.
 
 | Property | Value |
 |---|---|

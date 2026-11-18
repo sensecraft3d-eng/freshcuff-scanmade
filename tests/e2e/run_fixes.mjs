@@ -1,4 +1,4 @@
-// FreshCuff Fit · e2e of the Check-step fixes on the real Python core: swap finger end (re-read), undo,
+// FreshCuff ScanMade · e2e of the Check-step fixes on the real Python core: swap finger end (re-read), undo,
 // click on the hand to move the knuckle line, then measure. Screenshots + JSON in tests/e2e/out/fixes/.
 //   node tests/e2e/run_fixes.mjs [--port 8783]
 import { createRequire } from 'node:module';

@@ -1,4 +1,4 @@
-// Runs the FreshCuff Fit core inside the vendored Pyodide (the browser target) under Node.js.
+// Runs the FreshCuff ScanMade core inside the vendored Pyodide (the browser target) under Node.js.
 //   node tests/run_pyodide_node.mjs [scan] [side] [tape_cm]
 // Defaults: examples/Artec_Hand.ply left 18.2.  Prints timings and the key results as JSON on the last line.
 import { readFileSync } from 'node:fs';

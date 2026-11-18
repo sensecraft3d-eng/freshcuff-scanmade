@@ -1,5 +1,5 @@
 {
- "tool": "FreshCuff Fit core 1.0 (2026-11-18)",
+ "tool": "FreshCuff ScanMade core 1.0 (2026-11-18)",
  "api": "1.0",
  "status": "cuff_ready",
  "scan": {
@@ -8782,8 +8782,8 @@
    "scan_sha256": "66d3291d5285a05fbaa9137972cc80c38cb42f640cb96fd59377beea23465109",
    "gerador_scan_sha256": "7605b23a41bada5b7d19de025d065fbf7e7c7d942fcaaa857f9349c4a9a1745b",
    "freshcuff_fit_sha256": "36e9ecd2e142ad927a6f9287bee2a283e4dd4cbba122e565c99869922d5d2af5",
-   "fc_core_sha256": "d10f5c0e213c85ee9d2488eee8f9c53f7918d21885b9e583f0580dd98a4bb60b",
-   "fc_fastfit_sha256": "7f0eb29e0f36dda9ca1df2258b4e27afc164b5b0871b36795d94ba4f19a07330",
+   "fc_core_sha256": "fa6a9955b4fed6eb059273a71698b2768064c1a838079a5e2c310f3e25a86527",
+   "fc_fastfit_sha256": "25426a581d92db26d676096614b4d00d7c52c397cb4f299e6465311c835fd9be",
    "grade_aberturas_sha256": "053bba5d2000d6c42ebff92bba6cf3df0564c6c8e76819b54dfb9181bbc6f1c7",
    "dorso_sha256": "dfb8123b06a0e4053fd34c9676d1a0cd1da37815db1a8a2b101d229b01e8575f",
    "orientacao_manual": null
@@ -8901,7 +8901,7 @@
  "verification_raw": {
   "stl": "FreshCuff_Custom_hand.stl",
   "stl_sha256": "9f9de1ad513e47ee73136f6c5856642ed8f4891be2563807bc4974dada80762c",
-  "parametros_sha256": "1cb609d82aa0034342992ce83c9e35e7f44e1712d09bab7c023657fa2ece9bf3",
+  "parametros_sha256": "7351bb7a5b149a9300f2013717df0f26662eadb144c647f2c9c3db57536f01e8",
   "a_mesma_pose": {
    "folga_media_todos_cortes_mm": 3.48,
    "frac_todos_cortes_ate_0_5mm": 0.14,
@@ -8974,17 +8974,17 @@
   "campo_dorso.py": "584c996b7e3422d29c2790edc22391b473780470bb69966f731af29fa8ba1bd1",
   "compat_wasm.py": "846f94d524a0fdfe0bf26926b62d5d5cc33a47914dc3955e9277239f9fdc838f",
   "conferir_cuff_gerado.py": "60f52378379173d31b0850a06151915769c1889e404302468495cbbf269d273c",
-  "fc_api.py": "9377c660ccbe30f053d5f4b4afa98599affc7e2079ff9512b7832fed1dcfa236",
-  "fc_core.py": "d10f5c0e213c85ee9d2488eee8f9c53f7918d21885b9e583f0580dd98a4bb60b",
-  "fc_fastfit.py": "7f0eb29e0f36dda9ca1df2258b4e27afc164b5b0871b36795d94ba4f19a07330",
-  "fc_mesh.py": "a8e59499cb1d1a8368c16f66ae1c4c143f256c29e5e277d6d06580f901e8cc60",
-  "fc_strings.py": "4670c12f57f293538e71e56b5575afba53e0cb3f6c52ccd68e2631e97f275db6",
+  "fc_api.py": "a25699d03ec7d30478f92043883e1932e9705a9929bb7f5a738c805a0c797ad3",
+  "fc_core.py": "fa6a9955b4fed6eb059273a71698b2768064c1a838079a5e2c310f3e25a86527",
+  "fc_fastfit.py": "25426a581d92db26d676096614b4d00d7c52c397cb4f299e6465311c835fd9be",
+  "fc_mesh.py": "d88eec2805cac313f65f351ecc72e1c01bcca3b18331c7d0fcdb32ba14ff51ae",
+  "fc_strings.py": "7c57d5a8504909009353295d2fa056f0e8887e9c98527e0c1d9c161e7175c4c1",
   "freshcuff_fit.py": "36e9ecd2e142ad927a6f9287bee2a283e4dd4cbba122e565c99869922d5d2af5",
   "gerador_scan.py": "7605b23a41bada5b7d19de025d065fbf7e7c7d942fcaaa857f9349c4a9a1745b",
   "gerador_web.py": "cc1d176984629306ef98f3829bc574317fbf4c0209e0d0559a35261c67e905d6",
   "medir_original.py": "1d8ec26eca2c635f0734d089f40609ed4fccd19404ba67266e824b50d3ebc09c",
   "nucleo_r08a.py": "bbe6c31e808588df3e232fd7d2d508ddc58f8c55de09ffc121841ada9dd15371",
-  "report_html.py": "447dbc251f305ec7e8d0212ce4cfe8248c0095f10a5f65850a6b3c436e2c317a",
+  "report_html.py": "0a7fd2fadd34d6506810f508dee9165f22a3060b25311007074dc86e98e00955",
   "trocar_malha_3mf_v4b_custom.py": "626a2fffe933843223fee3e304da62f430be8e5a4da1ddefe71fbd0e6a8308ac"
  },
  "data_sha256": {

@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""FreshCuff Fit - standalone printable report (one HTML file, inline CSS + inline SVG, no external assets).
+"""FreshCuff ScanMade - standalone printable report (one HTML file, inline CSS + inline SVG, no external assets).
 
     render(report_dict, lang='en') -> str        report_dict = the content of build_NN/report.json
     python report_html.py report.json out.html
@@ -9,7 +9,7 @@ import json
 import sys
 
 _T = {
-    'en': dict(title='FreshCuff Fit report', ready='Cuff ready', stopped='Stopped - no cuff released',
+    'en': dict(title='FreshCuff ScanMade report', ready='Cuff ready', stopped='Stopped - no cuff released',
                scan='Scan', hand='Hand', sizes='Standard sizes (rigid geometric fit of the 26 mm band)',
                size='Size', fits='Fits', yes='yes', no='no', rigid='Rigid min (mm)', dorsal='Under spring min (mm)',
                lateral='Side min (mm)', note='Note', custom='Custom cuff', range='Custom range W 80-84 mm',
@@ -22,7 +22,7 @@ _T = {
                verify='Generated cuff re-checked against the scan', prov='Provenance', files='Files', msgs='Messages',
                knuckles='from knuckle line', recommended='recommended', by_tape='by tape',
                legend_neg='negative = presses into the hand', print='Print / save as PDF'),
-    'pt': dict(title='Relatório FreshCuff Fit', ready='Cuff pronto', stopped='Barrado - nenhum cuff liberado',
+    'pt': dict(title='Relatório FreshCuff ScanMade', ready='Cuff pronto', stopped='Barrado - nenhum cuff liberado',
                scan='Scan', hand='Mão', sizes='Tamanhos padrão (encaixe geométrico rígido da faixa de 26 mm)',
                size='Tamanho', fits='Serve', yes='sim', no='não', rigid='Rígido mín (mm)', dorsal='Sob a mola mín (mm)',
                lateral='Lateral mín (mm)', note='Nota', custom='Cuff sob medida', range='Faixa sob medida W 80-84 mm',

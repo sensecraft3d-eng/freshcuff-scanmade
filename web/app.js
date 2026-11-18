@@ -1,4 +1,4 @@
-// FreshCuff Fit · page controller (ES module; no inline script because of the CSP).
+// FreshCuff ScanMade · page controller (ES module; no inline script because of the CSP).
 // Flow: 1 Scan → 2 Check (landmarks, fixes) → 3 Fit (7 sizes + custom) → 4 Build (3MF/STL/report/JSON).
 import { t, setLang, getLang, onLang, initialLang, fmtNum, applyI18n } from './ui/i18n.js';
 import { Viewer } from './ui/viewer.js';
@@ -459,8 +459,8 @@ function renderResult() {
   if (ok && F.stl) h += item('', 'STL', t('dl_stl'), t('dl_stl_sub'), blobUrl(F.stl.bytes, 'model/stl'), stlName, F.stl.bytes.byteLength);
   // the core's standalone printable report when present; the page's own report (with 3D snapshots) otherwise
   const rep = F.report_html ? F.report_html.bytes : reportHtml();
-  h += item('', 'HTML', t('dl_report'), t('dl_report_sub'), blobUrl(rep, 'text/html'), 'FreshCuff_Fit_report.html', rep.byteLength ?? rep.length);
-  const js = dataJson(); h += item('', 'JSON', t('dl_json'), t('dl_json_sub'), blobUrl(js, 'application/json'), 'FreshCuff_Fit_data.json', js.length);
+  h += item('', 'HTML', t('dl_report'), t('dl_report_sub'), blobUrl(rep, 'text/html'), 'FreshCuff_ScanMade_report.html', rep.byteLength ?? rep.length);
+  const js = dataJson(); h += item('', 'JSON', t('dl_json'), t('dl_json_sub'), blobUrl(js, 'application/json'), 'FreshCuff_ScanMade_data.json', js.length);
   if (!ok) h += `<a class="btn btn-secondary" href="${MAKERWORLD}" target="_blank" rel="noopener noreferrer">${esc(t('std_only_btn_generic'))}</a>`;
   $('#downloads').innerHTML = h;
   const v = r.verification || {}; const sp = v.same_pose || {}; const locks = r.locks || {}; const fails = locks.failures || [];
@@ -487,12 +487,12 @@ function reportHtml() {
 }
 function dataJson() {
   const strip = r => { if (!r) return r; const o = JSON.parse(JSON.stringify(r)); delete o.overlays; return o; };   // drop display-only rings
-  return JSON.stringify({ app: 'FreshCuff Fit (web)', generated: new Date().toISOString(), scan_name: S.scanName, overrides: S.overrides,
+  return JSON.stringify({ app: 'FreshCuff ScanMade (web)', generated: new Date().toISOString(), scan_name: S.scanName, overrides: S.overrides,
     prepare: strip(S.prep), analyze: strip(S.ana), build: strip(S.build), timings_ms: S.timings,
     note: 'Measurements and the five band cross-sections only. The scan mesh itself is not included.' }, null, 1);
 }
 function downloadReport() {
-  const a = document.createElement('a'); a.href = blobUrl(reportHtml(), 'text/html'); a.download = 'FreshCuff_Fit_report.html'; document.body.appendChild(a); a.click(); a.remove();
+  const a = document.createElement('a'); a.href = blobUrl(reportHtml(), 'text/html'); a.download = 'FreshCuff_ScanMade_report.html'; document.body.appendChild(a); a.click(); a.remove();
 }
 $('#s4-back').addEventListener('click', async () => { if (!S.ana) return; await showFit(); });
 $('#s4-over').addEventListener('click', startOver);

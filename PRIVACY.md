@@ -1,6 +1,6 @@
 # Privacy
 
-A 3D scan of a hand is personal data. FreshCuff Fit is built so that **your scan never leaves your computer**.
+A 3D scan of a hand is personal data. FreshCuff ScanMade is built so that **your scan never leaves your computer**.
 
 ## What happens to your scan
 

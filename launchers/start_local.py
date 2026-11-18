@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
-"""FreshCuff Fit - start the app locally, offline.
+"""FreshCuff ScanMade - start the app locally, offline.
 
 Serves the web/ folder of this repository on http://127.0.0.1:<port>/ (your own computer only, not reachable from
 the network) and opens it in your default browser. Your scan is processed in the browser and never leaves this computer.
 
 Normally started by one of the launchers next to this file:
-  Windows: FreshCuff-Fit-Windows.bat   macOS: FreshCuff-Fit-macOS.command   Linux: freshcuff-fit-linux.sh
+  Windows: FreshCuff-ScanMade-Windows.bat   macOS: FreshCuff-ScanMade-macOS.command   Linux: freshcuff-scanmade-linux.sh
 
   python3 launchers/start_local.py [--port 8765] [--no-browser]
 
@@ -22,7 +22,7 @@ import threading
 import webbrowser
 from pathlib import Path
 
-ONLINE = 'https://sensecraft3d-eng.github.io/freshcuff-fit/'
+ONLINE = 'https://sensecraft3d-eng.github.io/freshcuff-scanmade/'
 ROOT = Path(__file__).resolve().parent.parent
 WEB = ROOT / 'web'
 SERVE = ROOT / 'tools' / 'serve.py'
@@ -79,7 +79,7 @@ def serve_builtin(port):
 
 
 def main(argv=None):
-    ap = argparse.ArgumentParser(description='Start FreshCuff Fit locally (offline).')
+    ap = argparse.ArgumentParser(description='Start FreshCuff ScanMade locally (offline).')
     ap.add_argument('--port', type=int, default=8765, help='first port to try (default 8765)')
     ap.add_argument('--no-browser', action='store_true', help='do not open the browser')
     a = ap.parse_args(argv)
@@ -88,7 +88,7 @@ def main(argv=None):
         raise SystemExit(f'Python 3.8 or newer is needed (found {sys.version.split()[0]}). '
                          f'Install a newer Python, or use the online version: {ONLINE}')
     if not (WEB / 'index.html').is_file():
-        raise SystemExit(f'Could not find {WEB / "index.html"}. Run this from the unzipped FreshCuff Fit folder, '
+        raise SystemExit(f'Could not find {WEB / "index.html"}. Run this from the unzipped FreshCuff ScanMade folder, '
                          f'or use the online version: {ONLINE}')
     if not any((WEB / 'pyodide').glob('pyodide*.js')):
         print('Warning: web/pyodide/ looks incomplete. The app needs it to run offline. '
@@ -97,7 +97,7 @@ def main(argv=None):
     port = pick_port(a.port)
     url = f'http://127.0.0.1:{port}/'
     print()
-    print('  FreshCuff Fit is running on this computer only:')
+    print('  FreshCuff ScanMade is running on this computer only:')
     print(f'    {url}')
     print()
     print('  Your scan stays on this computer. Keep this window open while you use the app.')

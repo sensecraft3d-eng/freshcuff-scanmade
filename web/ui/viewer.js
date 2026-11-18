@@ -1,4 +1,4 @@
-// FreshCuff Fit · 3D viewer (three.js, vendored). Renders on demand only, so the Python worker keeps the CPU.
+// FreshCuff ScanMade · 3D viewer (three.js, vendored). Renders on demand only, so the Python worker keeps the CPU.
 // Canonical frame from the Python side (mm): +y = back of the hand, +z = toward the wrist, band centre at origin.
 import * as THREE from '../vendor/three/three.module.min.js';
 import { OrbitControls } from '../vendor/three/addons/controls/OrbitControls.js';

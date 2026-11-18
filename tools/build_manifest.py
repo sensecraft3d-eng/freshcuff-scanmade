@@ -33,7 +33,7 @@ def collect():
     for p in sorted((WEB / 'examples').glob('*')):
         if p.is_file() and p.suffix.lower() in {'.ply', '.stl', '.obj', '.glb'}:
             page[p.relative_to(WEB).as_posix()] = sha(p)
-    return {'gerador': 'FreshCuff Fit web', 'arquivos': files, 'pagina': page}
+    return {'gerador': 'FreshCuff ScanMade web', 'arquivos': files, 'pagina': page}
 
 
 def main():

@@ -1,4 +1,4 @@
-# Scanning a hand for FreshCuff Fit
+# Scanning a hand for FreshCuff ScanMade
 
 The app needs a 3D scan of the hand that will wear the cuff. It looks closely at one region: a 26 mm band just behind the knuckles, plus enough of the hand around it to find the knuckles and the thumb. This guide explains how to get a scan that works.
 

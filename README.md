@@ -1,8 +1,8 @@
-# FreshCuff Fit
+# FreshCuff ScanMade
 
 **Turn a 3D scan of your hand into a custom, 3D-printable FreshCuff, right in your browser. Your scan never leaves your computer.**
 
-**[Try it online](https://sensecraft3d-eng.github.io/freshcuff-fit/)** · [How to scan your hand](docs/SCANNING.md) · [How it works](docs/METHOD.md) · [What has been validated](docs/VALIDATION.md) · [Give feedback](https://github.com/sensecraft3d-eng/freshcuff-fit/issues/new?template=fit-feedback.yml)
+**[Try it online](https://sensecraft3d-eng.github.io/freshcuff-scanmade/)** · [How to scan your hand](docs/SCANNING.md) · [How it works](docs/METHOD.md) · [What has been validated](docs/VALIDATION.md) · [Give feedback](https://github.com/sensecraft3d-eng/freshcuff-scanmade/issues/new?template=fit-feedback.yml)
 
 <p align="center">
   <img src="docs/img/01-landmarks.png" width="32%" alt="The sample hand scan with the detected knuckle line and the band where the cuff sits">
@@ -12,7 +12,7 @@
 
 FreshCuff is a 3D-printed PETG cuff worn around the hand at the knuckles. It is for people with a weak grip who cannot hold a hair brush or a bath sponge. A palm support sits below, a flexible spring leaf rests on the back of the hand, and a latch plate holds interchangeable heads: a soft brush, a comb, a sponge basket or a universal head. FreshCuff comes in seven standard sizes, with printable sizing rings, on [MakerWorld](https://makerworld.com/en/models/3595433). It is SenseCraft's entry in MakerWorld's *Make for Good* accessibility contest.
 
-FreshCuff Fit is the companion app. It reads a scan of your hand, checks it against all seven sizes and, if your hand is in the custom range, builds a cuff shaped to the back of your hand.
+FreshCuff ScanMade is the companion app. It reads a scan of your hand, checks it against all seven sizes and, if your hand is in the custom range, builds a cuff shaped to the back of your hand.
 
 > [!WARNING]
 > **Experimental. Not yet validated on a real wearer.**
@@ -46,7 +46,7 @@ See [PRIVACY.md](PRIVACY.md).
 
 ### 1. Online (nothing to install)
 
-Open **<https://sensecraft3d-eng.github.io/freshcuff-fit/>** in a recent Chrome, Edge or Firefox on a desktop or laptop computer. Then either:
+Open **<https://sensecraft3d-eng.github.io/freshcuff-scanmade/>** in a recent Chrome, Edge or Firefox on a desktop or laptop computer. Then either:
 
 - click **Try with a sample hand** to see the whole process on a public scan, or
 - choose your own scan file, check the detected landmarks, and follow the steps.
@@ -59,9 +59,9 @@ Download the repository: **Code → Download ZIP** on GitHub, then unzip it. Dou
 
 | System | Launcher |
 |---|---|
-| Windows | `launchers/FreshCuff-Fit-Windows.bat` |
-| macOS | `launchers/FreshCuff-Fit-macOS.command` (first time: right-click → Open) |
-| Linux | `launchers/freshcuff-fit-linux.sh` |
+| Windows | `launchers/FreshCuff-ScanMade-Windows.bat` |
+| macOS | `launchers/FreshCuff-ScanMade-macOS.command` (first time: right-click → Open) |
+| Linux | `launchers/freshcuff-scanmade-linux.sh` |
 
 The launcher starts a small web server on your own computer (`127.0.0.1`) and opens the app in your browser. It needs Python 3.8 or newer. If you do not have Python, use the online version. It is the same app. More in [launchers/README.md](launchers/README.md).
 
@@ -134,6 +134,6 @@ To cite this project, use [CITATION.cff](CITATION.cff) (GitHub shows a "Cite thi
 
 The most useful thing you can do is try it and tell me what happened.
 
-- **Fit feedback:** [open a fit report](https://github.com/sensecraft3d-eng/freshcuff-fit/issues/new?template=fit-feedback.yml). It is a short form: scanner, size, what you saw on a dry fit. You can attach the app's report file (`.json`). **Do not attach your scan** unless you really want to share it publicly.
-- **Bugs:** [open a bug report](https://github.com/sensecraft3d-eng/freshcuff-fit/issues/new?template=bug.yml).
+- **Fit feedback:** [open a fit report](https://github.com/sensecraft3d-eng/freshcuff-scanmade/issues/new?template=fit-feedback.yml). It is a short form: scanner, size, what you saw on a dry fit. You can attach the app's report file (`.json`). **Do not attach your scan** unless you really want to share it publicly.
+- **Bugs:** [open a bug report](https://github.com/sensecraft3d-eng/freshcuff-scanmade/issues/new?template=bug.yml).
 - **Security problems:** see [SECURITY.md](SECURITY.md).

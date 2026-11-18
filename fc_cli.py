@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""FreshCuff Fit - command line.  Runs the same functions as the web page (web/py/fc_api.py), locally.
+"""FreshCuff ScanMade - command line.  Runs the same functions as the web page (web/py/fc_api.py), locally.
 
     python fc_cli.py scan.ply --out result_dir [--side left|right|auto] [--tape-cm 18.2] [--build]
 
@@ -31,7 +31,7 @@ def main(argv=None):
             s.reconfigure(encoding='utf-8')
         except Exception:
             pass
-    ap = argparse.ArgumentParser(description='FreshCuff Fit: hand scan -> size recommendation and custom cuff (3MF).',
+    ap = argparse.ArgumentParser(description='FreshCuff ScanMade: hand scan -> size recommendation and custom cuff (3MF).',
                                  epilog='The scan is processed on this computer only. Experimental; always dry-fit. Not a medical device.')
     ap.add_argument('scan', help='hand scan: STL, OBJ, PLY or GLB')
     ap.add_argument('--out', required=True, help='output folder (created if needed)')

@@ -2,7 +2,7 @@
 
 *For the person who will wear a FreshCuff, and for family members, carers and therapists who help them.*
 
-> **Experimental custom cuffs.** A custom cuff made with FreshCuff Fit has been checked in CAD only and has **not yet been tested on a real wearer**. So far, only the standard size-4 cuff has been worn: by me, during development. Please read [Safety](#safety) before the first fitting.
+> **Experimental custom cuffs.** A custom cuff made with FreshCuff ScanMade has been checked in CAD only and has **not yet been tested on a real wearer**. So far, only the standard size-4 cuff has been worn: by me, during development. Please read [Safety](#safety) before the first fitting.
 
 ## What FreshCuff is
 
@@ -14,7 +14,7 @@ FreshCuff is a 3D-printed cuff worn around the hand, just behind the knuckles. I
 
 It comes in **seven standard sizes**, with printable **sizing rings** to find yours: <https://makerworld.com/en/models/3595433>.
 
-**FreshCuff Fit** (this project) is an app that reads a 3D scan of your hand. It recommends a standard size and, if your hand is in the custom range (around size 4), makes a cuff shaped to the back of your hand.
+**FreshCuff ScanMade** (this project) is an app that reads a 3D scan of your hand. It recommends a standard size and, if your hand is in the custom range (around size 4), makes a cuff shaped to the back of your hand.
 
 ## Who it is for
 
@@ -46,7 +46,7 @@ It comes in **seven standard sizes**, with printable **sizing rings** to find yo
 flowchart TD
     A[Measure around the knuckles<br/>and print the sizing rings] --> B{Do you have a<br/>3D scan of the hand?}
     B -->|no| S[Print the standard size<br/>the rings suggest]
-    B -->|yes| C[Run FreshCuff Fit<br/>in your browser]
+    B -->|yes| C[Run FreshCuff ScanMade<br/>in your browser]
     C --> D{Custom range?}
     D -->|no| S
     D -->|yes| E[Custom cuff files<br/>+ fit report]
@@ -57,7 +57,7 @@ flowchart TD
 
 ### Using the app (if you have a scan)
 
-1. Open <https://sensecraft3d-eng.github.io/freshcuff-fit/> on a computer, or the offline launcher. Your scan **stays on your computer**.
+1. Open <https://sensecraft3d-eng.github.io/freshcuff-scanmade/> on a computer, or the offline launcher. Your scan **stays on your computer**.
 2. Choose your scan file and enter:
    - which hand it is;
    - your tape measurement around the knuckles. See [SCANNING.md](SCANNING.md#tape-measure-check) for how to measure.
@@ -106,4 +106,4 @@ Do this with the cuff on, before any wet use. Write down what you notice, becaus
 
 ## Feedback
 
-Your experience is the most valuable input this project can get. Please use the **[fit feedback form](https://github.com/sensecraft3d-eng/freshcuff-fit/issues/new?template=fit-feedback.yml)**. You can attach the fit report from the app, but please **do not attach your scan** unless you choose to share it publicly. A helper can fill it in for you.
+Your experience is the most valuable input this project can get. Please use the **[fit feedback form](https://github.com/sensecraft3d-eng/freshcuff-scanmade/issues/new?template=fit-feedback.yml)**. You can attach the fit report from the app, but please **do not attach your scan** unless you choose to share it publicly. A helper can fill it in for you.
