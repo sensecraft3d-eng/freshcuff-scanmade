@@ -31,7 +31,7 @@ if (srv) await new Promise((r, j) => { srv.stdout.once('data', r); srv.once('exi
 const BASE = EXT_URL || `http://127.0.0.1:${PORT}/`;
 const LOCAL_HOSTS = ['127.0.0.1', 'localhost', new URL(BASE).hostname];
 const browser = await chromium.launch();
-const problems = []; const external = []; const tabLog = [];
+const problems = []; const external = []; const tabLog = []; let hiddenCheck = null;
 let ok = false;
 try {
   const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 }, deviceScaleFactor: 1, acceptDownloads: true });
@@ -88,12 +88,45 @@ try {
   if (fit.sizes !== 7) problems.push(`expected 7 sizes, got ${fit.sizes}`);
   if (fit.status !== 'custom_ready') fail('sample hand should be custom_ready, got ' + fit.status);
 
-  await tabTo('#s3-build'); await page.keyboard.press('Enter');
-  lap('build started');
+  await tabTo('#s3-build');
+  // Emulate the person switching tabs during the build: page hidden AND the viewer at zero size while the
+  // result arrives (this used to leave a blank view with labels stuck in the corner).
+  await page.evaluate(() => {
+    Object.defineProperty(document, 'hidden', { configurable: true, get: () => true });
+    Object.defineProperty(document, 'visibilityState', { configurable: true, get: () => 'hidden' });
+    document.dispatchEvent(new Event('visibilitychange'));
+    document.querySelector('#viewer').style.display = 'none';
+  });
+  await page.keyboard.press('Enter');
+  lap('build started (page hidden)');
   await page.waitForTimeout(1500); await shot('04a_building');
   await page.waitForSelector('#build-done:not([hidden]), #error:not([hidden])', { timeout: 15 * MIN });
   if (await page.$('#error:not([hidden])')) { await shot('error_build', true); fail('build error: ' + await page.textContent('#err-tech')); }
   lap('cuff ready (build done)');
+  await page.waitForTimeout(500);
+  await page.evaluate(() => {   // come back to the tab
+    delete document.hidden; delete document.visibilityState;
+    document.querySelector('#viewer').style.display = '';
+    document.dispatchEvent(new Event('visibilitychange'));
+  });
+  await page.waitForTimeout(800);
+  const vis = await page.evaluate(() => {
+    const v = document.querySelector('#viewer').getBoundingClientRect();
+    const ls = [...document.querySelectorAll('#labels .lbl:not(.hidden)')].map(e => e.getBoundingClientRect());
+    const inside = ls.filter(r => r.left >= v.left - 1 && r.right <= v.right + 1 && r.top >= v.top - 1 && r.bottom <= v.bottom + 1);
+    const distinct = new Set(ls.map(r => Math.round(r.left / 20) + ':' + Math.round(r.top / 20))).size;
+    return { coverage: window.__fc.viewer.coverage(), labels: ls.length, inside: inside.length, distinct };
+  });
+  // the GPU may also drop the WebGL context of a background tab: lose it, give it back, the view must come back
+  await page.evaluate(() => { const gl = window.__fc.viewer.renderer.getContext(); window.__lc = gl.getExtension('WEBGL_lose_context'); window.__lc && window.__lc.loseContext(); });
+  await page.waitForTimeout(400);
+  await page.evaluate(() => window.__lc && window.__lc.restoreContext());
+  await page.waitForTimeout(1200);
+  vis.coverage_after_context_restore = await page.evaluate(() => window.__fc.viewer.coverage());
+  hiddenCheck = vis; console.log('view after hidden build:', JSON.stringify(vis));
+  if (!(vis.coverage_after_context_restore > 0.02)) fail('3D view blank after a WebGL context loss: ' + JSON.stringify(vis));
+  if (!(vis.coverage > 0.02)) fail('3D view blank after the page was hidden during the build: ' + JSON.stringify(vis));
+  if (!(vis.labels >= 2 && vis.inside === vis.labels && vis.distinct >= 2)) fail('labels misplaced after hidden build: ' + JSON.stringify(vis));
   await page.waitForTimeout(800); await shot('04_result'); await shot('04_result_full', true);
   const bstatus = await page.evaluate(() => window.__fc.S.build.status);
   if (bstatus !== 'cuff_ready') fail('build status ' + bstatus);
@@ -105,6 +138,8 @@ try {
   const head = readFileSync(p3).subarray(0, 2).toString('latin1'); const sz = statSync(p3).size;
   if (!name3.endsWith('.3mf') || head !== 'PK' || sz < 50_000) fail(`3MF download invalid: ${name3} ${sz} B head=${head}`);
   console.log(`3MF ok: ${name3} (${(sz / 1e6).toFixed(2)} MB)`);
+  const stlName = await page.getAttribute('a.dl[download$=".stl"]', 'download');
+  if (stlName !== name3.replace(/_P1S_PETG\.3mf$/, '.stl')) fail(`STL name ${stlName} does not match the 3MF ${name3}`);
   for (const [sel, ext] of [['a.dl[download$=".stl"]', '.stl'], ['a.dl[download$=".html"]', '.html'], ['a.dl[download$=".json"]', '.json']]) {
     const el = await page.$(sel); if (!el) { problems.push('missing download ' + ext); continue; }
     const [d] = await Promise.all([page.waitForEvent('download'), el.click()]);
@@ -117,7 +152,7 @@ try {
   await rp.screenshot({ path: path.join(OUT, '05_report.png'), fullPage: true }); await rp.close();
 
   const appT = await page.evaluate(() => window.__fc.S.timings);
-  writeFileSync(path.join(OUT, 'timings.json'), JSON.stringify({ wall_ms: T, app_ms: appT, fit, tab_stops: tabLog, external_requests: external, problems, when: new Date().toISOString(), mock: MOCK }, null, 1));
+  writeFileSync(path.join(OUT, 'timings.json'), JSON.stringify({ wall_ms: T, app_ms: appT, fit, hidden_tab_check: hiddenCheck, tab_stops: tabLog, external_requests: external, problems, when: new Date().toISOString(), mock: MOCK }, null, 1));
 
   // ---- Portuguese toggle (keyboard) on the result page
   await page.keyboard.press('Shift+Tab'); await page.focus('#lang'); await page.keyboard.press('Enter'); await page.waitForTimeout(300);

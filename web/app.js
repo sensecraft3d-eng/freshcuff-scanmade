@@ -64,7 +64,7 @@ onLang(() => { if (S.toolsReady) toolsProgress(100); else if (S.toolsError) tool
 // ---------------------------------------------------------------- viewer
 const viewer = new Viewer($('#viewer'), $('#canvas'), $('#labels'));
 function labelTexts() { viewer.labelText = { dorsum: t('label_dorsum'), fingers: t('label_fingers'), wrist: t('label_wrist'), knuckles: t('label_knuckles'), band: t('label_band'), cuff: t('label_cuff') }; }
-labelTexts();
+labelTexts(); window.__fc.viewer = viewer;   // test hook (coverage of the 3D view)
 onLang(() => { labelTexts(); viewer.refreshLabels(); renderLegend(); });
 $$('[data-view]').forEach(b => b.addEventListener('click', () => viewer.frame(b.dataset.view)));
 $$('[data-show]').forEach(b => b.addEventListener('click', () => {
@@ -453,7 +453,10 @@ function renderResult() {
   const item = (cls, ext, title, sub, href, name, bytes) => `<a class="dl ${cls}" href="${href}" download="${esc(name)}"><span class="fi">${ext}</span><span><span class="dt">${esc(title)}</span><span class="ds">${esc(sub)}</span></span><span class="dsz">${bytes ? sizeTxt(bytes) : ''}</span></a>`;
   let h = '';
   if (ok && F['3mf']) h += item('primary', '3MF', t('dl_3mf'), t('dl_3mf_sub'), blobUrl(F['3mf'].bytes, 'model/3mf'), F['3mf'].name, F['3mf'].bytes.byteLength);
-  if (ok && F.stl) h += item('', 'STL', t('dl_stl'), t('dl_stl_sub'), blobUrl(F.stl.bytes, 'model/stl'), F.stl.name, F.stl.bytes.byteLength);
+  // name the STL like the 3MF (FreshCuff_Custom_W82.0_L.stl), whatever the core calls its work file
+  const vid = S.ana?.custom?.variant;
+  const stlName = F['3mf'] && /_P1S_PETG\.3mf$/i.test(F['3mf'].name) ? F['3mf'].name.replace(/_P1S_PETG\.3mf$/i, '.stl') : vid ? `FreshCuff_Custom_${vid}.stl` : (F.stl && F.stl.name);
+  if (ok && F.stl) h += item('', 'STL', t('dl_stl'), t('dl_stl_sub'), blobUrl(F.stl.bytes, 'model/stl'), stlName, F.stl.bytes.byteLength);
   // the core's standalone printable report when present; the page's own report (with 3D snapshots) otherwise
   const rep = F.report_html ? F.report_html.bytes : reportHtml();
   h += item('', 'HTML', t('dl_report'), t('dl_report_sub'), blobUrl(rep, 'text/html'), 'FreshCuff_Fit_report.html', rep.byteLength ?? rep.length);

@@ -45,7 +45,16 @@ export class Viewer {
     this.handMeshes = []; this.cuffMeshes = []; this.markerNodes = [];
     this.picking = false; this.onPick = null;
     this._needs = true;
+    // The view must survive being hidden (background tab, display:none, zero-size webview): never compute a
+    // projection from a 0 size, remember a pending camera fit, and redo it when the viewer is visible again.
+    this._pendingView = 'reset'; this._lastView = 'reset';
     new ResizeObserver(() => this.resize()).observe(container);
+    if ('IntersectionObserver' in window) new IntersectionObserver(es => { if (es.some(e => e.isIntersecting)) this.resize(); }).observe(container);
+    document.addEventListener('visibilitychange', () => { if (!document.hidden) this.resize(); });
+    window.addEventListener('pageshow', () => this.resize());
+    window.addEventListener('focus', () => this.resize());
+    canvas.addEventListener('webglcontextlost', e => e.preventDefault());              // allow the browser to give it back
+    canvas.addEventListener('webglcontextrestored', () => { this._pendingView = this._pendingView || null; this.resize(); this.request(); });
     this.resize();
     this._loop = this._loop.bind(this); requestAnimationFrame(this._loop);
     this._bindPointer();
@@ -53,13 +62,24 @@ export class Viewer {
   }
 
   request() { this._needs = true; }
+  _visible() { return this.container.clientWidth > 0 && this.container.clientHeight > 0 && !document.hidden; }
+  _cameraOk() {
+    const c = this.camera; const e = c.projectionMatrix.elements;
+    return Number.isFinite(c.aspect) && c.aspect > 0 && [c.position.x, c.position.y, c.position.z].every(Number.isFinite) && e.every(Number.isFinite);
+  }
   _loop() {
-    if (this._needs) { this._needs = false; this.renderer.render(this.scene, this.camera); this._placeLabels(); }
+    if (this._needs && this._visible()) {
+      if (this._pendingView || !this._cameraOk()) this.frame(this._pendingView || this._lastView || 'reset');
+      this._needs = false; this.renderer.render(this.scene, this.camera); this._placeLabels();
+    }
     requestAnimationFrame(this._loop);
   }
   resize() {
-    const w = this.container.clientWidth || 1, h = this.container.clientHeight || 1;
-    this.renderer.setSize(w, h, false); this.camera.aspect = w / h; this.camera.updateProjectionMatrix(); this.request();
+    const w = this.container.clientWidth, h = this.container.clientHeight;
+    if (!(w > 0 && h > 0)) return;                 // hidden: keep the last good size; resize again when visible
+    this.renderer.setSize(w, h, false); this.camera.aspect = w / h; this.camera.updateProjectionMatrix();
+    if (this._pendingView || !this._cameraOk()) this.frame(this._pendingView || this._lastView || 'reset');
+    this.request();
   }
 
   clear() {
@@ -186,6 +206,11 @@ export class Viewer {
   }
 
   frame(view) {
+    this._lastView = view || 'reset';
+    const w = this.container.clientWidth, h = this.container.clientHeight;
+    if (!(w > 0 && h > 0) && !this._snapping) { this._pendingView = this._lastView; this.request(); return; }   // fit later
+    if (!this._snapping) { this.renderer.setSize(w, h, false); this.camera.aspect = w / h; }
+    this._pendingView = null;
     const b = this._bbox(); const c = new THREE.Vector3(); b.getCenter(c); const r = b.getSize(new THREE.Vector3()).length() / 2;
     const d = r / Math.sin(THREE.MathUtils.degToRad(this.camera.fov / 2)) * (this.camera.aspect < 1 ? 1.25 / this.camera.aspect : 0.92);
     const target = this.state.mode === 'raw' ? c : new THREE.Vector3(0, 0, this.state.mode === 'check' ? c.z * 0.35 : c.z * 0.2);
@@ -200,7 +225,7 @@ export class Viewer {
   setLabels(list) {
     this.labelsEl.textContent = ''; this.labels = [];
     for (const l of list) {
-      const el = document.createElement('div'); el.className = 'lbl ' + (l.cls || ''); el.textContent = l.text;
+      const el = document.createElement('div'); el.className = 'lbl hidden ' + (l.cls || ''); el.textContent = l.text;   // shown once placed
       this.labelsEl.appendChild(el); this.labels.push({ el, at: l.at });
     }
     this.request();
@@ -233,6 +258,7 @@ export class Viewer {
   _placeLabels() {
     if (!this.labels.length) return;
     const w = this.container.clientWidth, h = this.container.clientHeight; const placed = [];
+    if (!(w > 0 && h > 0)) return;
     for (const l of this.labels) {
       const p = l.at().project(this.camera);
       const x = (p.x * 0.5 + 0.5) * w, y = (-p.y * 0.5 + 0.5) * h;
@@ -277,13 +303,30 @@ export class Viewer {
 
   snapshot(view, width = 900, height = 640) {
     const oldW = this.container.clientWidth, oldH = this.container.clientHeight;
-    const saved = { pos: this.camera.position.clone(), target: this.controls.target.clone() };
-    this.renderer.setSize(width, height, false); this.camera.aspect = width / height; this.camera.updateProjectionMatrix();
-    if (view) this.frame(view);
+    const saved = { pos: this.camera.position.clone(), target: this.controls.target.clone(), pending: this._pendingView, last: this._lastView };
+    this._snapping = true;
+    try {
+      this.renderer.setSize(width, height, false); this.camera.aspect = width / height; this.camera.updateProjectionMatrix();
+      this.frame(view || 'reset');
+      this.renderer.render(this.scene, this.camera);
+      return this.canvas.toDataURL('image/png');
+    } finally {
+      this._snapping = false;
+      this.camera.position.copy(saved.pos); this.controls.target.copy(saved.target); this.controls.update();
+      this._lastView = saved.last; this._pendingView = saved.pending;
+      if (oldW > 0 && oldH > 0) { this.renderer.setSize(oldW, oldH, false); this.camera.aspect = oldW / oldH; this.camera.updateProjectionMatrix(); }
+      else this._pendingView = this._lastView || 'reset';     // taken while hidden: fit again when shown
+      this.request();
+    }
+  }
+
+  // Test helper: share of canvas pixels that are not empty background (renders now, reads back at low resolution).
+  coverage() {
+    if (!this._visible()) return 0;
     this.renderer.render(this.scene, this.camera);
-    const url = this.canvas.toDataURL('image/png');
-    this.camera.position.copy(saved.pos); this.controls.target.copy(saved.target); this.controls.update();
-    this.renderer.setSize(oldW, oldH, false); this.camera.aspect = oldW / oldH; this.camera.updateProjectionMatrix(); this.request();
-    return url;
+    const gl = this.renderer.getContext(); const W = gl.drawingBufferWidth, H = gl.drawingBufferHeight;
+    const px = new Uint8Array(W * H * 4); gl.readPixels(0, 0, W, H, gl.RGBA, gl.UNSIGNED_BYTE, px);
+    let n = 0, k = 0; for (let i = 3; i < px.length; i += 4 * 7) { k++; if (px[i] > 0) n++; }
+    this.request(); return k ? n / k : 0;
   }
 }
