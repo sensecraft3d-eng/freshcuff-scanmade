@@ -8,6 +8,9 @@ Keys:
   arquivos  -> files the worker copies into the Python file system (py/**, dados/**, grade/**). Grid variants
                (grade/W*.stl) are fetched only when needed, but are still checked against this list.
   pagina    -> files the page fetches directly and checks (sample scan).
+  pyodide   -> every file of the vendored Pyodide runtime (web/pyodide/: pyodide.js, pyodide.asm.js/.wasm,
+               python_stdlib.zip, pyodide-lock.json, all wheels/zips). The worker fetches each one, checks its
+               sha256 against this list and only then executes/loads it (see web/worker.js, "Integrity chain").
 """
 import hashlib, json, sys
 from pathlib import Path
@@ -33,7 +36,11 @@ def collect():
     for p in sorted((WEB / 'examples').glob('*')):
         if p.is_file() and p.suffix.lower() in {'.ply', '.stl', '.obj', '.glb'}:
             page[p.relative_to(WEB).as_posix()] = sha(p)
-    return {'gerador': 'FreshCuff ScanMade web', 'arquivos': files, 'pagina': page}
+    runtime = {}
+    for p in sorted((WEB / 'pyodide').glob('*')):
+        if p.is_file():
+            runtime[p.relative_to(WEB).as_posix()] = sha(p)
+    return {'gerador': 'FreshCuff ScanMade web', 'arquivos': files, 'pagina': page, 'pyodide': runtime}
 
 
 def main():
@@ -43,11 +50,12 @@ def main():
         old = json.loads(out.read_text(encoding='utf-8'))
         bad = [k for k in set(old.get('arquivos', {})) | set(new['arquivos'])
                if old.get('arquivos', {}).get(k) != new['arquivos'].get(k)]
-        bad += [k for k in set(old.get('pagina', {})) | set(new['pagina']) if old.get('pagina', {}).get(k) != new['pagina'].get(k)]
+        for key in ('pagina', 'pyodide'):
+            bad += [k for k in set(old.get(key, {})) | set(new[key]) if old.get(key, {}).get(k) != new[key].get(k)]
         print('manifest OK' if not bad else 'manifest out of date: ' + ', '.join(sorted(bad)))
         return 1 if bad else 0
     out.write_text(json.dumps(new, indent=1) + '\n', encoding='utf-8')
-    print(f"wrote {out} ({len(new['arquivos'])} python-side files, {len(new['pagina'])} page files)")
+    print(f"wrote {out} ({len(new['arquivos'])} python-side files, {len(new['pyodide'])} runtime files, {len(new['pagina'])} page files)")
     return 0
 
 

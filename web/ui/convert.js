@@ -49,9 +49,30 @@ export function toBinarySTL(pos) {
 
 function geometryFromPositions(pos) { const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.BufferAttribute(pos, 3)); return g; }
 
+// A .gltf is accepted only when self-contained (buffers as data: URIs). It is repacked here as a GLB in memory,
+// because the page CSP (connect-src 'self') does not let the loader fetch data: URIs, and external files are out of reach.
+function gltfToGlb(text) {
+  let j; try { j = JSON.parse(text); } catch (e) { const er = new Error('gltf json'); er.code = 'empty'; throw er; }
+  const bufs = (j.buffers || []).map(b => {
+    const m = /^data:[^,]*?;base64,(.*)$/s.exec(b.uri || '');
+    if (!m) { const er = new Error('gltf external'); er.code = 'gltf_external'; throw er; }
+    const bin = atob(m[1]); const u = new Uint8Array(bin.length); for (let i = 0; i < bin.length; i++) u[i] = bin.charCodeAt(i); return u;
+  });
+  for (const im of j.images || []) if (im.uri && !/^data:/.test(im.uri)) delete im.uri;      // textures are not needed
+  const offs = []; let total = 0; for (const u of bufs) { offs.push(total); total += (u.length + 3) & ~3; }
+  const bin = new Uint8Array(total); bufs.forEach((u, i) => bin.set(u, offs[i]));
+  for (const bv of j.bufferViews || []) { bv.byteOffset = (bv.byteOffset || 0) + (offs[bv.buffer || 0] || 0); bv.buffer = 0; }
+  j.buffers = total ? [{ byteLength: total }] : [];
+  let js = new TextEncoder().encode(JSON.stringify(j)); const jl = (js.length + 3) & ~3;
+  const out = new Uint8Array(12 + 8 + jl + (total ? 8 + total : 0)); const dv = new DataView(out.buffer);
+  dv.setUint32(0, 0x46546C67, true); dv.setUint32(4, 2, true); dv.setUint32(8, out.length, true);
+  dv.setUint32(12, jl, true); dv.setUint32(16, 0x4E4F534A, true); out.fill(0x20, 20, 20 + jl); out.set(js, 20);
+  if (total) { dv.setUint32(20 + jl, total, true); dv.setUint32(24 + jl, 0x004E4942, true); out.set(bin, 28 + jl); }
+  return out.buffer;
+}
 async function parseGLTF(buf, ext) {
   const loader = new GLTFLoader();
-  const data = ext === 'gltf' ? new TextDecoder().decode(buf) : buf;
+  const data = ext === 'gltf' ? gltfToGlb(new TextDecoder().decode(buf)) : buf;
   return await new Promise((res, rej) => loader.parse(data, '', res, rej));
 }
 

@@ -74,7 +74,8 @@ def _session(work):
         if not f.exists():
             return None
         d = np.load(f)
-        ses = {'Vp': d['Vp'], 'F': d['F'], 'bv': d['bv'], 'Vd': d['Vd'], 'Fd': d['Fd'], 'readings': {}}
+        ses = {'Vp': d['Vp'], 'F': d['F'], 'bv': d['bv'], 'nv': d['nv'] if 'nv' in d else np.zeros((0, 3)),
+               'Vd': d['Vd'], 'Fd': d['Fd'], 'readings': {}}
         _CACHE[key] = ses
     return ses
 
@@ -127,12 +128,13 @@ def _reading(ses, ov, lang):
     rd = ses['readings'].get(key)
     if rd is None:
         ses['readings'].clear()                       # one reading in memory at a time
+        ses.pop('an_cache', None)
         rd = C.read_hand(ses['Vp'], ses['F'], ov, lang)
         ses['readings'][key] = rd
     return rd
 
 
-def _quality(info, rd, near, n_boundary, nonmanifold, lang, band_edge=None):
+def _quality(info, rd, near, n_boundary, nonmanifold, lang, band_edge=None, near_nm=0):
     T = lambda k, **kw: tr(k, lang, **kw)
     score, notes = 100.0, []
     if band_edge is not None:
@@ -151,7 +153,9 @@ def _quality(info, rd, near, n_boundary, nonmanifold, lang, band_edge=None):
         notes.append(T('q_one_piece'))
     notes.append(T('q_units', units=info['units_guess'], c=100 * info['units_confidence']))
     score -= 30 * (1 - info['units_confidence'])
-    if nonmanifold > 20:
+    if near_nm:
+        notes.append(T('q_nonmanifold_near', n=near_nm)); score -= 50
+    elif nonmanifold > 20:
         notes.append(T('q_nonmanifold', n=nonmanifold)); score -= 5
     if rd is not None:
         if rd.frac_open > 0.02:
@@ -270,11 +274,12 @@ def prepare(scan_path, work_dir, opts=None, progress=None):
             return _clean(out)
         R, centre = C.normalised_pca(V)
         Vp = (V - centre) @ R.T
-        bnd, nonman = M.edge_stats(Fc, len(Vp))
+        bnd, nonman, nme = M.edge_stats(Fc, len(Vp), True)
         bv = Vp[np.unique(bnd)] if len(bnd) else np.zeros((0, 3))
+        nv = Vp[np.unique(nme)] if len(nme) else np.zeros((0, 3))
         Vd, Fd, _ = M.cluster_decimate(Vp, Fc, int(opts.get('display_faces') or DISPLAY_FACES))
-        np.savez(work / 'fc_scan.npz', Vp=Vp, F=Fc, bv=bv, Vd=Vd, Fd=Fd)
-        ses = {'Vp': Vp, 'F': Fc, 'bv': bv, 'Vd': Vd, 'Fd': Fd, 'readings': {}}
+        np.savez(work / 'fc_scan.npz', Vp=Vp, F=Fc, bv=bv, nv=nv, Vd=Vd, Fd=Fd)
+        ses = {'Vp': Vp, 'F': Fc, 'bv': bv, 'nv': nv, 'Vd': Vd, 'Fd': Fd, 'readings': {}}
         _CACHE[str(work.resolve())] = ses
         info.update(watertight=bool(len(bnd) == 0 and nonman == 0), open_edges=int(len(bnd)), nonmanifold_edges=int(nonman))
         st = {'api': API_VERSION, 'scan_name': scan_path.name, 'scan_sha256': sha, 'scan_bytes': scan_path.stat().st_size,
@@ -285,6 +290,7 @@ def prepare(scan_path, work_dir, opts=None, progress=None):
     if opts.get('data_dir'):
         st['data_dir'] = str(opts['data_dir'])
     msgs.info('units', units=info['units_guess'], ext=max(info['extent_mm']))
+    scan_units_unsure = info['units_confidence'] < 0.9
     if info['units_confidence'] < 0.6:
         msgs.warn('units_unsure', units=info['units_guess'], ext=max(info['extent_mm']))
     elif info['units_confidence'] < 0.9 and info['units_guess'] == 'cm':
@@ -294,6 +300,7 @@ def prepare(scan_path, work_dir, opts=None, progress=None):
     scan = {'faces': info['faces'], 'vertices': info['vertices'], 'extent_mm': [round(x, 1) for x in info['extent_mm']],
             'units_guess': info['units_guess'], 'units_confidence': info['units_confidence'], 'mm_per_unit': info['mm_per_unit'],
             'watertight': info['watertight'], 'open_edges': info['open_edges'], 'open_edges_near_band': None,
+            'nonmanifold_edges': info['nonmanifold_edges'], 'nonmanifold_near_band': None,
             'components': info['components'], 'sha256': sha, 'file': scan_path.name}
     out['scan'] = scan
     say(tr('prog_landmarks', lang))
@@ -313,6 +320,10 @@ def prepare(scan_path, work_dir, opts=None, progress=None):
     _notes_to(msgs, rd.notes)
     near, _, near_z = C.band_edge_check(rd, ses['bv'] * np.array(rd.flips, dtype=float))
     scan['open_edges_near_band'] = near
+    near_nm = C.band_edge_check(rd, ses['nv'] * np.array(rd.flips, dtype=float))[0]
+    scan['nonmanifold_near_band'] = near_nm
+    if near_nm:
+        msgs.error('nonmanifold_near_band', n=near_nm)
     if near:
         msgs.error('open_near_band', margin=C.HOLE_MARGIN, n=near)
     elif info['open_edges']:
@@ -321,7 +332,7 @@ def prepare(scan_path, work_dir, opts=None, progress=None):
         msgs.warn('drift', mm=rd.drift)
     for a in rd.amb:
         msgs.append({'level': 'warn', 'code': 'needs_' + a['kind'], 'text': a['message']})
-    scan['quality'] = _quality(info, rd, near, info['open_edges'], info['nonmanifold_edges'], lang, _band_edge_length(ses, rd))
+    scan['quality'] = _quality(info, rd, near, info['open_edges'], info['nonmanifold_edges'], lang, _band_edge_length(ses, rd), near_nm)
     Mx = C.view_matrix(rd)
     ovl = _overlays(rd, Mx)
     _write_glb(work / 'preview.glb', ses, Mx, lines=[('knuckle_line', ovl['knuckle_line'], (230, 40, 40)),
@@ -346,7 +357,7 @@ def analyze(work_dir, overrides=None, progress=None):
     lang = (overrides or {}).get('lang') or ((st or {}).get('opts') or {}).get('lang') or 'en'
     msgs = Messages(lang)
     out = {'api': API_VERSION, 'status': 'refused', 'sizes': [], 'recommended_size': None, 'size_by_tape': None,
-           'smallest_fitting_size': None, 'custom': None, 'result_glb': None, 'legend': _legend(), 'messages': msgs}
+           'smallest_fitting_size': None, 'custom': None, 'scale_confirmed': False, 'result_glb': None, 'legend': _legend(), 'messages': msgs}
     if st is None or ses is None:
         msgs.error('build_no_analysis')
         return _clean(out)
@@ -406,38 +417,64 @@ def analyze(work_dir, overrides=None, progress=None):
     else:
         msgs.warn('no_tape', scan=rd.tape_scan_cm)
     size_tape = t_tape or t_scan
+    scale_ok = tape is not None                              # given and within tolerance (checked above)
     out['size_by_tape'] = size_tape
+    out['size_by_tape_source'] = 'tape' if tape is not None else 'scan'
+    out['scale_confirmed'] = scale_ok
     out['knuckle_circumference_cm'] = {'scan': round(rd.tape_scan_cm, 2), 'tape': tape}
+    info = st['info']
+    if not scale_ok and info['units_confidence'] < 0.9:
+        msgs.warn('units_confirm', units=info['units_guess'], c=100 * info['units_confidence'])
     cm = tape if tape is not None else rd.tape_scan_cm
     msgs.info('size_by_tape', cm=cm, src=tr('src_tape' if tape is not None else 'src_scan', lang), size=size_tape)
     lim = F.fronteira(cm)
     if lim:
         msgs.info('size_border', lim=lim)
 
-    # ---- band usable?
-    near, _, near_z = C.band_edge_check(rd, ses['bv'] * np.array(rd.flips, dtype=float))
+    # ---- band usable?  (no size is recommended from a band that cannot be read)
+    flips = np.array(rd.flips, dtype=float)
+    near = C.band_edge_check(rd, ses['bv'] * flips)[0]
+    near_nm = C.band_edge_check(rd, ses['nv'] * flips)[0]
     if rd.gaps:
         msgs.error('band_gap', z0=rd.gaps[0], z1=rd.gaps[-1])
-        out['recommended_size'] = size_tape
         return finish('refused')
     if not rd.complete:
         msgs.error('band_thumb' if rd.thumb_cut else 'band_incomplete')
-        out['recommended_size'] = size_tape
         return finish('refused')
     if near:
         msgs.error('open_near_band', margin=C.HOLE_MARGIN, n=near)
-        out['recommended_size'] = size_tape
+        return finish('refused')
+    if near_nm:
+        msgs.error('nonmanifold_near_band', n=near_nm)
         return finish('refused')
     if rd.drift > 8:
         msgs.warn('drift', mm=rd.drift)
 
-    # ---- 7 standard sizes
-    say(tr('prog_sizes', lang))
-    sizes, raw, (ang, org), est_cad = C.fit_sizes(rd, lang, progress=say)
+    # ---- geometry: 7 standard sizes + custom range.  Independent of the tape, so it is computed once per reading
+    # and re-used when the user only adds or corrects the tape measurement.
+    key = _ov_key(ov) + lang
+    cache = ses.get('an_cache')
+    if cache is None or cache['key'] != key:
+        say(tr('prog_sizes', lang))
+        sizes, raw, (ang, org), est_cad = C.fit_sizes(rd, lang, progress=say)
+        say(tr('prog_custom', lang))
+        st['runs'] = int(st.get('runs', 0)) + 1
+        an_dir = work / ('analysis_%02d' % st['runs'])
+        manual = ', '.join(k + '=' + str(ov[k]) for k in ('dorsum', 'fingers') if ov[k] != 'auto') or None
+        data_dir = Path(st.get('data_dir') or (HERE.parent / 'dados'))
+        grid_json = data_dir / 'aberturas_grade_W80_84.json'
+        if not grid_json.exists():
+            grid_json = HERE / 'aberturas_grade_W80_84.json'
+        try:
+            cu, stop = C.custom_cuff(rd, str(grid_json), an_dir, 'hand', st['scan_sha256'], None, manual, progress=say), None
+        except C.CustomStop as e:
+            cu, stop = None, e
+        cache = ses['an_cache'] = dict(key=key, sizes=sizes, raw=raw, ang=ang, org=org, est=est_cad, cu=cu, stop=stop, an_dir=an_dir)
+    sizes, raw, ang, org, est_cad, cu, stop, an_dir = (cache[k] for k in ('sizes', 'raw', 'ang', 'org', 'est', 'cu', 'stop', 'an_dir'))
     out['sizes'] = sizes
     t_geo = next((s['size'] for s in sizes if s['fits']), None)
     out['smallest_fitting_size'] = t_geo
-    out['recommended_size'] = t_geo if t_geo is not None else size_tape
+    out['recommended_size'] = t_geo                          # only a size that PASSED the geometric check; never the tape estimate
     if t_geo is None:
         msgs.warn('size_none')
     else:
@@ -447,33 +484,28 @@ def analyze(work_dir, overrides=None, progress=None):
     if rd.side == 'left':
         msgs.info('left_mirror_note')
 
-    # ---- custom cuff
-    say(tr('prog_custom', lang))
-    st['runs'] = int(st.get('runs', 0)) + 1
-    an_dir = work / ('analysis_%02d' % st['runs'])
-    manual = ', '.join(k + '=' + str(ov[k]) for k in ('dorsum', 'fingers') if ov[k] != 'auto') or None
-    data_dir = Path(st.get('data_dir') or (HERE.parent / 'dados'))
-    grid_json = data_dir / 'aberturas_grade_W80_84.json'
-    if not grid_json.exists():
-        grid_json = HERE / 'aberturas_grade_W80_84.json'
-    try:
-        cu = C.custom_cuff(rd, str(grid_json), an_dir, 'hand', st['scan_sha256'], out['recommended_size'], manual, progress=say)
-    except C.CustomStop as e:
-        kw = dict(e.kw)
+    if cu is None:                                           # no custom cuff for this hand
+        kw = dict(stop.kw)
         out['custom_range'] = kw.pop('grid', None)
-        msgs.add('warn' if e.status == 'standard_only' else 'error', e.code, **kw)
+        status = stop.status
+        msgs.add('warn' if status == 'standard_only' else 'error', stop.code, **kw)
+        if t_geo is not None:
+            msgs.info('use_standard', size=t_geo)
+        else:
+            msgs.warn('no_verified_fit', hint=tr('tape_hint', lang, size=size_tape))
+            if status == 'standard_only':
+                status = 'no_verified_standard_fit'
         msgs.info('disclaimer')
-        rs = raw.get(out['recommended_size'])
+        rs = raw.get(t_geo)
         if rs is not None:
             Mx = C.view_matrix(rd, C.pose_tuple(rs, ang, org))
             Vv = C.apply(Mx, ses['Vd'])
             mask, g = C.band_gap(Vv, rs['_ab'], rd.side == 'left', [(e['z_cuff'], P) for e, P in zip(est_cad, rs['_pos'])])
             col = np.tile(np.array(C.SKIN_RGB, dtype=np.uint8), (len(Vv), 1))
             col[mask] = C.gap_colors(g)
-            outline = [_outline(rs['_ab'], rd.side == 'left')]
-            out['heatmap_for'] = {'kind': 'standard', 'size': out['recommended_size']}
-            return finish(e.status, Mx, col, [('cuff_outline', outline[0], C.CUFF_RGB)])
-        return finish(e.status)
+            out['heatmap_for'] = {'kind': 'standard', 'size': t_geo}
+            return finish(status, Mx, col, [('cuff_outline', _outline(rs['_ab'], rd.side == 'left'), C.CUFF_RGB)])
+        return finish(status)
     _notes_to(msgs, cu['notes'])
     a, b = cu['before'], cu['after']
     r = cu['r']
@@ -494,6 +526,8 @@ def analyze(work_dir, overrides=None, progress=None):
     msgs.info('custom_ok', W=cu['W'], side=tr(rd.side, lang), low=float(cu['low'].max()))
     msgs.info('custom_gap', a=a['folga_media_corte_mais_proximo_mm'], b=b['folga_media_corte_mais_proximo_mm'],
               pct=100 * b['frac_corte_mais_proximo_ate_0_5mm'], ov=b['maior_sobreposicao_mm'], travel=cu['travel'])
+    if not scale_ok:
+        msgs.warn('custom_needs_tape', W=cu['W'], scan=rd.tape_scan_cm, tol=C.TOL_TAPE_CM)
     msgs.info('disclaimer')
     pose = C.pose_tuple(r, cu['ang'], cu['org'])
     Mx = C.view_matrix(rd, pose)
@@ -503,11 +537,14 @@ def analyze(work_dir, overrides=None, progress=None):
     col[mask] = C.gap_colors(g)
     out['heatmap_for'] = {'kind': 'custom', 'W': cu['W']}
     out['sections'] = _sections_payload(cu['est'], r['_pos'], cu['ab'], cu['ab2'])
+    status = 'custom_ready' if scale_ok else 'custom_needs_tape'
+    if not scale_ok:
+        out['needs'] = ['tape_cm']
     st['analysis'] = {'dir': an_dir.name, 'variant': out['custom']['variant'], 'pose': [pose[0], list(pose[1]), list(pose[2])],
                       'W': cu['W'], 'summary': {k: out[k] for k in ('sizes', 'recommended_size', 'size_by_tape', 'smallest_fitting_size', 'custom', 'custom_range', 'sections')},
-                      'tape_cm': tape, 'landmarks': out['landmarks'], 'lang': lang,
-                      'messages': list(msgs)}
-    return finish('custom_ready', Mx, col, [('cuff_outline', _outline(cu['ab2'], rd.side == 'left'), C.CUFF_RGB)])
+                      'tape_cm': tape, 'tape_scan_cm': rd.tape_scan_cm, 'scale_confirmed': bool(scale_ok),
+                      'landmarks': out['landmarks'], 'lang': lang, 'messages': list(msgs)}
+    return finish(status, Mx, col, [('cuff_outline', _outline(cu['ab2'], rd.side == 'left'), C.CUFF_RGB)])
 
 
 def _outline(ab, left):
@@ -548,6 +585,16 @@ def build(work_dir, grid_dir, data_dir, progress=None):
         msgs.error('build_no_analysis')
         return _clean(out)
     an = st['analysis']
+    # Independent scale confirmation is required before any manufacturing file exists: the tape measurement must
+    # have been given and must agree with the scan (re-checked here from the stored numbers).
+    tape, tscan = an.get('tape_cm'), an.get('tape_scan_cm')
+    confirmed = bool(an.get('scale_confirmed')) and tape is not None and tscan is not None and \
+        math.isfinite(float(tape)) and math.isfinite(float(tscan)) and abs(float(tscan) - float(tape)) <= C.TOL_TAPE_CM
+    if not confirmed:
+        out['status'] = 'needs_input'
+        out['needs'] = ['tape_cm']
+        msgs.error('build_needs_tape')
+        return _clean(out)
     an_dir = work / an['dir']
     st['runs'] = int(st.get('runs', 0)) + 1
     b_dir = work / ('build_%02d' % st['runs'])
@@ -619,6 +666,7 @@ def build(work_dir, grid_dir, data_dir, progress=None):
             msgs.info('build_ok', dif=v.get('dif_folga_bruta_mm') or 0.0)
         else:
             mf.rename(mf.with_suffix('.3mf.rejected'))      # never hand out a project that failed verification
+            hashes.pop('3mf_sha256', None)
             msgs.error('build_verify_failed', what='; '.join(out['verification']['failures']))
         msgs.info('disclaimer')
     # ---- result.glb : hand + generated cuff in the view frame
@@ -650,7 +698,7 @@ def build(work_dir, grid_dir, data_dir, progress=None):
               'tape_cm': an.get('tape_cm'),
               'variant': {'id': vid, 'sha256': var['sha256_refinado']}, 'parameters': p,
               'locks': out['locks'], 'verification': out['verification'], 'verification_raw': ver,
-              'outputs': dict(hashes, **files),
+              'outputs': dict(hashes, **files) if out['status'] == 'cuff_ready' else {'released': False, 'diagnostic_hashes': hashes},
               'environment': GW.versoes(),
               'programs_sha256': {f.name: sha(f) for f in sorted(HERE.glob('*.py'))},
               'data_sha256': {f.name: sha(f) for f in [Path(data_dir) / 'contornos_base.json', Path(data_dir) / 'FreshCuff_R08A_T4_LISA_P1S_R05b.3mf',
@@ -668,6 +716,14 @@ def build(work_dir, grid_dir, data_dir, progress=None):
         files['report_html'] = str(rh.relative_to(work))
     except Exception as e:
         msgs.warn('internal_note', detail='HTML report not available (' + str(e)[:100] + ')')
+    if out['status'] != 'cuff_ready':
+        # Nothing manufacturable leaves a stopped build: the solid stays in work_dir only as a diagnostic
+        # (renamed so it cannot be mistaken for a released file) and is not listed in the result.
+        if stl.exists():
+            stl.rename(stl.with_suffix('.stl.rejected'))
+        files = {k: v for k, v in files.items() if k not in ('stl', '3mf')}
+        out['diagnostic_hashes'] = hashes
+        hashes = {}
     out['files'] = files
     out['hashes'] = hashes
     out['seconds'] = round(time.time() - t0, 2)

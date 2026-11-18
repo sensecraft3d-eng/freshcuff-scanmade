@@ -20,7 +20,7 @@ _T = {
                        'Teal: how much the face is lowered (up to 3 mm).',
                locks='Manufacturing checks on the generated solid', check='Check', value='Value', limit='Limit', ok='OK', fail='FAIL',
                verify='Generated cuff re-checked against the scan', prov='Provenance', files='Files', msgs='Messages',
-               knuckles='from knuckle line', recommended='recommended', by_tape='by tape',
+               knuckles='from knuckle line', recommended='recommended', by_tape='circumference estimate',
                legend_neg='negative = presses into the hand', print='Print / save as PDF'),
     'pt': dict(title='Relatório FreshCuff ScanMade', ready='Cuff pronto', stopped='Barrado - nenhum cuff liberado',
                scan='Scan', hand='Mão', sizes='Tamanhos padrão (encaixe geométrico rígido da faixa de 26 mm)',
@@ -33,7 +33,7 @@ _T = {
                        'Verde-azulado: quanto a face é abaixada (até 3 mm).',
                locks='Travas de fabricação no sólido gerado', check='Trava', value='Valor', limit='Limite', ok='OK', fail='FALHA',
                verify='Cuff gerado conferido contra o scan', prov='Proveniência', files='Arquivos', msgs='Mensagens',
-               knuckles='da linha dos nós', recommended='recomendado', by_tape='pela fita',
+               knuckles='da linha dos nós', recommended='recomendado', by_tape='estimativa pela volta',
                legend_neg='negativo = invade a mão', print='Imprimir / salvar em PDF'),
 }
 _CSS = """

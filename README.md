@@ -84,7 +84,7 @@ You can use a phone app (Polycam, Scaniverse, KIRI Engine, Heges, 3d Scanner App
 - straight wrist;
 - about 5 cm of forearm in the scan.
 
-The band behind the knuckles must be complete all the way round. Also measure around your knuckles with a soft tape in the same pose. The app uses it to double-check the scale.
+The band behind the knuckles must be complete all the way round. Also measure around your knuckles with a soft tape in the same pose. The app needs it before it builds a custom cuff: it confirms the scan's scale.
 
 Full guide: **[docs/SCANNING.md](docs/SCANNING.md)**.
 

@@ -12,17 +12,20 @@ export function buildReport({ prep, ana, build, overrides, changes, snaps, scanN
   const sideTxt = lm.side === 'left' ? t('side_left') : lm.side === 'right' ? t('side_right') : '—';
   const ovr = changes || [];
   const rows = (ana?.sizes || []).map(s => {
-    const w = fitWord(s); const rec = s.size === ana.recommended_size;
+    const w = fitWord(s); const rec = ana.recommended_size != null && s.size === ana.recommended_size;
     return `<tr${rec ? ' class="rec"' : ''}><td><b>${esc(t('size_n', { n: s.size }))}</b>${rec ? ` <span class="tag">${esc(t('recommended'))}</span>` : ''}</td><td class="${w}">${esc(t('fit_' + w))}</td><td class="n">${mm(s.rigid_min)}</td><td class="n">${mm(s.dorsal_min)}</td><td class="n">${mm(s.lateral_min)}</td></tr>`;
   }).join('');
   const c = ana?.custom; const p = c?.predicted || {};
   let recHtml = '';
-  if (ana?.status === 'custom_ready' && c) {
+  if ((ana?.status === 'custom_ready' || ana?.status === 'custom_needs_tape') && c) {
     recHtml = `<h2>${esc(t('rec_title'))}: ${esc(t('rec_custom'))}</h2><p>${esc(t('rec_custom_sub', { W: fmtNum(c.W, 1) }))}</p>
       <table class="kv"><tr><td>${esc(t('custom_pred'))}</td><td class="n">${mm(p.closest_section_gap_before)} → ${mm(p.after)}</td></tr>
       <tr><td>${esc(t('custom_overlap'))}</td><td class="n">${mm(p.max_overlap)}</td></tr>
       ${Number.isFinite(p.share_le_0p5) ? `<tr><td>${esc(t('custom_share'))}</td><td class="n">${fmtNum(p.share_le_0p5 * 100, 0)} %</td></tr>` : ''}
       ${Number.isFinite(c.dorsal_profile_mm_min) ? `<tr><td>${esc(t('custom_lowered'))}</td><td class="n">${mm(Math.abs(c.dorsal_profile_mm_min))}</td></tr>` : ''}</table>`;
+  } else if (ana?.status === 'no_verified_standard_fit' || (ana && ana.recommended_size == null && ana.status !== 'refused')) {
+    recHtml = `<h2>${esc(t('nofit_title'))}</h2><p>${esc(t('nofit_lead'))}</p><ul><li>${esc(t('nofit_1'))}</li><li>${esc(t('nofit_2'))}</li></ul>
+      ${Number.isFinite(ana.size_by_tape) ? `<p class="muted">${esc(t(ana.size_by_tape_source === 'tape' ? 'nofit_est_tape' : 'nofit_est', { n: ana.size_by_tape }))}</p>` : ''}<p>https://makerworld.com/en/models/3595433</p>`;
   } else if (ana?.recommended_size) {
     recHtml = `<h2>${esc(t('rec_title'))}: ${esc(t('rec_standard', { n: ana.recommended_size }))}</h2><p>${esc(t('std_only_lead'))}</p><p>https://makerworld.com/en/models/3595433</p>`;
   }

@@ -57,9 +57,10 @@
           <svg aria-hidden="true" viewBox="0 0 48 48" class="drop-ico"><path d="M24 31V11m0 0-8 8m8-8 8 8" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M9 29v6a4 4 0 0 0 4 4h22a4 4 0 0 0 4-4v-6" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg>
           <p class="drop-title" data-i18n="drop_title">Drop a hand scan here</p>
           <p class="drop-or"><span data-i18n="drop_or">or</span></p>
-          <label class="btn btn-secondary btn-lg" for="file"><span data-i18n="drop_choose">Choose a file</span></label>
-          <input id="file" class="sr-only" type="file" accept=".stl,.obj,.ply,.glb,.gltf,.usdz">
+          <button type="button" class="btn btn-secondary btn-lg" id="choose"><span data-i18n="drop_choose">Choose a file</span></button>
+          <input id="file" class="sr-only" type="file" tabindex="-1" aria-hidden="true" accept=".stl,.obj,.ply,.glb,.gltf,.usdz">
           <p class="drop-formats" data-i18n="drop_formats"></p>
+          <p class="drop-formats" data-i18n="drop_gltf_note"></p>
         </div>
 
         <div class="sample-row">
@@ -95,11 +96,6 @@
                 <label><input type="radio" name="hand" value="right"><span data-i18n="hand_right">Right</span></label>
               </div>
             </fieldset>
-            <div class="field">
-              <label for="tape" data-i18n="opt_tape">Tape measure around the knuckles (cm)</label>
-              <input id="tape" type="number" inputmode="decimal" min="12" max="30" step="0.1" placeholder="18.5" aria-describedby="tape-help">
-              <p id="tape-help" class="help" data-i18n="opt_tape_help"></p>
-            </div>
             <div class="field">
               <label for="units" data-i18n="opt_units">Scan units</label>
               <select id="units" aria-describedby="units-help">
@@ -176,6 +172,7 @@
             <div class="meter" id="q-meter" role="meter" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" data-i18n-aria="quality_title"><span id="q-fill"></span><b id="q-num">–</b></div>
           </div>
           <ul id="q-notes" class="notes"></ul>
+          <ul id="prep-msgs" class="notes msgs" hidden></ul>
           <h2 class="mt" data-i18n="detected_title">What we detected</h2>
           <dl class="facts" id="facts"></dl>
         </div>
@@ -219,6 +216,20 @@
             </table>
           </div>
           <p class="help" data-i18n="sizes_caption"></p>
+        </div>
+        <div class="card tape-card" id="tape-card" hidden>
+          <h2><label for="tape" data-i18n="tape_title">Tape measure around the knuckles</label> <span class="req" data-i18n="required">required</span></h2>
+          <p data-i18n="tape_why">Needed before we build a custom cuff: it confirms that the scan has the right scale.</p>
+          <div class="tape-row">
+            <input id="tape" type="number" inputmode="decimal" min="10" max="35" step="0.1" placeholder="e.g. 18.5" data-i18n-ph="tape_ph" aria-describedby="tape-how tape-sample tape-err" aria-required="true">
+            <span class="unit" aria-hidden="true">cm</span>
+          </div>
+          <p id="tape-how" class="help" data-i18n="tape_how">Wrap a soft tape measure around the widest part of the palm, over the knuckles, with the thumb outside the tape. Snug, not tight.</p>
+          <p id="tape-sample" class="note-ok" hidden data-i18n="tape_sample">Tape for the sample hand: 18.2 cm.</p>
+          <p id="tape-err" class="err-inline" role="alert"></p>
+          <p id="tape-ok" class="note-ok" role="status"></p>
+          <button type="button" class="btn btn-secondary" id="tape-check" data-i18n="tape_check">Check the tape</button>
+          <p id="tape-why-short" class="sr-only" data-i18n="tape_missing"></p>
         </div>
         <details class="card fit-notes" id="fit-notes" hidden>
           <summary><h2 data-i18n="notes_title">Details of the reading</h2></summary>

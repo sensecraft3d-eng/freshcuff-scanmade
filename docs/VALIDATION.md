@@ -83,7 +83,7 @@ Scans that I am not allowed to redistribute are tested locally and are not in th
 
 
 
-Current suite: 40 fast tests and 21 slow tests (including the full sample-hand pipeline, rotations, metres and mirroring), all passing, plus two browser end-to-end tests (sample hand; orientation fixes and knuckle-line click). The browser test also checks that no request leaves the local computer.
+Current suite: 45 fast tests and 38 slow tests (including the full sample-hand pipeline, rotations, metres and mirroring, the release gates — tape required before a custom build, no size recommended unless it passed, no manufacturing files after a failed check — and injected NaN/infinity values), all passing (one CAD test is skipped where OpenCascade is not installed), plus four browser end-to-end tests: the sample hand; orientation fixes and knuckle-line click; the tape gate on a scan loaded as a user file (no tape → blocked, wrong tape → refused, right tape → 3MF); and page states with keyboard checks. The browser tests also check that no request leaves the local computer. In CI, the fast tests run on Linux, Windows and macOS; the slow tests, the browser tests and a CAD rebuild run on Linux; the public site is deployed only after CI passes on the same commit.
 
 ## What has not been verified
 
@@ -140,5 +140,5 @@ Reports of refusals, wrong landmarks and confusing messages are just as useful a
 
 | Date | Version | Result |
 |---|---|---|
-| <!-- TODO: date of first public release --> | first public release | CAD and software checks above. No wearer yet. |
+| Not yet publicly released | release candidate | CAD and software checks above. No wearer yet. |
 | | | *(my own hand: pending scan files)* |

@@ -131,7 +131,7 @@ def test_artec_rotation_scale_mirror(tmp_path, artec_run, case):
         V, F, side, variant = V * [1, -1, 1], F[:, ::-1], 'right', 'W82.0_R'
     f = tmp_path / (case + '.ply')
     trimesh.Trimesh(V, F, process=False).export(f)
-    p = A.prepare(f, tmp_path / 'w', {})                         # side detected, no tape
+    p = A.prepare(f, tmp_path / 'w', {'tape_cm': 18.2})          # side detected; tape confirms the scale
     assert p['status'] == 'ok' and p['landmarks']['side'] == side
     assert p['scan']['units_guess'] == ('m' if case == 'rotated_metres' else 'mm')
     a = A.analyze(tmp_path / 'w', {})

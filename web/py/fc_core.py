@@ -639,10 +639,10 @@ def custom_cuff(rd, grid_json, out_dir, name, scan_sha, std_size, manual_note=No
                    'dorsal_min': round(float(res[W].get('dorso_min_mm', float('nan'))), 3),
                    'lateral_min': round(float(res[W].get('lateral_min_mm', float('nan'))), 3)} for W in sorted(res)]
     if not viable:
-        raise CustomStop('standard_only', 'custom_none', size=std_size, grid=grid_table)
+        raise CustomStop('standard_only', 'custom_none', grid=grid_table)
     with_clear = [W for W in viable if res[W]['lateral_min_mm'] >= LATERAL_MIN]
     if not with_clear:
-        raise CustomStop('standard_only', 'custom_lateral', need=LATERAL_MIN, size=std_size, grid=grid_table,
+        raise CustomStop('standard_only', 'custom_lateral', need=LATERAL_MIN, grid=grid_table,
                          best=max(res[w]['lateral_min_mm'] for w in viable))
     W = with_clear[0]
     r = res[W]
@@ -661,7 +661,7 @@ def custom_cuff(rd, grid_json, out_dir, name, scan_sha, std_size, manual_note=No
     if r['rigido_min_mm'] < -0.4:
         notes.append(('warn', 'custom_palm', {'mm': -r['rigido_min_mm']}))
     if r['lateral_min_mm'] > LATERAL_MAX:
-        raise CustomStop('standard_only', 'custom_narrow', lat=r['lateral_min_mm'], W=W, mx=LATERAL_MAX, size=std_size, grid=grid_table)
+        raise CustomStop('standard_only', 'custom_narrow', lat=r['lateral_min_mm'], W=W, mx=LATERAL_MAX, grid=grid_table)
 
     # ---- dorsal profile (legacy step 4, same arithmetic)
     X = np.arange(-26, 26.001, 0.5)

@@ -175,3 +175,20 @@ original code (2 min) · `node tests/run_pyodide_node.mjs [scan side tape]` runs
 - [x] Phase 2(a) speed · (b) units, rotation, mirror, open meshes, loose pieces · (c) needs_input + overrides ·
       (d) quality score · (e) optional tape · (f) string table en/pt, no internal codes.
 - [x] Phase 3: `fc_cli.py`, pytest suite, `report_html.py` (build() returns `files.report_html`).
+
+## Release gates (cross-review round, 2026-11-18) — what changed for the UI
+* **analyze() statuses**: `custom_ready` (custom possible AND tape given and within 0.6 cm of the scan) ·
+  `custom_needs_tape` (custom possible, scale not confirmed: `custom`, `sizes`, heat map are returned, `needs:['tape_cm']`;
+  call analyze(work, {tape_cm}) again — the geometry is cached, it returns in about a second) · `standard_only`
+  (no custom; at least one standard size passed) · `no_verified_standard_fit` (no custom and no standard size passed:
+  `recommended_size` is null, message `no_verified_fit`) · `refused` · `needs_input`.
+* **recommended_size** is only ever a size that passed the geometric check; otherwise null (also null on `refused`).
+  `size_by_tape` stays as a separate estimate, with `size_by_tape_source: 'tape'|'scan'`. New field `scale_confirmed`.
+* **build()**: returns `status:'needs_input'`, `needs:['tape_cm']`, `files:{}` when the scale is not confirmed (nothing
+  is built). On `stopped`, `files` holds only `report_json` / `report_html`, `hashes` is empty (`diagnostic_hashes`
+  has them) and the solid is kept in work_dir as `*.stl.rejected` / `*.3mf.rejected`.
+* Ambiguous units (confidence < 0.9) add message `units_confirm`; the tape is what unblocks manufacturing.
+* Non-manifold edges at the band refuse the scan (`nonmanifold_near_band`); `scan.nonmanifold_edges`,
+  `scan.nonmanifold_near_band` added to prepare().
+* CLI: `--build` requires `--tape-cm` (argparse error, exit 2).
+* Tests: `tests/test_release_gates.py`.

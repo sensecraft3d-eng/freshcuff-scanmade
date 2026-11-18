@@ -432,6 +432,7 @@
    ]
   }
  },
+ "scale_confirmed": true,
  "result_glb": "analysis.glb",
  "legend": [
   {
@@ -583,6 +584,7 @@
   "thumb_s": null,
   "band_shift_mm": 0.0
  },
+ "size_by_tape_source": "tape",
  "knuckle_circumference_cm": {
   "scan": 18.22,
   "tape": 18.2
@@ -17337,5 +17339,5 @@
    ]
   ]
  },
- "seconds": 11.44
+ "seconds": 10.97
 }

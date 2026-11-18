@@ -72,6 +72,28 @@ def voxel_surface(inside, origin, h):
     return V.astype(np.float64), F.astype(np.int32)
 
 
+def fill_diagonal_contacts(O):
+    """Voxels that touch only along an edge make an edge shared by four faces (non-manifold).  Fill the two empty
+    voxels of every such 2x2 block until none is left, so the surface is a clean closed manifold."""
+    O = O.copy()
+    for _ in range(20):
+        changed = False
+        for ax in range(3):
+            u, v = (ax + 1) % 3, (ax + 2) % 3
+            sl = lambda du, dv: tuple(slice(du, O.shape[a] - 1 + du) if a == u else slice(dv, O.shape[a] - 1 + dv) if a == v else slice(None) for a in range(3))
+            a00, a10, a01, a11 = O[sl(0, 0)], O[sl(1, 0)], O[sl(0, 1)], O[sl(1, 1)]
+            d1 = a00 & a11 & ~a10 & ~a01
+            d2 = a10 & a01 & ~a00 & ~a11
+            if d1.any() or d2.any():
+                changed = True
+                bad = d1 | d2
+                for q in (sl(0, 0), sl(1, 0), sl(0, 1), sl(1, 1)):
+                    O[q] |= bad
+        if not changed:
+            break
+    return O
+
+
 def smooth(V, F, iters=12, lam=0.55, mu=-0.57):
     """Taubin smoothing (no shrink) with numpy."""
     n = len(V)
@@ -96,7 +118,7 @@ def make_hand(width=81.0, h=1.0):
     X, Y, Z = np.meshgrid(gx, gy, gz, indexing='ij')
     P = np.stack([X.ravel(), Y.ravel(), Z.ravel()], axis=1)
     inside = (implicit(P, width) < 0).reshape(n)
-    V, F = voxel_surface(inside, lo, h)
+    V, F = voxel_surface(fill_diagonal_contacts(inside), lo, h)
     return smooth(V, F), F
 
 

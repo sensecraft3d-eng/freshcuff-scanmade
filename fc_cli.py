@@ -36,7 +36,7 @@ def main(argv=None):
     ap.add_argument('scan', help='hand scan: STL, OBJ, PLY or GLB')
     ap.add_argument('--out', required=True, help='output folder (created if needed)')
     ap.add_argument('--side', choices=['auto', 'left', 'right'], default='auto', help='which hand was scanned (default: detect)')
-    ap.add_argument('--tape-cm', type=float, default=None, help='tape measure around the knuckles, cm (optional scale check)')
+    ap.add_argument('--tape-cm', type=float, default=None, help='tape measure around the knuckles, cm: the independent scale check (required with --build)')
     ap.add_argument('--mm-per-unit', type=float, default=None, help='force the scan units (1 = mm, 10 = cm, 1000 = m, 25.4 = inch)')
     ap.add_argument('--dorsum', choices=['auto', 'keep', 'flip'], default='auto', help='back of the hand: keep or flip the +y side of the scan axis frame')
     ap.add_argument('--fingers', choices=['auto', 'high', 'low'], default='auto', help='which end of the long axis has the fingers')
@@ -57,6 +57,8 @@ def main(argv=None):
             'dorsum': a.dorsum, 'fingers': a.fingers, 'knuckle_s': a.knuckle_s, 'thumb_s': a.thumb_s, 'band_shift_mm': a.band_shift_mm}
     if not Path(a.scan).exists():
         ap.error('scan file not found: ' + a.scan)
+    if a.build and a.tape_cm is None:
+        ap.error('--build requires --tape-cm: no manufacturing file is released without the tape measurement that confirms the scale')
     results = {}
     p = results['prepare'] = A.prepare(a.scan, a.out, opts, progress=prog)
     code = 0
@@ -95,7 +97,10 @@ def main(argv=None):
                 for s in an['sizes']:
                     print('    %s %d   %-4s %+6.2f  %+6.2f  %+6.2f  %s' % ('>' if s['size'] == an['recommended_size'] else ' ', s['size'], 'yes' if s['fits'] else 'no',
                                                                           s['rigid_min'], s['dorsal_min'], s['lateral_min'], s['note']))
-                print('  Recommended standard size: %s (by tape: %s)' % (an['recommended_size'], an['size_by_tape']))
+                rec = an['recommended_size']
+                print('  Recommended standard size: %s   (estimate by circumference alone: size %s, %s)' % (
+                    rec if rec is not None else 'none - no standard size passed the geometric check', an['size_by_tape'],
+                    'tape' if an.get('size_by_tape_source') == 'tape' else 'measured on the scan'))
             cu = an.get('custom')
             if cu:
                 pr = cu['predicted']
@@ -125,7 +130,7 @@ def main(argv=None):
             if b['status'] != 'cuff_ready':
                 code = 3
         elif a.build and not a.json:
-            print('\nBUILD skipped: no custom cuff for this hand (status %s).' % an['status'])
+            print('\nBUILD skipped: no custom cuff released (status %s).' % an['status'])
     if a.json:
         print(json.dumps(results, indent=1))
     A.release()

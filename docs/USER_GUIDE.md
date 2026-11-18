@@ -60,9 +60,9 @@ flowchart TD
 1. Open <https://sensecraft3d-eng.github.io/freshcuff-scanmade/> on a computer, or the offline launcher. Your scan **stays on your computer**.
 2. Choose your scan file and enter:
    - which hand it is;
-   - your tape measurement around the knuckles. See [SCANNING.md](SCANNING.md#tape-measure-check) for how to measure.
+   - your tape measurement around the knuckles. See [SCANNING.md](SCANNING.md#tape-measure-check) for how to measure. You can look at the scan without it, but **a custom cuff is only built after the tape confirms the scan's scale** (within 0.6 cm).
 3. **Check the 3D view.** The app shows where it found the knuckle line, the thumb and the band. If something is wrong, correct it as the page explains (for example, flip the back and palm).
-4. Read the **size comparison** for all seven sizes and the recommendation.
+4. Read the **size comparison** for all seven sizes. A size is recommended only if it passed the check; if none did, the app says so and suggests printing the sizing rings.
 5. If your hand is in the custom range, the app builds a custom cuff. You get a print file (`.3mf`), a mesh file (`.stl`) and a **fit report**. Give all three to whoever will print it.
 6. If the app refuses, it tells you why. Usually a re-scan fixes it. See [SCANNING.md](SCANNING.md).
 

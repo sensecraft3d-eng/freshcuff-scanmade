@@ -110,11 +110,11 @@ function showError(err, { tips, retry } = {}) {
   mark('error', { code: err.code, message: err.message });
   viewerBusy(null); progressSink = null; stopTimer();
   $('#step-1').hidden = true; $('#work').hidden = true; $('#error').hidden = false;
-  const codeMsg = { too_big: t('file_too_big', { mb: fmtNum(err.mb || 0, 0) }), bad_type: t('file_bad_type'), empty: t('file_empty'), usdz: t('file_usdz'),
+  const codeMsg = { too_big: t('file_too_big', { mb: fmtNum(err.mb || 0, 0) }), bad_type: t('file_bad_type'), empty: t('file_empty'), usdz: t('file_usdz'), gltf_external: t('file_gltf_external'),
     integrity: t('err_integrity'), init: t('err_tools'), no_api: t('err_tools'), worker: t('err_tools'), fetch: t('err_tools') };
   $('#err-msg').textContent = codeMsg[err.code] || err.message || String(err);
   const T = tips || (['init', 'no_api', 'worker', 'fetch', 'integrity'].includes(err.code) ? ['err_tip_reload', 'err_tip_browser'] :
-    err.code === 'too_big' ? ['err_tip_smaller', 'err_tip_sample'] : err.code === 'usdz' ? ['err_tip_export', 'err_tip_sample'] : ['err_tip_scan', 'err_tip_smaller', 'err_tip_sample']);
+    err.code === 'too_big' ? ['err_tip_smaller', 'err_tip_sample'] : err.code === 'usdz' || err.code === 'gltf_external' ? ['err_tip_export', 'err_tip_sample'] : ['err_tip_scan', 'err_tip_smaller', 'err_tip_sample']);
   $('#err-tips').innerHTML = T.map(k => `<li>${esc(t(k))}</li>`).join('');
   $('#err-tech').textContent = [err.code && `code: ${err.code}`, err.op && `step: ${err.op}`, err.message, err.detail].filter(Boolean).join('\n');
   S.lastOp = retry || null; $('#err-retry').hidden = !retry;
@@ -128,10 +128,20 @@ $('#err-sample').addEventListener('click', () => { goStep(1); loadSample(); });
 const status1 = (txt, busy) => { const el = $('#start-status'); el.textContent = txt || ''; el.classList.toggle('busy', !!busy); };
 function readOpts() {
   const side = ($('input[name=hand]:checked') || {}).value || 'auto';
-  const tape = parseFloat(String($('#tape').value).replace(',', '.'));
   const u = $('#units').value;
-  return { side, tape_cm: Number.isFinite(tape) && tape > 5 ? tape : null, mm_per_unit: u === 'auto' ? null : parseFloat(u) };
+  return { side, tape_cm: tapeValue(), mm_per_unit: u === 'auto' ? null : parseFloat(u) };
 }
+// Tape measure (cm): optional to explore, required to build a custom cuff. The sample hand comes with its own (18.2 cm).
+const SAMPLE_TAPE_CM = 18.2;
+function tapeValue() {
+  const v = parseFloat(String($('#tape').value).replace(',', '.'));
+  return Number.isFinite(v) && v >= 10 && v <= 35 ? v : null;
+}
+function setTapeError(key) {
+  const el = $('#tape'); $('#tape-err').textContent = key ? t(key) : ''; el.setAttribute('aria-invalid', key ? 'true' : 'false');
+}
+$('#tape').addEventListener('input', () => setTapeError(''));
+$('#choose').addEventListener('click', () => $('#file').click());
 async function sha256hex(buf) { return [...new Uint8Array(await crypto.subtle.digest('SHA-256', buf))].map(b => b.toString(16).padStart(2, '0')).join(''); }
 let manifestPage = null;
 async function loadSample() {
@@ -144,6 +154,7 @@ async function loadSample() {
       const want = manifestPage['examples/Artec_Hand.ply'];
       if (want && want !== await sha256hex(buf)) throw Object.assign(new Error('sample checksum'), { code: 'integrity' });
     } catch (e) { if (e.code === 'integrity') throw e; }
+    S.sample = true; $('#tape').value = String(SAMPLE_TAPE_CM); $('#tape-sample').hidden = false;
     await handleScan('Artec_Hand.ply', buf);
   } catch (e) { status1(''); showError(e, { retry: loadSample }); }
 }
@@ -159,11 +170,12 @@ async function handleFile(f) {
   if (!supported(f.name)) return showError(Object.assign(new Error('bad type'), { code: 'bad_type' }), { tips: ['err_tip_scan', 'err_tip_sample'] });
   if (f.size > LIMIT_MB * 1e6) return showError(Object.assign(new Error('too big'), { code: 'too_big', mb: f.size / 1e6 }));
   status1(t('reading'), true);
+  S.sample = false; $('#tape').value = ''; $('#tape-sample').hidden = true; setTapeError('');
   try { await handleScan(f.name, await f.arrayBuffer()); } catch (e) { status1(''); showError(e, { retry: () => handleFile(f) }); }
 }
 
 async function handleScan(name, buf) {
-  S.scanName = name; S.prep = S.ana = S.build = null; S.prepGlb = S.anaGlb = S.buildGlb = null; S.files = null; S.snaps = {};
+  S.scanName = name; S.customSeen = false; S.prep = S.ana = S.build = null; S.prepGlb = S.anaGlb = S.buildGlb = null; S.files = null; S.snaps = {};
   S.fixes = { ch: {}, dz: 0, knuckle_s: null }; legendData = null;
   const ext = extOf(name);
   if (!['stl', 'obj', 'ply'].includes(ext)) status1(t('converting', { name }), true);
@@ -235,6 +247,10 @@ function renderCheck() {
   $('#q-meter').setAttribute('aria-valuenow', String(sc ?? 0));
   $('#q-word').textContent = cls ? t('quality_' + cls) : '—';
   $('#q-notes').innerHTML = (q.notes || []).map(n => `<li>${esc(n)}</li>`).join('');
+  // warnings from the reading (e.g. units to confirm, holes or non-manifold edges near the band), in plain words
+  const pm = (r.messages || []).filter(m => (m.level === 'warn' || m.level === 'error') && !/^needs_/.test(m.code || ''));
+  $('#prep-msgs').hidden = !pm.length;
+  $('#prep-msgs').innerHTML = pm.map(m => `<li class="lv-${esc(m.level)}"><span class="sr-only">${esc(m.level === 'error' ? t('note_error') : t('note_warn'))}</span>${esc(m.text)}</li>`).join('');
   const fact = (k, v, c, changed) => `<dt>${esc(t(k))}</dt><dd>${esc(v)}${changed ? ` <span class="conf">· ${esc(t('changed_by_you'))}</span>` : c ? ` <span class="conf${c === t('unsure') ? ' low' : ''}">· ${esc(c)}</span>` : ''}</dd>`;
   const units = r.scan?.units_guess ? `${r.scan.units_guess}${Number.isFinite(r.scan.mm_per_unit) && r.scan.mm_per_unit !== 1 ? ` (×${fmtNum(r.scan.mm_per_unit, r.scan.mm_per_unit < 10 ? 2 : 0)})` : ''}` : '—';
   const loc = getLang() === 'pt' ? 'pt-BR' : 'en-GB';
@@ -354,7 +370,21 @@ function signed(v) { if (!Number.isFinite(v)) return '—'; const s = fmtNum(Mat
 function renderFit() {
   const r = S.ana; if (!r) return; const rec = $('#rec'); const c = r.custom; const p = (c && c.predicted) || {};
   const n = r.recommended_size;
-  if (r.status === 'custom_ready' && c) {
+  const noVerified = r.status === 'no_verified_standard_fit' || (r.status === 'standard_only' && n == null);
+  if (c) S.customSeen = true;
+  const tapeRefused = r.status === 'refused' && (r.messages || []).some(m => /tape/.test(m.code || ''));
+  $('#tape-card').hidden = !(S.customSeen && (c || tapeRefused));
+  const confirmed = r.status === 'custom_ready';
+  $('#tape-ok').textContent = confirmed && tapeUsed() != null ? t('tape_ok', { cm: fmtNum(tapeUsed(), 1) }) : '';
+  if (noVerified) {
+    rec.className = 'card rec nofit';
+    rec.innerHTML = `<p class="rec-k">${esc(t('rec_title'))}</p><p class="rec-v">${esc(t('nofit_title'))}</p>
+      <p class="rec-sub">${esc(t('nofit_lead'))}</p><ul class="notes"><li>${esc(t('nofit_1'))}</li><li>${esc(t('nofit_2'))}</li></ul>
+      ${Number.isFinite(r.size_by_tape) ? `<p class="est">${esc(t(r.size_by_tape_source === 'tape' ? 'nofit_est_tape' : 'nofit_est', { n: r.size_by_tape }))}</p>` : ''}
+      <a class="btn btn-primary btn-block" href="${MAKERWORLD}" target="_blank" rel="noopener noreferrer">${esc(t('nofit_btn'))}</a>`;
+    $('#s3-actions').innerHTML = `<button type="button" class="btn btn-secondary" id="s3-report">${esc(t('dl_report_share'))}</button>`;
+    $('#s3-report').addEventListener('click', () => downloadReport(false));
+  } else if ((r.status === 'custom_ready' || r.status === 'custom_needs_tape') && c) {
     rec.className = 'card rec';
     rec.innerHTML = `<p class="rec-k">${esc(t('rec_title'))}</p><p class="rec-v">${esc(t('rec_custom'))}</p>
       <p class="rec-sub">${esc(t('rec_custom_sub', { W: fmtNum(c.W, 1) }))}</p>
@@ -366,21 +396,23 @@ function renderFit() {
       </dl>`;
     $('#s3-actions').innerHTML = `<button type="button" class="btn btn-primary btn-lg" id="s3-build"><span>${esc(t('build_btn'))}</span><svg aria-hidden="true" viewBox="0 0 24 24" class="ico"><path d="M5 12h14m0 0-6-6m6 6-6 6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>`;
     $('#s3-build').addEventListener('click', runBuild);
+    if (!confirmed) { $('#s3-build').disabled = true; $('#s3-build').setAttribute('aria-describedby', 'tape-why-short'); }
   } else if (r.status === 'standard_only' || (r.status !== 'refused' && n)) {
     rec.className = 'card rec std';
     rec.innerHTML = `<p class="rec-k">${esc(t('rec_title'))}</p><p class="rec-v">${n ? esc(t('rec_standard', { n })) : esc(t('rec_none'))}</p>
       <p class="rec-sub">${esc(t('std_only_lead'))}</p><p class="help">${esc(t('std_only_rings'))}</p>
       <a class="btn btn-primary btn-block" href="${MAKERWORLD}" target="_blank" rel="noopener noreferrer">${esc(n ? t('std_only_btn', { n }) : t('std_only_btn_generic'))}</a>`;
-    $('#s3-actions').innerHTML = `<button type="button" class="btn btn-secondary" id="s3-report">${esc(t('download_report'))}</button>`;
-    $('#s3-report').addEventListener('click', () => downloadReport());
+    $('#s3-actions').innerHTML = `<span class="report-choice"><button type="button" class="btn btn-secondary" id="s3-report">${esc(t('dl_report_pics'))}</button><button type="button" class="btn btn-quiet" id="s3-report-share">${esc(t('dl_report_share'))}</button></span>`;
+    $('#s3-report').addEventListener('click', () => downloadReport(true));
+    $('#s3-report-share').addEventListener('click', () => downloadReport(false));
   } else {
     rec.className = 'card rec bad';
     const errs = (r.messages || []).filter(m => m.level === 'error').map(m => `<li>${esc(m.text)}</li>`).join('');
-    rec.innerHTML = `<p class="rec-k">${esc(t('err_what'))}</p><p class="rec-v">${esc(t('refused_title'))}</p>
+    rec.innerHTML = `<p class="rec-k">${esc(t('err_what'))}</p><p class="rec-v">${esc(t(tapeRefused ? 'tape_mismatch_title' : 'refused_title'))}</p>
       ${errs ? `<ul class="notes">${errs}</ul>` : `<p class="rec-sub">${esc(t('rec_none_sub'))}</p>`}
-      <button type="button" class="btn btn-primary btn-block" id="s3-fix">${esc(t('refused_fix'))}</button>
+      <button type="button" class="btn btn-primary btn-block" id="s3-fix">${esc(t(tapeRefused ? 'tape_fix_btn' : 'refused_fix'))}</button>
       <a class="btn btn-secondary btn-block" href="${MAKERWORLD}" target="_blank" rel="noopener noreferrer">${esc(t('std_only_btn_generic'))}</a>`;
-    $('#s3-fix').addEventListener('click', () => $('#s3-back').click());
+    $('#s3-fix').addEventListener('click', () => { if (tapeRefused) { $('#tape').focus(); $('#tape').select(); } else $('#s3-back').click(); });
     $('#s3-actions').innerHTML = '';
   }
   const notes = (r.messages || []).filter(m => m.text);
@@ -389,7 +421,7 @@ function renderFit() {
   $('#sizes').closest('.card').hidden = !(r.sizes || []).length;
   const tb = $('#sizes tbody');
   tb.innerHTML = (r.sizes || []).map(s => {
-    const w = fitWord(s); const isRec = s.size === n && r.status !== 'refused';
+    const w = fitWord(s); const isRec = n != null && !noVerified && s.size === n && r.status !== 'refused';
     return `<tr class="${isRec ? 'is-rec' : ''}"><th scope="row" class="sz">${esc(t('size_n', { n: s.size }))}${isRec && r.status !== 'custom_ready' ? `<span class="rtag">${esc(t('recommended'))}</span>` : ''}${isRec && r.status === 'custom_ready' ? `<span class="rtag">${esc(t('tried_custom'))}</span>` : ''}</th>
       <td><span class="pill ${w}" title="${esc(s.note || '')}">${esc(t('fit_' + w))}</span></td>
       <td class="num ${s.rigid_min < -0.049 ? 'neg' : ''}">${signed(s.rigid_min)}</td><td class="num ${s.dorsal_min < -0.049 ? 'neg' : ''}">${signed(s.dorsal_min)}</td><td class="num ${s.lateral_min < -0.049 ? 'neg' : ''}">${signed(s.lateral_min)}</td></tr>`;
@@ -407,7 +439,41 @@ function startTimer(el, key) {
 }
 function stopTimer() { if (timer) clearInterval(timer); timer = null; }
 
+// The tape is required to build: analyze() confirms the scan scale with it (cached geometry, about a second).
+// custom_needs_tape -> custom_ready (tape within 0.6 cm of the scan) or refused (it disagrees: shown on the Fit step).
+const tapeUsed = () => S.ana?.knuckle_circumference_cm?.tape ?? null;
+async function checkTape() {
+  const tape = tapeValue();
+  if (tape == null) {
+    setTapeError($('#tape').value.trim() ? 'tape_range' : 'tape_missing');
+    $('#tape').focus(); $('#tape-card').scrollIntoView({ block: 'center' }); mark('build-blocked', { reason: 'tape' });
+    return false;
+  }
+  setTapeError('');
+  if (S.ana?.status === 'custom_ready' && tapeUsed() != null && Math.abs(tapeUsed() - tape) < 1e-6) return true;
+  const btns = [$('#s3-build'), $('#tape-check')].filter(Boolean); btns.forEach(b => { b.disabled = true; });
+  viewerBusy(t('tape_checking'));
+  const st = $('#tape-how'); const keepHow = st.textContent; st.textContent = t('tape_checking'); st.classList.add('busy');
+  S.overrides = Object.assign({}, S.overrides || analyzeOverrides(), { tape_cm: tape, lang: getLang() });
+  let res;
+  try { res = await call('analyze', { overrides: S.overrides }); }
+  catch (e) { showError(e, { retry: () => { goStep(3); checkTape(); } }); return false; }
+  finally { st.textContent = keepHow; st.classList.remove('busy'); viewerBusy(null); btns.forEach(b => { b.disabled = false; }); }
+  mark('analyzed', { status: res.result.status, tape });
+  S.ana = res.result; S.anaGlb = res.glb;
+  await showFit();
+  if (S.ana.status !== 'custom_ready') {
+    $('#tape-err').textContent = t(S.ana.status === 'refused' ? 'tape_fix' : 'tape_missing');   // the full reason is in the card above
+    $('#tape').setAttribute('aria-invalid', 'true'); $('#tape').focus();
+    return false;
+  }
+  $('#tape-ok').textContent = t('tape_ok', { cm: fmtNum(tape, 1) }); $('#s3-build')?.focus();
+  return true;
+}
+$('#tape-check').addEventListener('click', () => checkTape());
+$('#tape').addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); checkTape(); } });
 async function runBuild() {
+  if (!(await checkTape())) return;
   goStep(4);
   $('#s4-title').textContent = t('s4_title'); $('#build-progress').hidden = false; $('#build-done').hidden = true;
   $('#v-toggle').hidden = true;
@@ -458,11 +524,16 @@ function renderResult() {
   const stlName = F['3mf'] && /_P1S_PETG\.3mf$/i.test(F['3mf'].name) ? F['3mf'].name.replace(/_P1S_PETG\.3mf$/i, '.stl') : vid ? `FreshCuff_Custom_${vid}.stl` : (F.stl && F.stl.name);
   if (ok && F.stl) h += item('', 'STL', t('dl_stl'), t('dl_stl_sub'), blobUrl(F.stl.bytes, 'model/stl'), stlName, F.stl.bytes.byteLength);
   // the core's standalone printable report when present; the page's own report (with 3D snapshots) otherwise
-  const rep = F.report_html ? F.report_html.bytes : reportHtml();
-  h += item('', 'HTML', t('dl_report'), t('dl_report_sub'), blobUrl(rep, 'text/html'), 'FreshCuff_ScanMade_report.html', rep.byteLength ?? rep.length);
+  const rep = F.report_html ? F.report_html.bytes : reportHtml(true);
+  h += item('', 'HTML', F.report_html ? t('dl_report') : t('dl_report_pics'), F.report_html ? t('dl_report_sub') : t('dl_report_pics_sub'), blobUrl(rep, 'text/html'), 'FreshCuff_ScanMade_report.html', rep.byteLength ?? rep.length);
+  const share = reportHtml(false);
+  h += item('', 'HTML', t('dl_report_share'), t('dl_report_share_sub'), blobUrl(share, 'text/html'), 'FreshCuff_ScanMade_report_shareable.html', share.length);
   const js = dataJson(); h += item('', 'JSON', t('dl_json'), t('dl_json_sub'), blobUrl(js, 'application/json'), 'FreshCuff_ScanMade_data.json', js.length);
+  if (!ok && (r.status === 'needs_input' || r.status === 'refused')) h = `<ul class="notes">${(r.messages || []).filter(m => m.level !== 'info').map(m => `<li>${esc(m.text)}</li>`).join('')}</ul>
+    <button type="button" class="btn btn-primary" id="s4-tape">${esc(t('build_stop_tape'))}</button>` + h;
   if (!ok) h += `<a class="btn btn-secondary" href="${MAKERWORLD}" target="_blank" rel="noopener noreferrer">${esc(t('std_only_btn_generic'))}</a>`;
   $('#downloads').innerHTML = h;
+  $('#s4-tape')?.addEventListener('click', async () => { await showFit(); $('#tape').focus(); });
   const v = r.verification || {}; const sp = v.same_pose || {}; const locks = r.locks || {}; const fails = locks.failures || [];
   const checks = locks.checks || [];
   const row = (k, val) => Number.isFinite(val) ? `<dt>${esc(t(k))}</dt><dd>${fmtNum(val, 2)} mm</dd>` : '';
@@ -479,11 +550,11 @@ function renderResult() {
     <p class="${vOk ? 'okline' : 'badline'}">${vOk ? tick : ''}${esc(vOk ? t('verif_ok') : t('verif_bad'))}</p>
     <dl class="kv">${row('verif_gap', sp.closest_section_gap ?? v.closest_section_gap)}${row('verif_overlap', sp.max_overlap ?? v.max_overlap)}${row('verif_palm', S.ana?.custom?.palm_compression_mm ?? v.palm_compression)}</dl>` : ''}`;
 }
-function reportHtml() {
+function reportHtml(pictures = true) {
   const ch = S.fixes.ch, changes = [];
   if (ch.dorsum) changes.push(t('fix_flip')); if (ch.fingers) changes.push(t('fix_fingers')); if (ch.side) changes.push(t('fix_side'));
   if (S.overrides && (S.overrides.knuckle_z != null || S.overrides.knuckle_s != null)) changes.push(t('fix_move'));
-  return buildReport({ prep: S.prep, ana: S.ana, build: S.build, overrides: S.overrides, changes, snaps: S.snaps, scanName: S.scanName, files: S.files, timings: S.timings });
+  return buildReport({ prep: S.prep, ana: S.ana, build: S.build, overrides: S.overrides, changes, snaps: pictures ? S.snaps : {}, scanName: S.scanName, files: S.files, timings: S.timings });
 }
 function dataJson() {
   const strip = r => { if (!r) return r; const o = JSON.parse(JSON.stringify(r)); delete o.overlays; return o; };   // drop display-only rings
@@ -491,8 +562,8 @@ function dataJson() {
     prepare: strip(S.prep), analyze: strip(S.ana), build: strip(S.build), timings_ms: S.timings,
     note: 'Measurements and the five band cross-sections only. The scan mesh itself is not included.' }, null, 1);
 }
-function downloadReport() {
-  const a = document.createElement('a'); a.href = blobUrl(reportHtml(), 'text/html'); a.download = 'FreshCuff_ScanMade_report.html'; document.body.appendChild(a); a.click(); a.remove();
+function downloadReport(pictures) {
+  const a = document.createElement('a'); a.href = blobUrl(reportHtml(pictures), 'text/html'); a.download = pictures ? 'FreshCuff_ScanMade_report.html' : 'FreshCuff_ScanMade_report_shareable.html'; document.body.appendChild(a); a.click(); a.remove();
 }
 $('#s4-back').addEventListener('click', async () => { if (!S.ana) return; await showFit(); });
 $('#s4-over').addEventListener('click', startOver);

@@ -42,6 +42,10 @@ jobs:
       - name: Run tests (fast set)
         run: python -m pytest -m "not slow" -ra
 
+      - name: Run tests (slow set, full sample-hand pipeline)
+        if: matrix.os == 'ubuntu-latest'
+        run: python -m pytest -m "slow" -ra
+
       - name: Check the offline launcher starts (syntax only)
         run: python -m py_compile launchers/start_local.py
 
@@ -100,6 +104,18 @@ jobs:
         env:
           FRESHCUFF_URL: http://127.0.0.1:8765/
         run: node tests/e2e/run_sample.mjs
+
+      - name: Run the orientation-fix and knuckle-click test in Chromium
+        if: steps.e2e.outputs.present == 'true' && hashFiles('tests/e2e/run_fixes.mjs') != ''
+        env:
+          FRESHCUFF_URL: http://127.0.0.1:8765/
+        run: node tests/e2e/run_fixes.mjs
+
+      - name: Run the tape-gate test (scan loaded as a user file) in Chromium
+        if: steps.e2e.outputs.present == 'true' && hashFiles('tests/e2e/run_tape_real.mjs') != ''
+        env:
+          FRESHCUFF_URL: http://127.0.0.1:8765/
+        run: node tests/e2e/run_tape_real.mjs
 
       - name: Upload screenshots and logs
         if: always() && steps.e2e.outputs.present == 'true'

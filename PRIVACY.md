@@ -17,14 +17,20 @@ Like any website, the hosting service (GitHub Pages) can see the usual technical
 
 With the **offline launcher**, even that does not happen: the files are served from your own computer on `127.0.0.1`.
 
-## The report file
+## The report files
 
 The fit report contains measurements of the band of your hand: five 2D outlines across the 26 mm band (like what a tape measure would trace), the back-of-hand profile, the tape value you entered, the placement found, the checks, and hashes of the scan and of the output files. It does **not** contain the 3D surface of your hand. It contains the scan's file name, so rename the scan before running the app if the name identifies you.
+
+There are three report files, and they differ:
+
+- **Data (JSON)** and the **fit report** made by the app's Python code: measurements as described above, no pictures.
+- **Report with pictures** (made by the page): the same content plus snapshots of the 3D view, which show your hand. Keep it for yourself or your printer.
+- **Report without pictures (for sharing)**: the same page with no images of the hand. Use this one, or the JSON, if you share feedback publicly.
 
 
 ## Sharing feedback
 
-If you send feedback through GitHub issues, remember that **issues are public**. Share the report file if you like, **not your scan**, unless you deliberately choose to share it. The feedback form asks you to confirm this. Do not include names or health details of the person who will wear the cuff.
+If you send feedback through GitHub issues, remember that **issues are public**. Share the report without pictures or the JSON if you like, **not your scan**, unless you deliberately choose to share it. The feedback form asks you to confirm this. Do not include names or health details of the person who will wear the cuff.
 
 If you want a public report to be removed, comment on it or contact the maintainers through the repository, and it will be deleted.
 

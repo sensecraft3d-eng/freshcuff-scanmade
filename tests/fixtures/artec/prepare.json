@@ -15,6 +15,8 @@
   "watertight": true,
   "open_edges": 0,
   "open_edges_near_band": 0,
+  "nonmanifold_edges": 0,
+  "nonmanifold_near_band": 0,
   "components": 1,
   "sha256": "66d3291d5285a05fbaa9137972cc80c38cb42f640cb96fd59377beea23465109",
   "file": "Artec_Hand.ply",
@@ -8566,5 +8568,5 @@
   "thumb_s": null,
   "band_shift_mm": 0.0
  },
- "seconds": 2.98
+ "seconds": 3.66
 }

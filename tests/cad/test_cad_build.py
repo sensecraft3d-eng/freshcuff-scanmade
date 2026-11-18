@@ -87,18 +87,45 @@ def test_web_core_regenerates_identically(tmp_path):
     assert sha256(tmp_path / 'dados/contornos_base.json') == sha256(REPO / 'web/dados/contornos_base.json')
 
 
-@pytest.mark.slow
-def test_size4_is_the_published_size4(tmp_path):
-    _needs_ocp()
+def _build_size4(tmp_path):
     out = tmp_path / 'size4'
     subprocess.run([sys.executable, str(CAD / 'build.py'), 'size', '4', '--out', str(out)], check=True)
-    stl = out / 'FreshCuff_R08A_T4.stl'
     assert (out / 'FreshCuff_R08A_T4.step').is_file()
     published = json.loads((REPO / 'web/py/cuff_openings_R08A_v2.json').read_text(encoding='utf-8'))['sizes']['4']['sha256']
-    if sha256(stl) != published:      # another OCP build/platform may tessellate differently: compare geometry instead
-        import trimesh
-        m = trimesh.load(stl)
-        assert m.is_watertight and abs(m.volume - 52978.6) < 5
+    return out / 'FreshCuff_R08A_T4.stl', published
+
+
+@pytest.mark.slow
+@pytest.mark.skipif(not sys.platform.startswith('linux'), reason='bit-identical tessellation is only promised on Linux (see the geometric test)')
+def test_size4_sha256_equals_published_on_linux(tmp_path):
+    """Strict: on Linux the rebuilt size 4 must be byte-identical to the published solid."""
+    _needs_ocp()
+    stl, published = _build_size4(tmp_path)
+    assert sha256(stl) == published
+
+
+@pytest.mark.slow
+def test_size4_is_geometrically_equivalent_to_published(tmp_path):
+    """Any platform: the rebuilt size 4 has the published geometry (another OCP build may tessellate differently, so
+    the hash is not required here): closed single solid, same volume, same bounding box, same band openings."""
+    _needs_ocp()
+    import numpy as np
+    import trimesh
+    from shapely.geometry import Polygon, Point
+    stl, _ = _build_size4(tmp_path)
+    m = trimesh.load(stl)
+    assert m.is_watertight and len(m.split()) == 1
+    assert abs(m.volume - 52978.6) < 5
+    assert abs(m.extents[2] - 26.0) < 0.01
+    ref = json.loads((REPO / 'web/py/cuff_openings_R08A_v2.json').read_text(encoding='utf-8'))['sizes']['4']['z']
+    for z, c in ref.items():
+        sec = m.section(plane_origin=[0, 0, float(z)], plane_normal=[0, 0, 1])
+        polys = [Polygon(v[:, :2]) for v in sec.discrete if len(v) > 3]
+        opening = min((p for p in polys if p.is_valid and p.contains(Point(0, 0))), key=lambda p: p.area)
+        pub = Polygon(c['contour'])
+        assert abs(opening.area - pub.area) < 0.5, z
+        assert opening.symmetric_difference(pub).area < 1.0, z
+        assert np.allclose(opening.bounds, pub.bounds, atol=0.02), z
 
 
 @pytest.mark.slow

@@ -36,8 +36,9 @@ def guess_units(extent_max, mm_per_unit=None):
 
 
 # ------------------------------------------------------------------ topology
-def edge_stats(F, n_vertices):
-    """Boundary (open) edges and non-manifold edge count.  Returns (boundary_edges (k,2), n_nonmanifold)."""
+def edge_stats(F, n_vertices, return_nonmanifold=False):
+    """Boundary (open) edges and non-manifold edges (shared by more than two faces).
+    Returns (boundary_edges (k,2), n_nonmanifold) or, with return_nonmanifold, (boundary, n, nonmanifold_edges (j,2))."""
     F = np.asarray(F, dtype=np.int64)
     e = np.concatenate([F[:, [0, 1]], F[:, [1, 2]], F[:, [2, 0]]])
     e.sort(axis=1)
@@ -45,6 +46,9 @@ def edge_stats(F, n_vertices):
     uniq, counts = np.unique(key, return_counts=True)
     b = uniq[counts == 1]
     boundary = np.column_stack([b // n_vertices, b % n_vertices])
+    if return_nonmanifold:
+        nm = uniq[counts > 2]
+        return boundary, int(len(nm)), np.column_stack([nm // n_vertices, nm % n_vertices])
     return boundary, int((counts > 2).sum())
 
 

@@ -7,9 +7,17 @@
 //               {type:'build', id} | {type:'reset'}
 // Messages out: {type:'init-progress', pct, key} | {type:'ready', ms} | {type:'progress', id, text}
 //               {type:'result', id, op, result, glb, files, ms} | {type:'error', id, op, code, message, detail}
+// Integrity chain (does not depend on any HTTP header, so it holds on GitHub Pages too):
+//   1. manifesto.json is fetched from this site (same origin as this worker: it is the root of trust).
+//   2. pyodide.js and pyodide.asm.js are fetched, their sha256 compared with manifesto.json["pyodide"], and only
+//      the verified bytes are executed (importScripts of a blob: URL made from those bytes).
+//   3. Every other runtime file Pyodide asks for (pyodide.asm.wasm, python_stdlib.zip, pyodide-lock.json, each
+//      wheel/zip) goes through verifiedFetch(): same check before Pyodide sees the bytes; a file under pyodide/
+//      that is not listed in the manifest is refused.
+//   4. App files (py/, dados/, grade/) are checked against manifesto.json["arquivos"] before being written to the
+//      Python file system. A mismatch stops the run with a clear message.
 const BASE = new URL('./', self.location.href).href;
 const PYO = BASE + 'pyodide/';
-importScripts(PYO + 'pyodide.js');
 const LIMIT_MB = 150;
 const WORK = '/work/run';
 let py = null, manifest = null, ready = null;
@@ -21,7 +29,7 @@ const hex = buf => [...new Uint8Array(buf)].map(b => b.toString(16).padStart(2, 
 class FcError extends Error { constructor(code, message, detail) { super(message); this.code = code; this.detail = detail; } }
 
 async function fetchChecked(rel, expected) {
-  const r = await fetch(BASE + rel, { cache: 'no-cache' });
+  const r = await nativeFetch(BASE + rel, { cache: 'no-cache' });
   if (!r.ok) throw new FcError('fetch', `Could not download ${rel} (HTTP ${r.status}).`);
   const b = new Uint8Array(await r.arrayBuffer());
   const h = hex(await crypto.subtle.digest('SHA-256', b));
@@ -88,17 +96,47 @@ def release():
     gc.collect()
 `;
 
+const nativeFetch = self.fetch.bind(self);
+const MIME = { wasm: 'application/wasm', js: 'text/javascript', json: 'application/json', zip: 'application/zip', whl: 'application/zip' };
+function runtimeHash(rel) {
+  const h = manifest && manifest.pyodide && manifest.pyodide[rel];
+  if (!h) throw new FcError('integrity', `${rel} is not listed in manifesto.json, so it was not used.`);
+  return h;
+}
+// Pyodide's own downloads go through here: verified bytes only.
+async function verifiedFetch(input, init) {
+  const url = new URL(typeof input === 'string' ? input : input.url, BASE).href;
+  if (!url.startsWith(PYO)) return nativeFetch(input, init);
+  const rel = 'pyodide/' + decodeURIComponent(url.slice(PYO.length).split(/[?#]/)[0]);
+  const bytes = await fetchChecked(rel, runtimeHash(rel));
+  const ext = rel.split('.').pop();
+  return new Response(bytes, { status: 200, headers: { 'Content-Type': MIME[ext] || 'application/octet-stream' } });
+}
+// Execute a script only after its bytes match the manifest.
+async function importVerified(rel) {
+  const bytes = await fetchChecked(rel, runtimeHash(rel));
+  const url = URL.createObjectURL(new Blob([bytes], { type: 'text/javascript' }));
+  try { importScripts(url); }
+  catch (e) { throw new FcError('integrity', `Could not run the verified ${rel} (${e.message}). If this site sends a CSP header, it must allow blob: in script-src.`); }
+  finally { URL.revokeObjectURL(url); }
+}
+
 async function init() {
   const t0 = performance.now();
   post('init-progress', { pct: 3, key: 'manifest' });
-  manifest = await (await fetch(BASE + 'manifesto.json', { cache: 'no-cache' })).json();
-  const dep = await (await fetch(PYO + 'manifesto_dependencias.json', { cache: 'no-cache' })).json();
-  post('init-progress', { pct: 8, key: 'python' });
+  manifest = await (await nativeFetch(BASE + 'manifesto.json', { cache: 'no-cache' })).json();
+  if (!manifest.pyodide) throw new FcError('integrity', 'manifesto.json does not list the Python runtime files.');
+  const dep = JSON.parse(new TextDecoder().decode(await fetchChecked('pyodide/manifesto_dependencias.json', runtimeHash('pyodide/manifesto_dependencias.json'))));
+  post('init-progress', { pct: 6, key: 'python' });
+  await importVerified('pyodide/pyodide.js');
+  await importVerified('pyodide/pyodide.asm.js');          // defines _createPyodideModule: Pyodide will not load it again
+  self.fetch = verifiedFetch;                               // wasm, stdlib, lock file and wheels: verified before use
+  post('init-progress', { pct: 12, key: 'python' });
   py = await loadPyodide({ indexURL: PYO });
   post('init-progress', { pct: 35, key: 'packages' });
   await py.loadPackage(['numpy', 'scipy', 'shapely', 'networkx'], { messageCallback: () => {}, errorCallback: () => {} });
   post('init-progress', { pct: 75, key: 'trimesh' });
-  const wheel = await fetchChecked('pyodide/' + dep.trimesh_wheel, dep.arquivos[dep.trimesh_wheel].sha256);
+  const wheel = await fetchChecked('pyodide/' + dep.trimesh_wheel, runtimeHash('pyodide/' + dep.trimesh_wheel));
   py.unpackArchive(wheel.buffer, 'wheel', { extractDir: '/lib/python3.12/site-packages' });
   for (const d of ['/app/py', '/app/dados', '/app/grade', '/work']) py.FS.mkdirTree(d);
   const files = Object.entries(manifest.arquivos).filter(([rel]) => !(rel.startsWith('grade/') && rel.endsWith('.stl')));  // grid variants: only the chosen one, later
