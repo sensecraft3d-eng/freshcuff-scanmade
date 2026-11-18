@@ -110,13 +110,33 @@ def test_glbs(artec_run):
     assert a['legend'][0]['mm'] < 0 < a['legend'][-1]['mm']
 
 
+def _close(x, y, where, tol=1e-3):
+    """Same structure, same strings and booleans; numbers equal within tol."""
+    if isinstance(x, dict):
+        assert isinstance(y, dict) and set(x) == set(y), where
+        for k in x:
+            _close(x[k], y[k], f'{where}.{k}', tol)
+    elif isinstance(x, list):
+        assert isinstance(y, list) and len(x) == len(y), where
+        for i, (u, v) in enumerate(zip(x, y)):
+            _close(u, v, f'{where}[{i}]', tol)
+    elif isinstance(x, bool) or x is None or isinstance(x, str):
+        assert x == y, where
+    elif isinstance(x, (int, float)):
+        assert isinstance(y, (int, float)) and not isinstance(y, bool) and abs(x - y) <= tol, (where, x, y)
+    else:
+        assert x == y, where
+
+
 def test_fixture_files_match_current_engine(artec_run):
     """tests/fixtures/artec is what the UI is developed against: it must agree with a fresh run."""
     _, p, a, b = artec_run
     fa = json.loads((FIX / 'artec' / 'analyze.json').read_text())
     fb = json.loads((FIX / 'artec' / 'build.json').read_text())
     assert fa['status'] == a['status'] and fa['custom']['variant'] == a['custom']['variant']
-    assert fa['custom']['predicted'] == a['custom']['predicted'] and fa['sizes'] == a['sizes']
+    # numbers: equal to 0.001 (mm, mm2 or score); another numpy/scipy build may change the last digits
+    _close(fa['custom']['predicted'], a['custom']['predicted'], 'custom.predicted')
+    _close(fa['sizes'], a['sizes'], 'sizes')
     assert fb['hashes']['stl_sha256'] == b['hashes']['stl_sha256'] and set(fb) == set(b)
 
 
