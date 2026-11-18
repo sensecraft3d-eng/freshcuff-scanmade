@@ -62,7 +62,7 @@ export const STRINGS = {
     tools_ready: 'Tools ready.',
     tools_failed: 'The tools did not load.',
     exp_title: 'Experimental — please read',
-    exp_1: 'Not yet validated on a real wearer. The author's own hand has already been scanned professionally; he is waiting to receive the files to check the results, and will correct the tool if needed.',
+    exp_1: 'Not yet validated on a real wearer. The author’s own hand has already been scanned professionally; he is waiting to receive the files to check the results, and will correct the tool if needed.',
     exp_2: 'Not a medical device. Always dry-fit the printed cuff before use, and stop if there is pain, marks on the skin or numbness.',
     exp_3: 'Feedback from anyone with a hand scan is very welcome.',
     how_title: 'How it works',
