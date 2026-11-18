@@ -23,10 +23,10 @@ FreshCuff ScanMade is the companion app. It reads a scan of your hand, checks it
 
 ## What it does
 
-1. **Reads your scan.** STL, OBJ, PLY, GLB or USDZ, in any orientation. It works out the units (metres, centimetres or millimetres), whether it is a left or right hand, which side is the back of the hand, and where the knuckles and thumb are. You see the result in 3D and can correct it before going on.
+1. **Reads your scan.** STL, OBJ, PLY or GLB (also a single-file glTF or a text-based USDZ), in any orientation. It works out the units (metres, centimetres or millimetres), whether it is a left or right hand, which side is the back of the hand, and where the knuckles and thumb are. You see the result in 3D and can correct it before going on.
 2. **Finds the band.** This is the 26 mm strip just behind the knuckles where the cuff sits. The app samples it at five cross-sections.
-3. **Compares all seven standard sizes.** Each size is seated rigidly on the band, and the app reports which ones fit and which one it recommends.
-4. **Builds a custom cuff if your hand is in the custom range.** The range is an opening width of 80–84 mm, around size 4. The app picks the width in 0.5 mm steps and lowers the spring face by up to 3 mm to follow the back of your hand. Outside that range it recommends a standard size instead.
+3. **Compares all seven standard sizes.** Each size is seated rigidly on the band, and the app reports which ones fit. It recommends a size only if that size passed the check; if none did, it says so and suggests the printable sizing rings.
+4. **Builds a custom cuff if your hand is in the custom range.** The range is an opening width of 80–84 mm, around size 4. The app picks the width in 0.5 mm steps and lowers the spring face by up to 3 mm to follow the back of your hand. Outside that range it points you to a standard size that passed the check, if there is one.
 5. **Checks the cuff and hands you the files.** The finished solid must pass manufacturing checks, and it is checked again against your scan. Only then do you get a Bambu Studio project (`.3mf`, PETG, ready for the P1S and easy to switch to another printer), the `.stl` and a printable fit report. A custom cuff has an **R** or **L** and an arrow pointing to the fingers engraved on it.
 
 ## Why fit from a scan?

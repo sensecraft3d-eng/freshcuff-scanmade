@@ -21,7 +21,7 @@ Thank you for helping! FreshCuff is an assistive device, so the most valuable co
 ```bash
 git clone https://github.com/sensecraft3d-eng/freshcuff-scanmade.git
 cd freshcuff-scanmade
-python -m pip install numpy scipy shapely trimesh matplotlib networkx pytest
+python -m pip install -r requirements-ci.txt
 python -m pytest -m "not slow"        # fast tests (what CI runs)
 python -m pytest                       # everything, including slow end-to-end runs
 python tools/serve.py                  # serve web/ at http://127.0.0.1:8765/

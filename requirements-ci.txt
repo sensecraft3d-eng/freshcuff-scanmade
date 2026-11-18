@@ -1,0 +1,9 @@
+# Reference versions for the CPython tests (hashes and sub-millimetre results are checked against these).
+# The browser uses the versions vendored in web/pyodide/ (see web/pyodide/manifesto_dependencias.json).
+numpy==2.5.3
+scipy==1.18.1
+shapely==2.2.0
+trimesh==5.1.1
+matplotlib==3.11.2
+networkx==3.7
+pytest==9.2.0

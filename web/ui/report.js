@@ -36,7 +36,7 @@ export function buildReport({ prep, ana, build, overrides, changes, snaps, scanN
       ${Number.isFinite(v.closest_section_gap) ? `<tr><td>${esc(t('verif_gap'))}</td><td class="n">${mm(v.closest_section_gap)}</td></tr>` : ''}
       ${Number.isFinite(v.max_overlap) ? `<tr><td>${esc(t('verif_overlap'))}</td><td class="n">${mm(v.max_overlap)}</td></tr>` : ''}
       ${Number.isFinite(v.palm_compression) ? `<tr><td>${esc(t('verif_palm'))}</td><td class="n">${mm(v.palm_compression)}</td></tr>` : ''}
-      <tr><td>${esc(t('checks_title'))}</td><td class="n">${fails.length ? esc(t('checks_fail')) + ' ' + fails.length : esc(t('checks_pass'))}</td></tr></table>`;
+      <tr><td>${esc(t('checks_title'))}</td><td class="n">${!build.locks ? esc(t('checks_notrun')) : fails.length ? esc(t('checks_fail')) + ' ' + fails.length : (build.status === 'cuff_ready' || (build.locks.checks || []).length) ? esc(t('checks_pass')) : esc(t('checks_notrun'))}</td></tr></table>`;
   }
   const img = (u, cap) => u ? `<figure><img src="${u}" alt="${esc(cap)}"><figcaption>${esc(cap)}</figcaption></figure>` : '';
   const fileList = Object.values(files || {}).map(f => `<li>${esc(f.name)}${f.sha256 ? ` <code>sha256 ${esc(f.sha256.slice(0, 16))}…</code>` : ''}</li>`).join('');

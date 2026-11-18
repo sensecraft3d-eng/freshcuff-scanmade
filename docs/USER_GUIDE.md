@@ -14,7 +14,7 @@ FreshCuff is a 3D-printed cuff worn around the hand, just behind the knuckles. I
 
 It comes in **seven standard sizes**, with printable **sizing rings** to find yours: <https://makerworld.com/en/models/3595433>.
 
-**FreshCuff ScanMade** (this project) is an app that reads a 3D scan of your hand. It recommends a standard size and, if your hand is in the custom range (around size 4), makes a cuff shaped to the back of your hand.
+**FreshCuff ScanMade** (this project) is an app that reads a 3D scan of your hand. It recommends a standard size when one passes its check (if none does, it says so) and, if your hand is in the custom range (around size 4), makes a cuff shaped to the back of your hand.
 
 ## Who it is for
 

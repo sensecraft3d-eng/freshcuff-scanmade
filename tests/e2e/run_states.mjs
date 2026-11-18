@@ -77,6 +77,11 @@ for (const mode of ['buildneeds', 'buildrefused']) await scenario(`B2 build() ${
   await toFit(p, 'sample'); await p.click('#s3-build'); await p.waitForSelector('#build-done:not([hidden])');
   ok((await p.textContent('#s4-title')).includes('not'), 'title should say not built');
   ok(!(await p.$('a.dl.primary')), '3MF offered although not built');
+  const verif = await p.textContent('#verif');
+  ok(!verif.includes('All checks passed'), 'says checks passed although none ran (M-R03-01)');
+  ok(verif.includes('Checks not run'), 'missing "checks not run" line');
+  const rep = await p.evaluate(() => window.__fc && typeof window.__fc.reportHtml === 'function' ? window.__fc.reportHtml(false) : null);
+  ok(rep != null, 'report function not exposed'); ok(!rep.includes('All checks passed') && rep.includes('Checks not run'), 'report says checks passed although none ran');
   await p.screenshot({ path: path.join(OUT, `b2_${mode}.png`), fullPage: true });
   await p.click('#s4-tape'); await p.waitForSelector('#step-3:not([hidden])'); await p.waitForTimeout(200);
   ok(await p.evaluate(() => document.activeElement?.id === 'tape'), 'back to tape did not focus the field');

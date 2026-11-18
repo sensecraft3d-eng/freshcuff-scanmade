@@ -18,7 +18,7 @@ const S = {
   fixes: { ch: {}, dz: 0, knuckle_s: null }, overrides: null, snaps: {},
   timings: {}, lastOp: null, toolsReady: false, toolsError: null, urls: [],
 };
-window.__fc = { S, events: [] };            // read by the e2e test (timings); no user data leaves the page
+window.__fc = { S, events: [], reportHtml: (pics) => reportHtml(pics) };            // read by the e2e test (timings); no user data leaves the page
 const mark = (name, extra) => window.__fc.events.push(Object.assign({ name, t: Math.round(performance.now()) }, extra || {}));
 
 // ---------------------------------------------------------------- worker client
@@ -152,8 +152,8 @@ async function loadSample() {
     try {
       manifestPage = manifestPage || (await (await fetch('manifesto.json', { cache: 'no-cache' })).json()).pagina || {};
       const want = manifestPage['examples/Artec_Hand.ply'];
-      if (want && want !== await sha256hex(buf)) throw Object.assign(new Error('sample checksum'), { code: 'integrity' });
-    } catch (e) { if (e.code === 'integrity') throw e; }
+      if (!want || want !== await sha256hex(buf)) throw Object.assign(new Error('sample checksum'), { code: 'integrity' });
+    } catch (e) { throw Object.assign(new Error(e.code === 'integrity' ? 'sample checksum' : 'sample checksum could not be verified'), { code: 'integrity' }); }
     S.sample = true; $('#tape').value = String(SAMPLE_TAPE_CM); $('#tape-sample').hidden = false;
     await handleScan('Artec_Hand.ply', buf);
   } catch (e) { status1(''); showError(e, { retry: loadSample }); }
@@ -543,7 +543,7 @@ function renderResult() {
   const checkList = checks.length ? `<details class="checklist"><summary>${esc(t('checks_show', { n: checks.length }))}</summary><ul>${checks.map(c => `<li class="${c.ok ? 'ok' : 'bad'}">${c.ok ? tick : cross}<span>${esc(c.name)}${Number.isFinite(c.value) ? ` <span class="muted">${fmtNum(c.value, 2)}${c.unit ? ' ' + esc(c.unit) : ''}${c.limit != null ? ` (${esc(String(c.limit))})` : ''}</span>` : ''}</span><span class="sr-only">${esc(c.ok ? t('check_ok') : t('check_failed'))}</span></li>`).join('')}</ul></details>` : '';
   const vOk = !v.verdict || v.verdict === 'approved';
   $('#verif').innerHTML = `<h2>${esc(t('checks_title'))}</h2>
-    ${fails.length ? `<p class="badline">${esc(t('checks_fail'))} ${esc(fails.join('; '))}</p>` : `<p class="okline">${tick}${esc(t('checks_pass'))}</p>`}
+    ${!r.locks ? `<p class="muted">${esc(t('checks_notrun'))}</p>` : fails.length ? `<p class="badline">${esc(t('checks_fail'))} ${esc(fails.join('; '))}</p>` : (checks.length || r.status === 'cuff_ready') ? `<p class="okline">${tick}${esc(t('checks_pass'))}</p>` : `<p class="muted">${esc(t('checks_notrun'))}</p>`}
     ${checkList}
     ${msgs ? `<ul class="notes">${msgs}</ul>` : ''}
     ${r.verification ? `<h2 class="mt">${esc(t('verif_title'))}</h2>

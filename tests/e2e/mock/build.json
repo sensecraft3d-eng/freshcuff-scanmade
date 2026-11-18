@@ -1,0 +1,250 @@
+{
+ "api": "1.0",
+ "status": "cuff_ready",
+ "files": {
+  "stl": "build_02/FreshCuff_Custom_hand.stl",
+  "3mf": "build_02/FreshCuff_Custom_W82.0_L_P1S_PETG.3mf",
+  "report_json": "build_02/report.json"
+ },
+ "locks": {
+  "checks": [
+   {
+    "name": "all measurements are finite",
+    "value": null,
+    "limit": "finite",
+    "unit": "",
+    "ok": true
+   },
+   {
+    "name": "solid is closed and in one piece",
+    "value": 1,
+    "limit": "closed, 1 piece",
+    "unit": "",
+    "ok": true
+   },
+   {
+    "name": "band height 26 mm",
+    "value": 26.0,
+    "limit": "25.95 - 26.05",
+    "unit": "mm",
+    "ok": true
+   },
+   {
+    "name": "spring leaf thickness",
+    "value": 0.8700650514584004,
+    "limit": ">= 0.85",
+    "unit": "mm",
+    "ok": true
+   },
+   {
+    "name": "side gap of the spring leaf",
+    "value": 0.6614856211827987,
+    "limit": ">= 0.6",
+    "unit": "mm",
+    "ok": true
+   },
+   {
+    "name": "fastener seats unchanged",
+    "value": 0.0,
+    "limit": "displacement 0; variant deviation <= 0.1 mm3",
+    "unit": "mm",
+    "ok": true
+   },
+   {
+    "name": "slit width",
+    "value": 2.106172143586745,
+    "limit": "1.95 - 2.25",
+    "unit": "mm",
+    "ok": true
+   },
+   {
+    "name": "shoulder ring width",
+    "value": 7.661063629360277,
+    "limit": ">= 7.2",
+    "unit": "mm",
+    "ok": true
+   },
+   {
+    "name": "fits the printer (largest dimension)",
+    "value": 110.59915161132812,
+    "limit": "<= 160",
+    "unit": "mm",
+    "ok": true
+   }
+  ],
+  "failures": [],
+  "raw": {
+   "estanque": true,
+   "pecas": 1,
+   "faixa_z": 26.0,
+   "abertura_L": 81.99999174172328,
+   "abertura_H": 32.39796496626237,
+   "lamina_min": 0.8700650514584004,
+   "vao_lateral_min": 0.6614856211827987,
+   "aro_ombro_min": 7.661063629360277,
+   "fenda": 2.106172143586745,
+   "maior": 110.59915161132812,
+   "fix_desloc_max_mm": 0.0,
+   "fix_variante_mm3": 0.0119,
+   "desloc_max_mm": 3.000018412189558
+  },
+  "max_displacement_mm": 3.000018412189558
+ },
+ "verification": {
+  "verdict": "approved",
+  "failures": [],
+  "gap_difference_mm": 0.0047543576288949785,
+  "same_pose": {
+   "closest_section_gap": 0.724188690971003,
+   "share_le_0p5": 0.6285714285714286,
+   "max_overlap": 0.3583942032916898,
+   "rigid_min": -0.4473310752904551,
+   "lateral_min": 0.6625293376069692,
+   "all_sections_gap": 3.4802296578836236
+  },
+  "free_pose": {
+   "seats": true,
+   "rigid_min": -0.037,
+   "dorsal_min": -1.447,
+   "lateral_min": 0.419
+  },
+  "limits": {
+   "gap_difference_mm": 0.15,
+   "rigid_min_mm": -0.5,
+   "spring_travel_mm": 2.1,
+   "lateral_min_mm": 0.4
+  }
+ },
+ "result_glb": "result.glb",
+ "legend": [
+  {
+   "mm": -1.0,
+   "rgb": [
+    150,
+    0,
+    30
+   ]
+  },
+  {
+   "mm": -0.5,
+   "rgb": [
+    220,
+    50,
+    40
+   ]
+  },
+  {
+   "mm": 0.0,
+   "rgb": [
+    255,
+    235,
+    150
+   ]
+  },
+  {
+   "mm": 0.5,
+   "rgb": [
+    120,
+    200,
+    120
+   ]
+  },
+  {
+   "mm": 1.5,
+   "rgb": [
+    70,
+    150,
+    200
+   ]
+  },
+  {
+   "mm": 4.0,
+   "rgb": [
+    40,
+    70,
+    160
+   ]
+  }
+ ],
+ "messages": [
+  {
+   "level": "info",
+   "code": "build_ok",
+   "text": "Cuff ready: all manufacturing checks passed and the generated solid matches the prediction against your scan (gap difference +0.005 mm). Open the 3MF in Bambu Studio and review it before printing."
+  },
+  {
+   "level": "info",
+   "code": "disclaimer",
+   "text": "Rigid geometry only: it does not measure pressure, comfort, retention or wet use. Experimental - always dry-fit before use. Not a medical device."
+  },
+  {
+   "level": "warn",
+   "code": "internal_note",
+   "text": "Note: HTML report not available (No module named 'report_html')."
+  }
+ ],
+ "frame": {
+  "axis_to_view": [
+   [
+    -0.9979924019810276,
+    0.06333376341367247,
+    0.0,
+    10.097157298522252
+   ],
+   [
+    0.06333376341367247,
+    0.9979924019810276,
+    0.0,
+    0.08785047984497574
+   ],
+   [
+    0.0,
+    0.0,
+    -1.0,
+    -1.4572665781696834
+   ],
+   [
+    0.0,
+    0.0,
+    0.0,
+    1.0
+   ]
+  ],
+  "scan_to_view": [
+   [
+    -0.9820370662790708,
+    0.18796425012302517,
+    0.016511848160769928,
+    4.617257596583537
+   ],
+   [
+    -0.0290658094680373,
+    -0.06422997841165912,
+    -0.9975117485990856,
+    21.521547307400375
+   ],
+   [
+    -0.1864359921634322,
+    -0.9800734414057585,
+    0.06853955264743224,
+    4.342395702700331
+   ],
+   [
+    0.0,
+    0.0,
+    0.0,
+    1.0
+   ]
+  ],
+  "view_to_axis_z": {
+   "a": -1,
+   "b": -1.4572665781696834
+  },
+  "note": "view frame: +y back of hand, +z wrist, band centre z=0; s = a*z_view + b is the stable scan-axis coordinate for knuckle_s / thumb_s"
+ },
+ "hashes": {
+  "stl_sha256": "9f9de1ad513e47ee73136f6c5856642ed8f4891be2563807bc4974dada80762c",
+  "3mf_sha256": "d9df6c33b92c72e9da202713e2d837e658ee3c7ce7148a4a9b3d9457a4e101cb"
+ },
+ "seconds": 6.15
+}
