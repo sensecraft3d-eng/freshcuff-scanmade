@@ -48,7 +48,7 @@ export function buildReport({ prep, ana, build, overrides, changes, snaps, scanN
       <tr><td>${esc(t('checks_title'))}</td><td class="n">${!build.locks ? esc(t('checks_notrun')) : fails.length ? esc(t('checks_fail')) + ' ' + fails.length : ((build.locks.checks || []).length && build.locks.checks.every(c => c.ok === true)) ? esc(t('checks_pass')) : esc(t('checks_notrun'))}</td></tr></table>`;
   }
   const img = (u, cap) => u ? `<figure><img src="${u}" alt="${esc(cap)}"><figcaption>${esc(cap)}</figcaption></figure>` : '';
-  const fileList = Object.values(files || {}).map(f => `<li>${esc(f.name)}${f.sha256 ? ` <code>sha256 ${esc(f.sha256.slice(0, 16))}…</code>` : ''}</li>`).join('');
+  const fileList = Object.entries(files || {}).filter(([k]) => isReleased(build) || !['stl', '3mf'].includes(k)).map(([, f]) => f).map(f => `<li>${esc(f.name)}${f.sha256 ? ` <code>sha256 ${esc(f.sha256.slice(0, 16))}…</code>` : ''}</li>`).join('');
   return `<!DOCTYPE html><html lang="${lang === 'pt' ? 'pt-BR' : 'en'}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>${esc(t('rep_title'))}</title><style>
 body{font:15px/1.5 Inter,system-ui,-apple-system,"Segoe UI",sans-serif;color:#191c1e;max-width:860px;margin:0 auto;padding:32px 24px;background:#fff}

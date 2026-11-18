@@ -25,12 +25,14 @@ This document explains, step by step, what the app does with a hand scan and how
 
 ```mermaid
 flowchart TD
-    A[Hand scan<br/>STL / OBJ / PLY / GLB / USDZ] --> B[1. Read mesh<br/>units, pieces, holes]
+    A[Hand scan<br/>STL / OBJ / PLY / GLB] --> B[1. Read mesh<br/>units, pieces, holes]
     B --> C[2. Hand frame and landmarks<br/>axis, finger end, back of hand,<br/>thumb, knuckle line, left/right]
     C -->|user confirms or corrects in 3D| D[3. Band: 5 sections over 26 mm<br/>behind the knuckles]
     D --> E[4. Seat each of the 7 standard sizes<br/>rigidly on the band]
     E --> F{Hand in custom range?<br/>width 80–84 mm}
-    F -->|no| G[Recommend a standard size<br/>+ sizing rings]
+    F -->|no| G{A standard size<br/>passed step 4?}
+    G -->|yes| G1[Recommend that size<br/>+ sizing rings to confirm]
+    G -->|no| G2[No size verified<br/>use the sizing rings]
     F -->|yes| H[5. Pick width W<br/>smallest with ≥ 0.5 mm side clearance]
     H --> I[6. Personal dorsal profile<br/>spring face lowered up to 3 mm]
     I --> J[7. Pre-built width variant<br/>+ 2D displacement field]
@@ -277,7 +279,7 @@ The app prefers to stop with a clear reason over building a cuff from doubtful d
 | Band reaches the thumb base | Exploratory size comparison only, no custom cuff |
 | Scan tape and measured tape differ by more than 0.6 cm | Automatic recommendation suspended, no custom cuff |
 | Declared side differs from the scan | Stops: check the side, or the back/palm reading |
-| No width 80–84 mm seats, or clearance too small or too large | Recommends a standard size and the sizing rings |
+| No width 80–84 mm seats, or clearance too small or too large | No custom cuff. Recommends a standard size only if one passed the check; otherwise says no size was verified and suggests the sizing rings |
 | A manufacturing check or the final scan check fails | Stops, no files |
 
 ## What the method does not model
