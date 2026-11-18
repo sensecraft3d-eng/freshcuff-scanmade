@@ -17,7 +17,7 @@ The components below are included in this repository or served with the web app.
 | Base solid of the size-4 cuff (from which all sizes and custom cuffs are derived) | `cad/assets/freshcuff_base_size4.stl` | SenseCraft | CC BY-NC-SA 4.0 |
 | Anatomical dorsal profile used to shape the standard cuff | `cad/assets/perfis_anatomicos_5_planos.csv` | Derived by SenseCraft from the CeTI-Age dataset by Muschter et al., <https://doi.org/10.6084/m9.figshare.23502060.v1> (data descriptor: <https://doi.org/10.1038/s41597-023-02738-3>) | Source data [CC0 1.0](https://creativecommons.org/publicdomain/zero/1.0/); derived file CC BY-NC-SA 4.0 |
 
-**Attribution for the sample scan:** "Hand" by Artec 3D, <https://www.artec3d.com/3d-models/hand>, licensed under CC BY 3.0. The file is unchanged. FreshCuff ScanMade uses it only as a demonstration input. Artec 3D does not endorse this project.
+**Attribution for the sample scan:** "Hand" by Artec 3D, <https://www.artec3d.com/3d-models/hand>, licensed under CC BY 3.0 as stated in the downloaded file (Artec's model page currently lists CC BY 4.0). The file is unchanged. FreshCuff ScanMade uses it only as a demonstration input. Artec 3D does not endorse this project.
 
 ## Browser runtime (served from `web/`)
 

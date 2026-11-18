@@ -123,7 +123,7 @@ Printing a cuff for yourself or for someone you help, without charging, is fine.
 ## Credits
 
 - **Design and app:** Pedro, [SenseCraft](https://makerworld.com/en/models/3595433).
-- **Sample scan:** "Hand" by Artec 3D, <https://www.artec3d.com/3d-models/hand>, CC BY 3.0.
+- **Sample scan:** "Hand" by Artec 3D, <https://www.artec3d.com/3d-models/hand>. The downloaded file states CC BY 3.0; Artec's page now lists CC BY 4.0. Details in [NOTICE.md](NOTICE.md).
 - **Anatomical data:** the CeTI-Age hand-scan dataset by Muschter et al., CC0 (<https://doi.org/10.6084/m9.figshare.23502060.v1>), used to shape the standard cuff's spring.
 - **Software:** Pyodide, NumPy, SciPy, Shapely/GEOS, trimesh, Matplotlib, NetworkX, three.js, OpenCascade/OCP and the Inter typeface. See [NOTICE.md](NOTICE.md).
 - **Contest:** MakerWorld *Make for Good*. Thanks to the evaluators whose scans and comments shaped this work.
