@@ -17,7 +17,7 @@ FreshCuff ScanMade is the companion app. It reads a scan of your hand, checks it
 > [!WARNING]
 > **Experimental. Not yet validated on a real wearer.**
 > - So far the generated cuffs have been checked **in CAD only** (geometry against the scan). Nobody has worn a custom cuff from this app yet.
-> - I (Pedro, SenseCraft) paid a professional scanning service (EinScan Rigil) to scan my own hand and I am waiting for the files. When they arrive I will run the generator on my hand, print and wear the cuff, and correct the generator if needed. Progress is tracked in [docs/VALIDATION.md](docs/VALIDATION.md).
+> - My own hand (Pedro, SenseCraft) has already been scanned by a professional scanning service (EinScan Rigil). I am waiting to receive the files. When they arrive I will run the generator on my hand, print and wear the cuff, and correct the generator if needed. Progress is tracked in [docs/VALIDATION.md](docs/VALIDATION.md).
 > - **FreshCuff is not a medical device.** Always dry-fit first, stop if anything hurts or feels too tight, and check the skin after use. If you have fragile skin, poor sensation or circulation problems, ask a clinician (for example an occupational therapist) before using it.
 > - If you have a hand scan and try the app, **your feedback is very welcome**. See [Feedback](#feedback).
 

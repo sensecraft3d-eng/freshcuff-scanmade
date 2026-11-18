@@ -111,7 +111,7 @@ flowchart LR
     W --> F[Correct the generator<br/>if needed, publish results here]
 ```
 
-1. **Scan.** I paid a professional scanning service to scan my hand with an EinScan Rigil, and **I am waiting for the files**. The planned captures are two scans of the scan pose, one with my standard size-4 cuff worn on the hand, and one of the cuff alone.
+1. **Scan.** My hand has already been scanned by a professional scanning service with an EinScan Rigil, and **I am waiting to receive the files**. The planned captures are two scans of the scan pose, one with my standard size-4 cuff worn on the hand, and one of the cuff alone.
 2. **Repeatability.** Run the app on both captures. Provisional criterion: the same width (±0.5 mm), and dorsal profiles that differ by no more than 0.5 mm.
 3. **Calibration against the cuff I wear.** The scan of the size-4 cuff on my hand shows the real gaps and the real side clearance of a cuff I know is comfortable. Those become the reference for the 0.5 mm side-clearance target and the 0.2 mm preload, which may change.
 4. **Coupon first.** Print a short ring with the custom cross-section, only a few millimetres long. It is cheap and fast to check the fit across the back of the hand.
