@@ -22,6 +22,8 @@
 
 ## 2. Print settings (already in the 3MF)
 
+![The custom cuff standing on one band edge on the build plate; the two teardrop screw holes with their tips up](img/04-print-orientation.png)
+
 The 3MF is a complete Bambu Studio project. **Use it as is** unless you have a reason to change something.
 
 | Setting | Value in the 3MF |
@@ -36,7 +38,8 @@ The 3MF is a complete Bambu Studio project. **Use it as is** unless you have a r
 | Supports | None |
 | Brim | None |
 | Seam | Aligned, with **seam painting** on the cuff (keep it) |
-| Orientation | As placed: standing on one edge of the band. **Do not lay it flat or rotate it.** The cuff, the spring leaf and the print settings are set up for this orientation. |
+| Orientation | As placed: standing on one edge of the band, opening facing up. **Do not lay it flat or rotate it.** The cuff, the spring leaf and the print settings are set up for this orientation. |
+| Teardrop holes | The two latch-plate screw holes are teardrops so they print without support. **Their tip must point up.** If it points down or sideways, the part has been rotated: undo it. |
 
 ### Printing on another Bambu Lab printer (X1 series, A1 series, P1P)
 
@@ -46,7 +49,7 @@ The 3MF is a complete Bambu Studio project. **Use it as is** unless you have a r
 4. Check that the plate type matches your plate, and that the modifier part and the seam painting are still there.
 5. Slice, and check the preview: the walls of the spring leaf should be continuous, and nothing should be floating.
 
-On other slicers, import the `.stl` and match the table above as closely as you can. Add a modifier with 100% infill around the fastener housings.
+On other slicers, import the `.stl` and match the table above as closely as you can. The STL is already in the print orientation (flat band edge at z = 0, teardrop tips toward +z): do not re-orient it. Add a modifier with 100% infill around the fastener housings.
 
 ### Dry PETG
 

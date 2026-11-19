@@ -2,7 +2,7 @@
 
 **Turn a 3D scan of your hand into a custom, 3D-printable FreshCuff, right in your browser. Your scan never leaves your computer.**
 
-**[Try it online](https://sensecraft3d-eng.github.io/freshcuff-scanmade/)** · [How to scan your hand](docs/SCANNING.md) · [How it works](docs/METHOD.md) · [What has been validated](docs/VALIDATION.md) · [Give feedback](https://github.com/sensecraft3d-eng/freshcuff-scanmade/issues/new?template=fit-feedback.yml)
+**[Try it online](https://sensecraft3d-eng.github.io/freshcuff-scanmade/)** · [How to scan your hand](docs/SCANNING.md) · [How to print it](#printing-your-cuff) · [How it works](docs/METHOD.md) · [What has been validated](docs/VALIDATION.md) · [Give feedback](https://github.com/sensecraft3d-eng/freshcuff-scanmade/issues/new?template=fit-feedback.yml)
 
 <p align="center">
   <img src="docs/img/01-landmarks.png" width="32%" alt="The sample hand scan with the detected knuckle line and the band where the cuff sits">
@@ -87,6 +87,22 @@ You can use a phone app (Polycam, Scaniverse, KIRI Engine, Heges, 3d Scanner App
 The band behind the knuckles must be complete all the way round. Also measure around your knuckles with a soft tape in the same pose. The app needs it before it builds a custom cuff: it confirms the scan's scale.
 
 Full guide: **[docs/SCANNING.md](docs/SCANNING.md)**.
+
+## Printing your cuff
+
+<p align="center"><img src="docs/img/04-print-orientation.png" width="90%" alt="The custom cuff standing on one edge of the band on the build plate, and the two teardrop-shaped screw holes with their tips pointing up"></p>
+
+The `.3mf` is a ready Bambu Studio project. **Open it and print it as placed. Do not rotate it.**
+
+- **Orientation:** the cuff stands on one edge of the band, with the opening facing up.
+- **Teardrop holes, tip up:** the two latch-plate screw holes are teardrop-shaped so they print without support. Their tip must point **up**. If it points down or sideways, the cuff has been rotated.
+- **No brim, no supports.**
+- **PETG**, 0.4 mm nozzle, 0.20 mm layers, 4 walls, 15% gyroid infill, textured PEI plate.
+- **Keep the 100% infill modifier** around the fastener housings and the seam painting. Both are part of the 3MF.
+- **Another slicer?** Import the `.stl`. It is already in the print orientation (flat band edge at z = 0, teardrop tips toward +z). Do not re-orient it, and add a 100% infill modifier around the fastener housings.
+- **After printing:** clear any strings from the narrow slot behind the spring leaf, so the leaf moves freely.
+
+Full checklist, other Bambu Lab printers and checks before handing the cuff over: **[docs/MAKER_GUIDE.md](docs/MAKER_GUIDE.md)**.
 
 ## Documentation
 
