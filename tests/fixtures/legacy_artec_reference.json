@@ -132,14 +132,14 @@
   "abertura_H": 32.39796496626237,
   "lamina_min": 0.8700650514584004,
   "vao_lateral_min": 0.6614856211827987,
-  "aro_ombro_min": 7.661063629360277,
+  "aro_ombro_min": 7.654548042413351,
   "fenda": 2.106172143586745,
   "maior": 110.59915161132812,
   "fix_desloc_max_mm": 0.0,
   "fix_variante_mm3": 0.0119,
   "desloc_max_mm": 3.000018412189558
  },
- "stl_sha256": "9f9de1ad513e47ee73136f6c5856642ed8f4891be2563807bc4974dada80762c",
+ "stl_sha256": "36f2489ef289a744b54c466b7b448c618c08d0fd5abdea04ad22125a793dbb78",
  "verification_same_pose_raw": {
   "folga_media_todos_cortes_mm": 3.4802296578836236,
   "frac_todos_cortes_ate_0_5mm": 0.13714285714285715,

@@ -197,6 +197,7 @@ The standard spring face follows an average back of the hand. That shape came fr
 3. **Taper.** The lowering fades to zero between 12 and 24 mm from the centre on the thumb side, and between 20 and 26 mm on the little-finger side. The edges of the spring and everything outside the central zone keep the standard geometry.
 4. **Smoothing.** A Gaussian filter with σ = 1.5 mm, then the taper is applied again, and the lowering is set to zero where the scan has no hand.
 5. The profile is moved from the width-W frame back into the size-4 frame of the CAD generator, where it is added to the standard anatomical guide.
+6. **Outside unchanged.** The profile moves the spring face and the slot behind it together, so the spring keeps its thickness and its 2.1 mm travel. The outer shell, with the logo, is not moved: it stays exactly as in the standard cuff of the same width. The wall above the slot gets thicker by the same amount, up to 3 mm (about 2.5 cm³ more material on the sample hand).
 
 ```
    gap before (closest section)              lowering applied (mm)
@@ -216,11 +217,11 @@ The profile is **one curve applied along all 26 mm**. The hand tapers toward the
 The full CAD generator uses OpenCascade, which does not run in a browser. The app gets the same solid another way:
 
 1. **Pre-built width variants.** All 18 variants (9 widths × right/left, each with its side letter and arrow) were generated beforehand by the CAD generator in `cad/src/`. Each passed the manufacturing checks of step 8. They are stored in `web/grade/` and the browser downloads only the variant it needs, about 4–5 MB. `python cad/build.py grid` rebuilds them from the repository.
-2. **2D displacement field.** The cuff's cross-section is defined by three outlines: the outer shell, the skin-side opening and the spring slot. In the browser, the CAD's own 2D routine (`nucleo_r08a.py`, extracted from the CAD generator by a script, not rewritten) computes these outlines twice: without and with your dorsal profile. The difference between the two is a displacement field in the section plane.
+2. **2D displacement field.** The cuff's cross-section is defined by three outlines: the outer shell, the skin-side opening and the spring slot. In the browser, the CAD's own 2D routine (`nucleo_r08a.py`, extracted from the CAD generator by a script, not rewritten) computes these outlines twice: without and with your dorsal profile. The difference between the two is a displacement field in the section plane. The outer shell is the same in both, so its displacement is zero.
 3. **Applying it.** Every vertex of the variant mesh is moved by the displacement of the nearest outline point. The field depends only on the position in the section (x, y), so it is the same along the band. The variant meshes were refined beforehand so that no edge in the dorsal region is longer than 1 mm. That lets the surface follow the new curve, and the refined mesh is still closed and has the same volume.
 4. **What does not move.** Vertices in the fastener region must have zero displacement, and this is checked. So the fastener geometry stays exactly as in the pre-checked variant.
 
-**Validation against the full CAD.** On the sample scan, the browser-built solid was compared with a full OpenCascade rebuild using the same parameters. 99% of the surface lies within **0.019 mm** of the CAD. The largest deviations (0.24 mm in the current version) are on the decorative "S" logo and the edges of the engraving: in the CAD the logo is a rigid separate body, while here it follows the surface. All manufacturing checks gave the same results within a few thousandths of a millimetre. Numbers for the current version are in [VALIDATION.md](VALIDATION.md).
+**Validation against the full CAD.** On the sample scan, the browser-built solid was compared with a full OpenCascade rebuild using the same parameters. 99% of the surface lies within **0.014 mm** of the CAD, and the largest deviation is 0.04 mm. Since the outside is no longer moved, the "S" logo is identical in both. All manufacturing checks gave the same results within a few thousandths of a millimetre. Numbers for the current version are in [VALIDATION.md](VALIDATION.md).
 
 ## 8. Manufacturing checks
 

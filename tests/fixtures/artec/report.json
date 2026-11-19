@@ -8842,7 +8842,7 @@
    },
    {
     "name": "shoulder ring width",
-    "value": 7.661063629360277,
+    "value": 7.654548042413351,
     "limit": ">= 7.2",
     "unit": "mm",
     "ok": true
@@ -8864,7 +8864,7 @@
    "abertura_H": 32.39796496626237,
    "lamina_min": 0.8700650514584004,
    "vao_lateral_min": 0.6614856211827987,
-   "aro_ombro_min": 7.661063629360277,
+   "aro_ombro_min": 7.654548042413351,
    "fenda": 2.106172143586745,
    "maior": 110.59915161132812,
    "fix_desloc_max_mm": 0.0,
@@ -8900,7 +8900,7 @@
  },
  "verification_raw": {
   "stl": "FreshCuff_Custom_hand.stl",
-  "stl_sha256": "9f9de1ad513e47ee73136f6c5856642ed8f4891be2563807bc4974dada80762c",
+  "stl_sha256": "36f2489ef289a744b54c466b7b448c618c08d0fd5abdea04ad22125a793dbb78",
   "parametros_sha256": "a443b8bbf5e5f7adbb5fdc10be79ca819a26f81349083ce6d67791248258753a",
   "a_mesma_pose": {
    "folga_media_todos_cortes_mm": 3.48,
@@ -8957,8 +8957,8 @@
   }
  },
  "outputs": {
-  "stl_sha256": "9f9de1ad513e47ee73136f6c5856642ed8f4891be2563807bc4974dada80762c",
-  "3mf_sha256": "d9df6c33b92c72e9da202713e2d837e658ee3c7ce7148a4a9b3d9457a4e101cb",
+  "stl_sha256": "36f2489ef289a744b54c466b7b448c618c08d0fd5abdea04ad22125a793dbb78",
+  "3mf_sha256": "d85151496fb882f99e6064e9cf134007e06b48e2c6e38363fe42ff9f103895f2",
   "stl": "build_02/FreshCuff_Custom_hand.stl",
   "3mf": "build_02/FreshCuff_Custom_W82.0_L_P1S_PETG.3mf"
  },
@@ -8983,7 +8983,7 @@
   "gerador_scan.py": "7605b23a41bada5b7d19de025d065fbf7e7c7d942fcaaa857f9349c4a9a1745b",
   "gerador_web.py": "cc1d176984629306ef98f3829bc574317fbf4c0209e0d0559a35261c67e905d6",
   "medir_original.py": "1d8ec26eca2c635f0734d089f40609ed4fccd19404ba67266e824b50d3ebc09c",
-  "nucleo_r08a.py": "bbe6c31e808588df3e232fd7d2d508ddc58f8c55de09ffc121841ada9dd15371",
+  "nucleo_r08a.py": "d84fa21205f1d6d260ed42786421a24413c71a64af6909d85816a255f67b7855",
   "report_html.py": "24de8799d9f99692e9bbdd1345b7d556af15d1bda936ae677eb2951d1a924879",
   "trocar_malha_3mf_v4b_custom.py": "626a2fffe933843223fee3e304da62f430be8e5a4da1ddefe71fbd0e6a8308ac"
  },

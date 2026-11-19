@@ -60,7 +60,7 @@
    },
    {
     "name": "shoulder ring width",
-    "value": 7.661063629360277,
+    "value": 7.654548042413351,
     "limit": ">= 7.2",
     "unit": "mm",
     "ok": true
@@ -82,7 +82,7 @@
    "abertura_H": 32.39796496626237,
    "lamina_min": 0.8700650514584004,
    "vao_lateral_min": 0.6614856211827987,
-   "aro_ombro_min": 7.661063629360277,
+   "aro_ombro_min": 7.654548042413351,
    "fenda": 2.106172143586745,
    "maior": 110.59915161132812,
    "fix_desloc_max_mm": 0.0,
@@ -239,8 +239,8 @@
   "note": "view frame: +y back of hand, +z wrist, band centre z=0; s = a*z_view + b is the stable scan-axis coordinate for knuckle_s / thumb_s"
  },
  "hashes": {
-  "stl_sha256": "9f9de1ad513e47ee73136f6c5856642ed8f4891be2563807bc4974dada80762c",
-  "3mf_sha256": "d9df6c33b92c72e9da202713e2d837e658ee3c7ce7148a4a9b3d9457a4e101cb"
+  "stl_sha256": "36f2489ef289a744b54c466b7b448c618c08d0fd5abdea04ad22125a793dbb78",
+  "3mf_sha256": "d85151496fb882f99e6064e9cf134007e06b48e2c6e38363fe42ff9f103895f2"
  },
- "seconds": 6.35
+ "seconds": 6.46
 }

@@ -130,7 +130,9 @@ def restaura_lamina(shapes, shapes0):
 
 def contornos_com_dorso(raise_json):
     """Mesma funcao contours() do R08A, com um acrescimo dorsal pessoal somado ao delta do guia anatomico
-    (delta[:,1] += raise(x)). Como o mesmo dorsal(x) desloca pele, fenda e contorno externo, o curso da mola se preserva."""
+    (delta[:,1] += raise(x)). O mesmo dorsal(x) desloca pele e fenda juntas, entao o curso da mola se preserva.
+    19/11/2026 (Pedro, opcao A): o contorno externo NAO recebe o acrescimo pessoal; fica igual ao do tamanho padrao
+    (raise <= 0 so abaixa a mola, entao a parede de cima so engrossa, ate 3 mm), e o logo S fica no lugar padrao."""
     import inspect, json as _j
     d = raise_json if isinstance(raise_json, dict) else _j.loads(Path(raise_json).read_text(encoding='utf-8'))
     xr, rr = np.array(d['x_T4']), np.array(d['raise'])
@@ -139,6 +141,9 @@ def contornos_com_dorso(raise_json):
     assert s.count(old) == 1
     s = s.replace(old, old + "    delta[:,1] += np.interp(xs, _XR, _RR)\n")
     ns = dict(globals()); ns['_XR'] = xr; ns['_RR'] = rr
+    padrao = ns['contours']                       # contours() sem o acrescimo pessoal
     exec(s, ns)
-    return ns['contours']()
+    out = ns['contours']()
+    out['outer'] = padrao()['outer']              # lado de fora igual ao do tamanho padrao
+    return out
 
